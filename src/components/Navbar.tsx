@@ -18,19 +18,25 @@ function Navbar() {
           <div className=" flex gap-3">
             <Image
               src="/facebook-green.svg"
-              alt="tiktok-green"
+              alt="facebook-green"
               width={50}
               height={50}
             />
             <Image
-              src="/instagram-green.svg"
-              alt="tiktok-green"
+              src="/icons8-instagram.svg"
+              alt="instagram-green"
               width={50}
               height={50}
             />
             <Image
               src="/tiktok-green.svg"
-              alt="tiktok-green"
+              alt="tikTok-green"
+              width={50}
+              height={50}
+            />
+            <Image
+              src="/icons8-linkedin.svg"
+              alt="linkedin-green"
               width={50}
               height={50}
             />
