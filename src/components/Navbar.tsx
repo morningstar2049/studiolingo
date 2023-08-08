@@ -16,37 +16,48 @@ function Navbar() {
             height={150}
           />
           <div className=" flex gap-3">
-            <Image
-              src="/facebook-green.svg"
-              alt="facebook-green"
-              width={50}
-              height={50}
-            />
-            <Image
-              src="/instagram-green.svg"
-              alt="instagram-green"
-              width={50}
-              height={50}
-            />
-            <Image
-              src="/tiktok-green.svg"
-              alt="tikTok-green"
-              width={50}
-              height={50}
-            />
-            <Image
-              src="/linkedin-green.svg"
-              alt="linkedin-green"
-              width={50}
-              height={50}
-            />
+            <a href="https://www.facebook.com/studiolingo" target="_blank">
+              <Image
+                src="/facebook-green.svg"
+                alt="facebook-green"
+                width={50}
+                height={50}
+              />
+            </a>
+            <a href="https://www.instagram.com/studio_lingo/" target="_blank">
+              <Image
+                src="/instagram-green.svg"
+                alt="instagram-green"
+                width={50}
+                height={50}
+              />
+            </a>
+            <a href="https://www.tiktok.com/@studio.lingo" target="_blank">
+              <Image
+                src="/tiktok-green.svg"
+                alt="tikTok-green"
+                width={50}
+                height={50}
+              />
+            </a>
+            <a
+              href="https://www.linkedin.com/company/studio-lingo/"
+              target="_blank"
+            >
+              <Image
+                src="/linkedin-green.svg"
+                alt="linkedin-green"
+                width={50}
+                height={50}
+              />
+            </a>
           </div>
         </header>
       </MediaQuery>
 
       <nav
         style={{ fontFeatureSettings: "'case' on" }}
-        className="h-14 bg-white sm:bg-lingo-green font-bold text-[white] flex sm:justify-around justify-between items-center shadow p-10 sm:p-0"
+        className="h-14 bg-[#fffffe] sm:bg-lingo-green font-bold text-[white] sticky top-[-2px] z-50 w-full flex sm:justify-around justify-between items-center shadow p-10 sm:p-0"
       >
         <MediaQuery minWidth={640}>
           <div className="flex sm:max-lg:justify-around lg:justify-evenly sm:max-lg:w-full lg:w-7/12 ml-0 lg:ml-[-200px]">
