@@ -46,14 +46,16 @@ function Navbar() {
 
       <nav
         style={{ fontFeatureSettings: "'case' on" }}
-        className="h-14 bg-white sm:bg-lingo-green font-bold text-[white] flex sm:justify-around justify-between items-center shadow"
+        className="h-14 bg-white sm:bg-lingo-green font-bold text-[white] flex sm:justify-around justify-between items-center shadow p-10 sm:p-0"
       >
-        <div className="flex justify-evenly w-7/12 ml-[-200px]">
-          <div>კურსები</div>
-          <div>კორპორაციული</div>
-          <div>ჩვენი გუნდი</div>
-          <div>შეფასებები</div>
-        </div>
+        <MediaQuery minWidth={640}>
+          <div className="flex sm:max-lg:justify-around lg:justify-evenly sm:max-lg:w-full lg:w-7/12 ml-0 lg:ml-[-200px]">
+            <div>კურსები</div>
+            <div>კორპორაციული</div>
+            <div>ჩვენი გუნდი</div>
+            <div>შეფასებები</div>
+          </div>
+        </MediaQuery>
 
         <MediaQuery maxWidth={640}>
           <Image
@@ -62,7 +64,7 @@ function Navbar() {
             width={120}
             height={120}
           />
-          <GiHamburgerMenu color="#2f9e4d" fontSize="20px" />
+          <GiHamburgerMenu color="#2f9e4d" fontSize="20px" cursor="pointer" />
         </MediaQuery>
       </nav>
     </>
