@@ -97,7 +97,9 @@ function Navbar() {
             )}
           </MediaQuery>
         </nav>
-        <MobileNavMenu translate={mobileNavTranslate} />
+        <MediaQuery maxWidth={640}>
+          <MobileNavMenu translate={mobileNavTranslate} />
+        </MediaQuery>
       </>
     </>
   );
