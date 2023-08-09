@@ -20,9 +20,10 @@ export default function MobileNavMenu(props: Props) {
           <div>კორპორაციული</div>
           <div>ჩვენი გუნდი</div>
           <div>შეფასებები</div>
+          <div>კონტაქტი</div>
         </section>
 
-        <section className="flex">
+        <section className="flex gap-1">
           <a>
             <Image
               src="/facebook-green.svg"
