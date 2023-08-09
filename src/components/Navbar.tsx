@@ -16,7 +16,7 @@ function Navbar() {
       <MediaQuery minWidth={640}>
         <header className="bg-white h-[110px] flex justify-around items-center">
           <Image
-            src="/lingo-logo-main.png"
+            src="/lingo-logo-svg.svg"
             alt="lingo-logo"
             width={150}
             height={150}
@@ -76,7 +76,7 @@ function Navbar() {
           </MediaQuery>
           <MediaQuery maxWidth={640}>
             <Image
-              src="/lingo-logo-main.png"
+              src="/lingo-logo-svg.svg"
               alt="lingo-logo"
               width={120}
               height={120}
@@ -92,6 +92,7 @@ function Navbar() {
               <AiOutlineCloseCircle
                 color="#2f9e4d"
                 fontSize="25px"
+                cursor="pointer"
                 onClick={() => setMobileNavTranslate(100)}
               />
             )}
