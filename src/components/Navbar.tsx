@@ -64,7 +64,7 @@ function Navbar() {
       <>
         <nav
           style={{ fontFeatureSettings: "'case' on" }}
-          className="h-14 bg-[#fffffe] sm:bg-lingo-green font-bold text-[white] sticky top-[-2px] z-50 w-full flex sm:justify-around justify-between items-center shadow p-10 sm:p-0"
+          className="h-14 bg-[#fffffe] sm:bg-lingo-green font-bold text-[white] sticky top-[-2px] z-50 w-full flex sm:justify-around justify-between items-center shadow py-14 p-10 sm:p-0"
         >
           <MediaQuery minWidth={640}>
             <div className="flex sm:max-lg:justify-around lg:justify-evenly sm:max-lg:w-full lg:w-7/12 ml-0 lg:ml-[-200px]">
