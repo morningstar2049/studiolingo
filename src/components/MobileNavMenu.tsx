@@ -6,8 +6,9 @@ interface Props {
 }
 
 export default function MobileNavMenu(props: Props) {
+  // ! STRING LITERAL DOESN"T WORK WITH TAILWIND CLASSES
   const translateClass =
-    props.translate === 0 ? "translate-x-[0%]" : "translate-x-[100%]";
+    props.translate === 0 ? `translate-x-[0%]` : "translate-x-[100%]";
 
   return (
     <>
