@@ -10,12 +10,20 @@ export const metadata: Metadata = {
 const firago = localFont({
   src: [
     {
-      path: "../../public/fonts/FiraGo-Regular.ttf",
+      path: "../../public/fonts/FiraGO-Regular.ttf",
       weight: "400",
     },
     {
-      path: "../../public/fonts/FiraGo-Bold.ttf",
+      path: "../../public/fonts/FiraGO-Bold.ttf",
       weight: "700",
+    },
+    {
+      path: "../../public/fonts/FiraGO-Medium.ttf",
+      weight: "500",
+    },
+    {
+      path: "../../public/fonts/FiraGO-Light.ttf",
+      weight: "300",
     },
   ],
   variable: "--font-firago",
