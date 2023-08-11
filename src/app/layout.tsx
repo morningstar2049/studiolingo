@@ -17,6 +17,14 @@ const firago = localFont({
       path: "../../public/fonts/FiraGO-Bold.ttf",
       weight: "700",
     },
+    {
+      path: "../../public/fonts/FiraGO-Medium.ttf",
+      weight: "500",
+    },
+    {
+      path: "../../public/fonts/FiraGO-Light.ttf",
+      weight: "300",
+    },
   ],
   variable: "--font-firago",
 });
