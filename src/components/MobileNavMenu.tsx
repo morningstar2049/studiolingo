@@ -6,7 +6,7 @@ interface Props {
 }
 
 export default function MobileNavMenu(props: Props) {
-  // ! STRING LITERAL DOESN"T WORK WITH TAILWIND CLASSES
+  // ! Tailwind classes need to be hardcoded, computed values don't work
   const translateClass =
     props.translate === 0 ? `translate-x-[0%]` : "translate-x-[100%]";
 
@@ -14,7 +14,7 @@ export default function MobileNavMenu(props: Props) {
     <>
       <div
         style={{ fontFeatureSettings: "'case' on" }}
-        className={`h-[calc(100vh-80px)] bg-white flex flex-col justify-around gap-32 z-10 text-lingo-green text-2xl ${translateClass} transition-transform ease-in duration-500 px-16`}
+        className={`h-[calc(100vh-112px)] fixed left-0 top-[10%] right-0 bottom-0 bg-[#FFFFFE] flex flex-col justify-around gap-32 z-10 text-lingo-green text-2xl ${translateClass} transition-transform ease-in duration-500 px-16 overflow-y-hidden`}
       >
         <section className="flex flex-col gap-10 justify-between h-[30%] py-6">
           <div>კურსები</div>
@@ -25,7 +25,7 @@ export default function MobileNavMenu(props: Props) {
         </section>
 
         <section className="flex gap-1">
-          <a>
+          <a href="https://www.facebook.com/studiolingo" target="_blank">
             <Image
               src="/facebook-green.svg"
               alt="facebook-green"
