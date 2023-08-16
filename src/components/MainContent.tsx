@@ -1,13 +1,18 @@
 import Image from "next/image";
+import MainBanner from "./MainBanner";
 
 function MainContent() {
   return (
     <>
-      <div className="w-full h-[100dvh] relative">
-        {/* <div className="bg-[#000] opacity-50 absolute w-full h-full z-10" /> */}
-        <Image src="/main-img.png" alt="main" fill={true} objectFit="contain" />
-        <h1 className="text-lingo-green font-bold text-5xl z-20 absolute translate-x-[-50%] translate-y-[-50%] top-[20%] sm:top-[15%] left-[50%]">
-          <span className="text-[#293142]">შეაბიჯე</span> ახალ სამყაროში
+      <div className="w-full h-[calc(100dvh-112px)] sm:h-[calc(100dvh-166px)] relative -z-10 overflow-x-hidden">
+        <div className="bg-[#000] opacity-50 absolute w-full h-full z-10" />
+        <MainBanner />
+        <h1 className="text-[#fff] w-fit sm:w-full text-center font-bold text-5xl sm:text-6xl absolute translate-x-[-50%] translate-y-[-50%] top-[20%] sm:top-[35%] left-[50%] letter tracking-[3.5px] z-50">
+          შეაბიჯე ახალ სამყაროში
+        </h1>
+        <h1 className="sm:text-lingo-green text-[#fff] w-full z-50 sm:w-fit text-center sm:font-bold text-base sm:text-3xl absolute translate-x-[-50%] translate-y-[-50%] top-[45%] sm:max-lg:top-[70%] lg:top-[55%] left-[50%] tracking-[2px]">
+          აქ ენებს სუპერ მასწავლებლები თანამედროვე და პრაქტიკული მეთოდებით
+          ასწავლიან
         </h1>
       </div>
     </>

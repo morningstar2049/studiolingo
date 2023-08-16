@@ -10,6 +10,14 @@ const MediaQuery = dynamic(() => import("react-responsive"), { ssr: false });
 function Navbar() {
   const [mobileNavTranslate, setMobileNavTranslate] = useState(100);
 
+  const navItems = [
+    "კურსები",
+    "კორპორაციული",
+    "ჩვენი გუნდი",
+    "შეფასებები",
+    "კონტაქტი",
+  ];
+
   return (
     <>
       <MediaQuery minWidth={640}>
@@ -67,11 +75,14 @@ function Navbar() {
         >
           <MediaQuery minWidth={640}>
             <div className="flex sm:max-lg:justify-around lg:justify-evenly sm:max-lg:w-full lg:w-7/12 ml-0 lg:ml-[-8%]">
-              <div>კურსები</div>
-              <div>კორპორაციული</div>
-              <div>ჩვენი გუნდი</div>
-              <div>შეფასებები</div>
-              <div>კონტაქტი</div>
+              {navItems.map((item) => (
+                <div
+                  className="cursor-pointer p-1 rounded hover:text-lingo-green hover:bg-[#fff] transition-all"
+                  key={item}
+                >
+                  {item}
+                </div>
+              ))}
             </div>
           </MediaQuery>
           <MediaQuery maxWidth={640}>
