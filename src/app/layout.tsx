@@ -5,6 +5,9 @@ import localFont from "next/font/local";
 export const metadata: Metadata = {
   title: "Studio Lingo",
   description: "Step into the new world",
+  icons: {
+    icon: "/lingo-logo-svg.svg",
+  },
 };
 
 const firago = localFont({
