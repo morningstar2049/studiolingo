@@ -1,4 +1,3 @@
-"use client";
 import Image from "next/image";
 
 interface Props {
@@ -14,9 +13,9 @@ export default function MobileNavMenu(props: Props) {
     <>
       <div
         style={{ fontFeatureSettings: "'case' on" }}
-        className={`h-full fixed left-0 top-[10%] right-0 bottom-0 bg-[#FFFFFE] flex flex-col justify-around gap-32 z-100 text-lingo-green text-2xl ${translateClass} transition-transform ease-in duration-500 px-16 overflow-y-hidden`}
+        className={`h-full fixed left-0 top-[10%] right-0 bottom-0 bg-[#FFFFFE] flex flex-col justify-evenly gap-32 z-100 text-lingo-green text-2xl ${translateClass} transition-transform ease-in duration-500 px-16 overflow-y-hidden`}
       >
-        <section className="flex flex-col gap-10 justify-between h-[30%] py-6">
+        <section className="flex flex-col gap-10 justify-between h-[40%]">
           <div className="cursor-pointer">კურსები</div>
           <div className="cursor-pointer">კორპორაციული</div>
           <div className="cursor-pointer">ჩვენი გუნდი</div>
@@ -24,7 +23,7 @@ export default function MobileNavMenu(props: Props) {
           <div className="cursor-pointer">კონტაქტი</div>
         </section>
 
-        <section className="flex gap-1">
+        <section className="flex gap-1 h-[10%]">
           <a href="https://www.facebook.com/studiolingo" target="_blank">
             <Image
               src="/facebook-green.svg"

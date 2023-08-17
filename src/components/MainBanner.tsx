@@ -1,17 +1,22 @@
-"use client";
-import dynamic from "next/dynamic";
 import Image from "next/image";
-const MediaQuery = dynamic(() => import("react-responsive"), { ssr: false });
 
 function MainBanner() {
   return (
     <>
-      <MediaQuery maxWidth={640}>
-        <Image src="/Phone.svg" alt="phone" fill={true} objectFit="cover" />
-      </MediaQuery>
-      <MediaQuery minWidth={640}>
-        <Image src="/Desktop.svg" alt="phone" fill={true} objectFit="contain" />
-      </MediaQuery>
+      <Image
+        src="/Phone.svg"
+        alt="phone"
+        fill={true}
+        objectFit="cover"
+        className="block animate-appear sm:hidden"
+      />
+      <Image
+        src="/Desktop.svg"
+        alt="desktop"
+        fill={true}
+        objectFit="contain"
+        className="hidden animate-appear sm:block"
+      />
     </>
   );
 }
