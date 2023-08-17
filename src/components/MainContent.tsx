@@ -1,10 +1,9 @@
-import Image from "next/image";
 import MainBanner from "./MainBanner";
 
 function MainContent() {
   return (
     <>
-      <div className="w-full h-[calc(100dvh-112px)] sm:h-[calc(100dvh-166px)] relative -z-10 overflow-x-hidden">
+      <div className="w-full h-[calc(100dvh-88px)] sm:h-[calc(100dvh-154px)] relative -z-10 overflow-x-hidden">
         <div className="bg-[#000] opacity-40 absolute w-full h-full z-10" />
         <MainBanner />
         <h1

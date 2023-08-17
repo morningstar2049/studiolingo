@@ -3,7 +3,7 @@ import Image from "next/image";
 function Header() {
   return (
     <>
-      <header className="hidden bg-white h-[110px] sm:flex justify-around items-center">
+      <header className="hidden animate-appear bg-white h-[110px] sm:flex justify-around items-center">
         <Image
           src="/lingo-logo-svg.svg"
           alt="lingo-logo"
