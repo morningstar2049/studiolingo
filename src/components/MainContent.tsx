@@ -4,7 +4,7 @@ function MainContent() {
   return (
     <>
       <div className="w-full h-[calc(100dvh-88px)] sm:h-[calc(100dvh-154px)] relative -z-10 overflow-x-hidden">
-        <div className="bg-[#000] opacity-40 absolute w-full h-full z-10" />
+        <div className="bg-[#000] animate-appear opacity-40 absolute w-full h-full z-10" />
         <MainBanner />
         <h1
           style={{ fontFeatureSettings: "'case' on" }}
