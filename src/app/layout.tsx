@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: "Studio Lingo",
   description: "Step into the new world",
   icons: {
-    icon: "/lingo-logo-svg.svg",
+    icon: "/lingo-logo-round.png",
   },
 };
 
