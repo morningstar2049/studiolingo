@@ -1,13 +1,13 @@
+"use client";
+import { useContext } from "react";
 import Image from "next/image";
+import { MobileMenuContext } from "@/Context/MobileMenuContext";
 
-interface Props {
-  translate: number;
-}
-
-export default function MobileNavMenu(props: Props) {
+export default function MobileNavMenu() {
   // ! Tailwind classes need to be hardcoded, computed values don't.
-  const translateClass =
-    props.translate === 0 ? `translate-x-[0%]` : "translate-x-[101%]";
+  const { isOpen } = useContext(MobileMenuContext);
+  const translateClass = isOpen ? `translate-x-[0%]` : "translate-x-[101%]";
+  console.log(isOpen);
 
   const navItems = [
     "კურსები",
@@ -21,7 +21,7 @@ export default function MobileNavMenu(props: Props) {
     <>
       <div
         style={{ fontFeatureSettings: "'case' on" }}
-        className={`h-full fixed left-0 top-[10%] right-0 bottom-0 bg-[#FFFFFE] flex flex-col justify-evenly gap-32 z-100 text-lingo-green text-2xl ${translateClass} transition-transform ease-in duration-500 px-16 overflow-y-hidden`}
+        className={`h-full fixed left-0 top-[10%] right-0 bottom-0 bg-[#FFFFFE] sm:hidden flex flex-col justify-evenly gap-32 z-50 text-lingo-green text-2xl ${translateClass} transition-transform ease-in duration-500 px-16 overflow-y-hidden`}
       >
         <section className="flex flex-col gap-10 justify-between h-[40%]">
           {navItems.map((item) => (
