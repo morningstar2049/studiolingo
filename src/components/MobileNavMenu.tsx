@@ -4,8 +4,8 @@ import Image from "next/image";
 import { MobileMenuContext } from "@/Context/MobileMenuContext";
 
 export default function MobileNavMenu() {
-  // ! Tailwind classes need to be hardcoded, computed values don't.
-  const { isOpen } = useContext(MobileMenuContext);
+  // ! Tailwind classes need to be hardcoded, computed values don't work.
+  const { isOpen, setIsOpen } = useContext(MobileMenuContext);
   const translateClass = isOpen ? `translate-x-[0%]` : "translate-x-[101%]";
 
   const navItems = [
@@ -20,12 +20,15 @@ export default function MobileNavMenu() {
     <>
       <div
         style={{ fontFeatureSettings: "'case' on" }}
-        className={`h-full fixed left-0 top-[10%] right-0 bottom-0 bg-[#FFFFFE] sm:hidden flex flex-col justify-evenly gap-32 z-50 text-lingo-green text-2xl ${translateClass} transition-transform ease-in duration-500 px-16 overflow-y-hidden`}
+        className={`h-full fixed left-0 top-[85px] right-0 bottom-0 bg-[#FFFFFE] sm:hidden flex flex-col justify-evenly gap-32 z-50 text-lingo-green text-2xl ${translateClass} transition-transform ease-in duration-500 px-16 overflow-y-hidden`}
       >
         <section className="flex flex-col gap-10 justify-between h-[40%]">
           {navItems.map((item) => (
             <a href={item.href} key={item.name}>
-              <div className="w-fit cursor-pointer p-2 rounded hover:text-[#fff] hover:bg-lingo-green transition-all">
+              <div
+                onClick={() => setIsOpen(false)}
+                className="w-fit cursor-pointer p-2 rounded hover:text-[#fff] hover:bg-lingo-green transition-all"
+              >
                 {item.name}
               </div>
             </a>
