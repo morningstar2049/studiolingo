@@ -1,10 +1,12 @@
-import BasicAccordion from "./Accordion";
+import CoursesAccordion from "./CoursesAccordion";
+import IlikoMessage from "./IlikoMessage";
 
 function Courses() {
   return (
-    <>
-      <BasicAccordion />
-    </>
+    <div id="courses" className="items-center justify-around sm:flex">
+      <IlikoMessage />
+      <CoursesAccordion />
+    </div>
   );
 }
 

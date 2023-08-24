@@ -38,7 +38,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${firago.variable} font-sans`}>
+    <html lang="en" className={`${firago.variable} font-sans scroll-smooth`}>
       <body>{children}</body>
     </html>
   );

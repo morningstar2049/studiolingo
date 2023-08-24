@@ -9,11 +9,11 @@ function Navbar() {
   const { isOpen, setIsOpen } = useContext(MobileMenuContext);
 
   const navItems = [
-    "კურსები",
-    "კორპორაციული",
-    "ჩვენი გუნდი",
-    "შეფასებები",
-    "კონტაქტი",
+    { name: "კურსები", href: "#courses" },
+    { name: "კორპორაციული", href: "#corporate" },
+    { name: "ჩვენი გუნდი", href: "#team" },
+    { name: "შეფასებები", href: "#reviews" },
+    { name: "კონტაქტი", href: "#contact" },
   ];
 
   return (
@@ -24,15 +24,14 @@ function Navbar() {
       >
         <div className="hidden animate-appear sm:flex sm:max-lg:justify-around lg:justify-evenly sm:max-lg:w-full lg:w-7/12 ml-0 lg:ml-[-8%]">
           {navItems.map((item) => (
-            <div
-              className="cursor-pointer p-1 rounded hover:text-lingo-green hover:bg-[#fff] transition-all"
-              key={item}
-            >
-              {item}
-            </div>
+            <a href={item.href} key={item.name}>
+              <div className="cursor-pointer p-1 rounded hover:text-lingo-green hover:bg-[#fff] transition-all">
+                {item.name}
+              </div>
+            </a>
           ))}
         </div>
-        <div className="flex animate-appear w-full items-center justify-between sm:hidden">
+        <div className="flex items-center justify-between w-full animate-appear sm:hidden">
           <Image
             src="/lingo-logo-svg.svg"
             alt="lingo-logo"

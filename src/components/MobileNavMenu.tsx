@@ -7,14 +7,13 @@ export default function MobileNavMenu() {
   // ! Tailwind classes need to be hardcoded, computed values don't.
   const { isOpen } = useContext(MobileMenuContext);
   const translateClass = isOpen ? `translate-x-[0%]` : "translate-x-[101%]";
-  console.log(isOpen);
 
   const navItems = [
-    "კურსები",
-    "კორპორაციული",
-    "ჩვენი გუნდი",
-    "შეფასებები",
-    "კონტაქტი",
+    { name: "კურსები", href: "#courses" },
+    { name: "კორპორაციული", href: "#corporate" },
+    { name: "ჩვენი გუნდი", href: "#team" },
+    { name: "შეფასებები", href: "#reviews" },
+    { name: "კონტაქტი", href: "#contact" },
   ];
 
   return (
@@ -25,12 +24,11 @@ export default function MobileNavMenu() {
       >
         <section className="flex flex-col gap-10 justify-between h-[40%]">
           {navItems.map((item) => (
-            <div
-              key={item}
-              className="w-fit cursor-pointer p-2 rounded hover:text-[#fff] hover:bg-lingo-green transition-all"
-            >
-              {item}
-            </div>
+            <a href={item.href} key={item.name}>
+              <div className="w-fit cursor-pointer p-2 rounded hover:text-[#fff] hover:bg-lingo-green transition-all">
+                {item.name}
+              </div>
+            </a>
           ))}
         </section>
 

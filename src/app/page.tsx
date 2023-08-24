@@ -10,7 +10,6 @@ export default function Home() {
       <main>
         <div className="sticky top-0">
           <Header />
-
           <Navbar />
         </div>
         <MainContent />
