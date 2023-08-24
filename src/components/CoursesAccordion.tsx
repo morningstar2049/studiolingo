@@ -5,8 +5,11 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 export default function CoursesAccordion() {
   return (
-    <div style={{ fontFeatureSettings: "'case' on" }} className="p-3">
-      <Accordion className="p-3">
+    <div
+      style={{ fontFeatureSettings: "'case' on" }}
+      className="p-3 sm:p-0 sm:w-[48%]"
+    >
+      <Accordion className="p-2">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
