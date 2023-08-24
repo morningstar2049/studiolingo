@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <MobileMenuContextProvider>
       <main>
-        <div className="sticky top-0 z-10">
+        <div className="sticky top-[-2px] z-10">
           <Header />
           <Navbar />
         </div>
