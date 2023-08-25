@@ -9,9 +9,9 @@ export default function CoursesAccordion() {
       style={{ fontFeatureSettings: "'case' on" }}
       className="p-3 sm:p-0 sm:w-[48%]"
     >
-      <Accordion className="p-2">
+      <Accordion className="p-2 shadow-none">
         <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
+          expandIcon={<ExpandMoreIcon sx={{ color: "#2f9e4d" }} />}
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
@@ -26,9 +26,9 @@ export default function CoursesAccordion() {
           </p>
         </AccordionDetails>
       </Accordion>
-      <Accordion className="p-3">
+      <Accordion className="p-3 shadow-none">
         <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
+          expandIcon={<ExpandMoreIcon sx={{ color: "#2f9e4d" }} />}
           aria-controls="panel2a-content"
           id="panel2a-header"
         >
@@ -43,9 +43,9 @@ export default function CoursesAccordion() {
           </p>
         </AccordionDetails>
       </Accordion>
-      <Accordion className="p-3">
+      <Accordion className="p-3 shadow-none">
         <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
+          expandIcon={<ExpandMoreIcon sx={{ color: "#2f9e4d" }} />}
           aria-controls="panel3a-content"
           id="panel3a-header"
         >
@@ -57,9 +57,9 @@ export default function CoursesAccordion() {
           <p>This is not disabled</p>
         </AccordionDetails>
       </Accordion>
-      <Accordion className="p-3">
+      <Accordion className="p-3 shadow-none">
         <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
+          expandIcon={<ExpandMoreIcon sx={{ color: "#2f9e4d" }} />}
           aria-controls="panel3a-content"
           id="panel3a-header"
         >

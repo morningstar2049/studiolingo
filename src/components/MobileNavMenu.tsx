@@ -2,10 +2,11 @@
 import { useContext } from "react";
 import Image from "next/image";
 import { MobileMenuContext } from "@/Context/MobileMenuContext";
+import Link from "next/link";
 
 export default function MobileNavMenu() {
   // ! Tailwind classes need to be hardcoded, computed values don't work.
-  const { isOpen, setIsOpen } = useContext(MobileMenuContext);
+  const { isOpen, handleOpen, handleClose } = useContext(MobileMenuContext);
   const translateClass = isOpen ? `translate-x-[0%]` : "translate-x-[101%]";
 
   const navItems = [
@@ -24,14 +25,14 @@ export default function MobileNavMenu() {
       >
         <section className="flex flex-col gap-10 justify-between h-[40%]">
           {navItems.map((item) => (
-            <a href={item.href} key={item.name}>
+            <Link href={item.href} key={item.name}>
               <div
-                onClick={() => setIsOpen(false)}
+                onClick={() => handleClose()}
                 className="w-fit cursor-pointer p-2 rounded hover:text-[#fff] hover:bg-lingo-green transition-all"
               >
                 {item.name}
               </div>
-            </a>
+            </Link>
           ))}
         </section>
 
