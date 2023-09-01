@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Button from "./Button";
+import Button from "../Button";
 
 type CourseDetailsProps = {
   courseTitle: "english" | "german" | "russian" | "chinese";
@@ -9,15 +9,23 @@ type CourseDetailsProps = {
 
 export default function CourseDetails(props: CourseDetailsProps) {
   const [price, setPrice] = useState(0);
+  const [selected, setSelected] = useState("");
   return (
     <div>
       {(props.courseTitle === "english" || props.courseTitle === "russian") && (
         <section>
           <p>კურსის ტიპი:</p>
-          <Button bg="green">ზოგადი</Button>
-          <Button>სასაუბრო</Button>
-          <Button>ბიზნესი</Button>
-          {props.courseTitle === "english" && <Button>IELTS</Button>}
+          {["ზოგადი", "სასაუბრო", "ბიზნესი", "IELTS"].map((item) => (
+            <Button
+              onClick={() => setSelected(item)}
+              key={item}
+              bg={selected === item ? "green" : "white"}
+            >
+              {item}
+            </Button>
+          ))}
+
+          {/* {props.courseTitle === "english" && <Button>IELTS</Button>} */}
         </section>
       )}
       <section>

@@ -1,4 +1,4 @@
-import Courses from "./Courses";
+import Courses from "./Courses/Courses";
 import MainBanner from "./MainBanner";
 
 function MainContent() {
