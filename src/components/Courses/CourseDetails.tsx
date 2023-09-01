@@ -1,44 +1,56 @@
 "use client";
 
 import { useState } from "react";
-import Button from "../Button";
+import useCalculatePrice from "@/hooks/useCalculatePrice";
+import CourseRadioInput from "./CourseRadioInput";
 
 type CourseDetailsProps = {
   courseTitle: "english" | "german" | "russian" | "chinese";
 };
 
 export default function CourseDetails(props: CourseDetailsProps) {
-  const [price, setPrice] = useState(0);
-  const [selected, setSelected] = useState("");
+  const [selectedItems, setSelectedItems] = useState({
+    "გაკვეთილის ტიპი": "",
+    "გაკვეთილის სიხშირე": "",
+  });
+
+  const { price } = useCalculatePrice(props.courseTitle, selectedItems);
+
   return (
-    <div>
+    <div className="flex flex-col gap-5">
       {(props.courseTitle === "english" || props.courseTitle === "russian") && (
         <section>
-          <p>კურსის ტიპი:</p>
-          {["ზოგადი", "სასაუბრო", "ბიზნესი", "IELTS"].map((item) => (
-            <Button
-              onClick={() => setSelected(item)}
-              key={item}
-              bg={selected === item ? "green" : "white"}
-            >
-              {item}
-            </Button>
-          ))}
-
-          {/* {props.courseTitle === "english" && <Button>IELTS</Button>} */}
+          <CourseRadioInput
+            title="კურსის ტიპი"
+            choices={
+              props.courseTitle === "english"
+                ? ["ზოგადი", "სასაუბრო", "ბიზნესი", "IELTS"]
+                : ["ზოგადი", "სასაუბრო", "ბიზნესი"]
+            }
+            selectedItems={selectedItems}
+            setSelectedItems={setSelectedItems}
+          />
         </section>
       )}
       <section>
-        <p>გაკვეთილის ტიპი:</p>
-        <Button>ინდივიდუალური</Button>
-        <Button>ჯგუფური</Button>
+        <CourseRadioInput
+          title="გაკვეთილის ტიპი"
+          choices={["ინდივიდუალური", "ჯგუფური"]}
+          selectedItems={selectedItems}
+          setSelectedItems={setSelectedItems}
+        />
       </section>
       <section>
-        <p>გაკვეთილის სიხშირე:</p>
-        <Button>კვირაში 2-ჯერ</Button>
-        <Button>კვირაში 3-ჯერ</Button>
+        <CourseRadioInput
+          title="გაკვეთილის სიხშირე"
+          choices={["კვირაში 2-ჯერ", "კვირაში 3-ჯერ"]}
+          selectedItems={selectedItems}
+          setSelectedItems={setSelectedItems}
+        />
       </section>
-      <p>ფასი: {price}</p>
+      <p>
+        ფასი თვიურად : <strong>{price} ლარი</strong>
+      </p>
     </div>
   );
 }

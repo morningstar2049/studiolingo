@@ -1,24 +1,37 @@
-import React from "react";
-import Box from "@mui/joy/Box";
+import { Dispatch, SetStateAction, useState } from "react";
 import Radio from "@mui/joy/Radio";
 import RadioGroup from "@mui/joy/RadioGroup";
-import Typography from "@mui/joy/Typography";
 
-export default function CourseRadioInput() {
-  const [justify, setJustify] = React.useState("flex-start");
+type CourseRadioInputProps = {
+  choices: string[];
+  title: string;
+  selectedItems: {
+    "გაკვეთილის ტიპი": string;
+    "გაკვეთილის სიხშირე": string;
+  };
+  setSelectedItems: Dispatch<
+    SetStateAction<{
+      "გაკვეთილის ტიპი": string;
+      "გაკვეთილის სიხშირე": string;
+    }>
+  >;
+};
+
+export default function CourseRadioInput(props: CourseRadioInputProps) {
+  const [choice, setChoice] = useState("");
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-      <Typography id="segmented-controls-example" fontWeight="lg" fontSize="sm">
-        Justify:
-      </Typography>
+    <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+      <p>{props.title} :</p>
       <RadioGroup
         orientation="horizontal"
         aria-labelledby="segmented-controls-example"
-        name="justify"
-        value={justify}
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-          setJustify(event.target.value)
-        }
+        name="choice"
+        value={choice}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          const val = event.target.value;
+          setChoice(val);
+          props.setSelectedItems((prev) => ({ ...prev, [props.title]: val }));
+        }}
         sx={{
           minHeight: 48,
           padding: "4px",
@@ -28,7 +41,7 @@ export default function CourseRadioInput() {
           "--Radio-actionRadius": "8px",
         }}
       >
-        {["flex-start", "center", "flex-end"].map((item) => (
+        {props.choices.map((item) => (
           <Radio
             key={item}
             value={item}
@@ -38,10 +51,8 @@ export default function CourseRadioInput() {
             sx={{
               px: 2,
               alignItems: "center",
-              color: () =>
-                justify === item
-                  ? "white" // Color when selected
-                  : "black", // Default color
+              color: () => (choice === item ? "white" : "black"),
+              // fontWeight: () => (choice === item ? "bold" : "400"),
             }}
             slotProps={{
               action: ({ checked }) => ({
@@ -59,6 +70,6 @@ export default function CourseRadioInput() {
           />
         ))}
       </RadioGroup>
-    </Box>
+    </div>
   );
 }
