@@ -2,6 +2,7 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import CourseDetails from "./CourseDetails";
 
 export default function CoursesAccordion() {
   return (
@@ -20,10 +21,7 @@ export default function CoursesAccordion() {
           </p>
         </AccordionSummary>
         <AccordionDetails>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
-          </p>
+          <CourseDetails courseTitle="english" />
         </AccordionDetails>
       </Accordion>
       <Accordion className="p-3 shadow-none">
@@ -37,10 +35,7 @@ export default function CoursesAccordion() {
           </p>
         </AccordionSummary>
         <AccordionDetails>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
-          </p>
+          <CourseDetails courseTitle="german" />
         </AccordionDetails>
       </Accordion>
       <Accordion className="p-3 shadow-none">
@@ -54,7 +49,7 @@ export default function CoursesAccordion() {
           </p>
         </AccordionSummary>
         <AccordionDetails>
-          <p>This is not disabled</p>
+          <CourseDetails courseTitle="russian" />
         </AccordionDetails>
       </Accordion>
       <Accordion className="p-3 shadow-none">
@@ -68,7 +63,7 @@ export default function CoursesAccordion() {
           </p>
         </AccordionSummary>
         <AccordionDetails>
-          <p>This is not disabled</p>
+          <CourseDetails courseTitle="chinese" />
         </AccordionDetails>
       </Accordion>
     </div>
