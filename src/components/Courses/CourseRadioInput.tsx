@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import Radio from "@mui/joy/Radio";
 import RadioGroup from "@mui/joy/RadioGroup";
+import { Box, Container, Grid } from "@mui/material";
 
 type CourseRadioInputProps = {
   choices: string[];
@@ -19,10 +20,15 @@ type CourseRadioInputProps = {
 
 export default function CourseRadioInput(props: CourseRadioInputProps) {
   const [choice, setChoice] = useState("");
+  const courseTypeWidthClass =
+    props.title === "კურსის ტიპი" && props.choices.length === 4
+      ? "flex flex-wrap h-[80px] w-[96%] sm:h-fit"
+      : "w-fit";
   return (
     <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
       <p>{props.title} :</p>
       <RadioGroup
+        className={`sm:w-fit ${courseTypeWidthClass}`}
         orientation="horizontal"
         aria-labelledby="segmented-controls-example"
         name="choice"
@@ -35,6 +41,7 @@ export default function CourseRadioInput(props: CourseRadioInputProps) {
         sx={{
           minHeight: 48,
           padding: "4px",
+          // textAlign: "center",
           borderRadius: "12px",
           bgcolor: "neutral.softBg",
           "--RadioGroup-gap": "4px",
