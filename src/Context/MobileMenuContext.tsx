@@ -3,12 +3,14 @@ import { Dispatch, SetStateAction, createContext, useState } from "react";
 
 export const MobileMenuContext = createContext<IContext>({
   isOpen: false,
-  setIsOpen: () => {},
+  handleOpen: () => {},
+  handleClose: () => {},
 });
 
 interface IContext {
   isOpen: boolean;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  handleOpen: () => void;
+  handleClose: () => void;
 }
 
 export function MobileMenuContextProvider({
@@ -18,8 +20,18 @@ export function MobileMenuContextProvider({
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
+  function handleOpen() {
+    setIsOpen(true);
+    document.body.style.overflow = "hidden";
+  }
+
+  function handleClose() {
+    setIsOpen(false);
+    document.body.style.overflow = "visible";
+  }
+
   return (
-    <MobileMenuContext.Provider value={{ isOpen, setIsOpen }}>
+    <MobileMenuContext.Provider value={{ isOpen, handleOpen, handleClose }}>
       {children}
     </MobileMenuContext.Provider>
   );

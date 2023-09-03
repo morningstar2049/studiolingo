@@ -1,5 +1,5 @@
 import CoursesAccordion from "./CoursesAccordion";
-import IlikoMessage from "./IlikoMessage";
+import IlikoMessage from "../IlikoMessage";
 
 function Courses() {
   return (

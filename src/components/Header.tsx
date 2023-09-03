@@ -1,15 +1,18 @@
 import Image from "next/image";
+import Link from "next/link";
 
 function Header() {
   return (
     <>
       <header className="hidden animate-appear bg-[#fff] h-[110px] sm:flex justify-around items-center">
-        <Image
-          src="/lingo-logo-svg.svg"
-          alt="lingo-logo"
-          width={150}
-          height={150}
-        />
+        <Link href="/">
+          <Image
+            src="/lingo-logo-svg.svg"
+            alt="lingo-logo"
+            width={150}
+            height={150}
+          />
+        </Link>
         <div className="flex gap-3">
           <a href="https://www.facebook.com/studiolingo" target="_blank">
             <Image
