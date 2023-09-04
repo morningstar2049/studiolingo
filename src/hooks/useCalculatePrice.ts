@@ -9,118 +9,32 @@ function useCalculatePrice(
 ) {
   const [price, setPrice] = useState(0);
 
-  useEffect(() => {
-    function calculatePrice() {
-      switch (courseTitle) {
-        case "english":
-          if (
-            selectedItems["გაკვეთილის ტიპი"] === "ინდივიდუალური" &&
-            selectedItems["გაკვეთილის სიხშირე"] === "კვირაში 2-ჯერ"
-          ) {
-            setPrice(240);
-          }
-          if (
-            selectedItems["გაკვეთილის ტიპი"] === "ინდივიდუალური" &&
-            selectedItems["გაკვეთილის სიხშირე"] === "კვირაში 3-ჯერ"
-          ) {
-            setPrice(330);
-          }
-          if (
-            selectedItems["გაკვეთილის ტიპი"] === "ჯგუფური" &&
-            selectedItems["გაკვეთილის სიხშირე"] === "კვირაში 2-ჯერ"
-          ) {
-            setPrice(160);
-          }
-          if (
-            selectedItems["გაკვეთილის ტიპი"] === "ჯგუფური" &&
-            selectedItems["გაკვეთილის სიხშირე"] === "კვირაში 3-ჯერ"
-          ) {
-            setPrice(200);
-          }
-          break;
-        case "german":
-          if (
-            selectedItems["გაკვეთილის ტიპი"] === "ინდივიდუალური" &&
-            selectedItems["გაკვეთილის სიხშირე"] === "კვირაში 2-ჯერ"
-          ) {
-            setPrice(270);
-          }
-          if (
-            selectedItems["გაკვეთილის ტიპი"] === "ინდივიდუალური" &&
-            selectedItems["გაკვეთილის სიხშირე"] === "კვირაში 3-ჯერ"
-          ) {
-            setPrice(390);
-          }
-          if (
-            selectedItems["გაკვეთილის ტიპი"] === "ჯგუფური" &&
-            selectedItems["გაკვეთილის სიხშირე"] === "კვირაში 2-ჯერ"
-          ) {
-            setPrice(180);
-          }
-          if (
-            selectedItems["გაკვეთილის ტიპი"] === "ჯგუფური" &&
-            selectedItems["გაკვეთილის სიხშირე"] === "კვირაში 3-ჯერ"
-          ) {
-            setPrice(260);
-          }
-          break;
-        case "russian":
-          if (
-            selectedItems["გაკვეთილის ტიპი"] === "ინდივიდუალური" &&
-            selectedItems["გაკვეთილის სიხშირე"] === "კვირაში 2-ჯერ"
-          ) {
-            setPrice(230);
-          }
-          if (
-            selectedItems["გაკვეთილის ტიპი"] === "ინდივიდუალური" &&
-            selectedItems["გაკვეთილის სიხშირე"] === "კვირაში 3-ჯერ"
-          ) {
-            setPrice(320);
-          }
-          if (
-            selectedItems["გაკვეთილის ტიპი"] === "ჯგუფური" &&
-            selectedItems["გაკვეთილის სიხშირე"] === "კვირაში 2-ჯერ"
-          ) {
-            setPrice(150);
-          }
-          if (
-            selectedItems["გაკვეთილის ტიპი"] === "ჯგუფური" &&
-            selectedItems["გაკვეთილის სიხშირე"] === "კვირაში 3-ჯერ"
-          ) {
-            setPrice(200);
-          }
-          break;
+  const lang = courseTitle;
+  const type = selectedItems["გაკვეთილის ტიპი"];
+  const frequency = selectedItems["გაკვეთილის სიხშირე"];
 
-        case "chinese":
-          if (
-            selectedItems["გაკვეთილის ტიპი"] === "ინდივიდუალური" &&
-            selectedItems["გაკვეთილის სიხშირე"] === "კვირაში 2-ჯერ"
-          ) {
-            setPrice(340);
-          }
-          if (
-            selectedItems["გაკვეთილის ტიპი"] === "ინდივიდუალური" &&
-            selectedItems["გაკვეთილის სიხშირე"] === "კვირაში 3-ჯერ"
-          ) {
-            setPrice(490);
-          }
-          if (
-            selectedItems["გაკვეთილის ტიპი"] === "ჯგუფური" &&
-            selectedItems["გაკვეთილის სიხშირე"] === "კვირაში 2-ჯერ"
-          ) {
-            setPrice(230);
-          }
-          if (
-            selectedItems["გაკვეთილის ტიპი"] === "ჯგუფური" &&
-            selectedItems["გაკვეთილის სიხშირე"] === "კვირაში 3-ჯერ"
-          ) {
-            setPrice(330);
-          }
-          break;
-      }
-    }
-    calculatePrice();
-  }, [selectedItems, courseTitle]);
+  const prices = {
+    "english-ინდივიდუალური-კვირაში 2-ჯერ": 260,
+    "english-ინდივიდუალური-კვირაში 3-ჯერ": 330,
+    "english-ჯგუფური-კვირაში 2-ჯერ": 160,
+    "english-ჯგუფური-კვირაში 3-ჯერ": 200,
+    "german-ინდივიდუალური-კვირაში 2-ჯერ": 270,
+    "german-ინდივიდუალური-კვირაში 3-ჯერ": 390,
+    "german-ჯგუფური-კვირაში 2-ჯერ": 180,
+    "german-ჯგუფური-კვირაში 3-ჯერ": 260,
+    "russian-ინდივიდუალური-კვირაში 2-ჯერ": 230,
+    "russian-ინდივიდუალური-კვირაში 3-ჯერ": 320,
+    "russian-ჯგუფური-კვირაში 2-ჯერ": 150,
+    "russian-ჯგუფური-კვირაში 3-ჯერ": 200,
+    "chinese-ინდივიდუალური-კვირაში 2-ჯერ": 340,
+    "chinese-ინდივიდუალური-კვირაში 3-ჯერ": 490,
+    "chinese-ჯგუფური-კვირაში 2-ჯერ": 230,
+    "chinese-ჯგუფური-კვირაში 3-ჯერ": 330,
+  };
+  useEffect(() => {
+    // @ts-ignore
+    setPrice(prices[[lang, type, frequency].join("-")] || 0);
+  }, [frequency, lang, type]);
 
   return {
     price,

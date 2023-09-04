@@ -5,7 +5,7 @@ export default function IlikoMessage() {
     <>
       <div
         id="courses"
-        className="relative sm:w-1/2 sm:h-[700px] w-[100%] h-[370px] -z-10"
+        className="relative sm:w-1/2 sm:h-[700px] w-[100%] h-[370px] -z-10 self-start"
       >
         <Image
           src="/iliko.svg"
