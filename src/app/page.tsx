@@ -6,15 +6,9 @@ import Navbar from "@/components/Navbar";
 
 export default function Home() {
   return (
-    // <MobileMenuContextProvider>
     <>
       <main>
-        {/* <div className="sticky top-[-2px] z-10">
-          <Header />
-          <Navbar />
-        </div> */}
         <MainContent />
-        <MobileNavMenu />
       </main>
       <h1>dsadsa</h1>
       <h1>dsadsa</h1>
@@ -29,6 +23,5 @@ export default function Home() {
       <h1>dsadsa</h1>
       <h1>dsadsa</h1>
     </>
-    // </MobileMenuContextProvider>
   );
 }
