@@ -1,6 +1,10 @@
+import Header from "@/components/Header";
 import "./globals.css";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import Navbar from "@/components/Navbar";
+import { MobileMenuContextProvider } from "@/Context/MobileMenuContext";
+import MobileNavMenu from "@/components/MobileNavMenu";
 
 export const metadata: Metadata = {
   title: "Studio Lingo",
@@ -39,7 +43,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${firago.variable} font-sans scroll-smooth`}>
-      <body>{children}</body>
+      <body>
+        <MobileMenuContextProvider>
+          <div className="sticky top-[-2px] z-10">
+            <Header />
+            <Navbar />
+          </div>
+          <MobileNavMenu />
+          {children}
+        </MobileMenuContextProvider>
+      </body>
     </html>
   );
 }

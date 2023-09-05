@@ -5,7 +5,7 @@ function Courses() {
   return (
     <div
       id="courses"
-      className="scroll-m-[85px] sm:items-center sm:flex sm:scroll-m-28"
+      className="scroll-m-[85px] sm:items-center sm:flex sm:scroll-m-[145px]"
     >
       <IlikoMessage />
       <CoursesAccordion />
