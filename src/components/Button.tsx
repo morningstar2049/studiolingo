@@ -1,23 +1,21 @@
-import { ReactNode } from "react";
+"use client";
 
 type ButtonProps = {
-  children: ReactNode;
-  bg?: "white" | "green";
-  onClick: () => void;
+  children: React.ReactNode;
+  extraStyles?: string;
+  onClick?: () => void;
 };
 
-export default function Button({ children, ...props }: ButtonProps) {
-  const bgVariants = {
-    green: "bg-lingo-green text-[#fff]",
-    white: "text-black border-solid border-1 border-lingo-green",
-  };
-
+function Button({ children, extraStyles, onClick }: ButtonProps) {
   return (
     <button
-      onClick={props.onClick}
-      className={`px-6 py-3 rounded-3xl ${bgVariants[props.bg!]}`}
+      onClick={onClick}
+      style={{ fontFeatureSettings: "'case' on" }}
+      className={`bg-lingo-green text-[#fff] rounded-md self-center p-2 font-bold hover:bg-[#2f904d] ${extraStyles}`}
     >
       {children}
     </button>
   );
 }
+
+export default Button;

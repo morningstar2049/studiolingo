@@ -1,10 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+import Button from "./Button";
 
 function Header() {
   return (
     <>
-      <header className="hidden animate-appear bg-[#fff] h-[110px] sm:flex justify-around items-center">
+      <header className="hidden animate-appear bg-[#fff] h-[110px] sm:flex justify-evenly items-center shadow-md">
         <Link href="/">
           <Image
             src="/lingo-logo-svg.svg"
@@ -13,7 +14,10 @@ function Header() {
             height={150}
           />
         </Link>
-        <div className="flex gap-3">
+        <div className="flex gap-3 w-1/2 justify-end">
+          <Link href="/register" className="flex items-center">
+            <Button extraStyles="mr-5">რეგისტრაცია</Button>
+          </Link>
           <a href="https://www.facebook.com/studiolingo" target="_blank">
             <Image
               src="/facebook-green.svg"

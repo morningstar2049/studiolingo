@@ -3,6 +3,7 @@ import { useContext } from "react";
 import Image from "next/image";
 import { MobileMenuContext } from "@/Context/MobileMenuContext";
 import Link from "next/link";
+import Button from "./Button";
 
 export default function MobileNavMenu() {
   // ! Tailwind classes need to be hardcoded, computed values don't work.
@@ -14,24 +15,37 @@ export default function MobileNavMenu() {
     { name: "კორპორაციული", href: "#corporate" },
     { name: "ჩვენი გუნდი", href: "#team" },
     { name: "შეფასებები", href: "#reviews" },
+    { name: "კარიერა", href: "#careers" },
     { name: "კონტაქტი", href: "#contact" },
+    { name: "რეგისტრაცია", href: "/register" },
   ];
 
   return (
     <>
       <div
         style={{ fontFeatureSettings: "'case' on" }}
-        className={`h-full fixed left-0 top-[85px] right-0 bottom-0 bg-[#FFFFFE] sm:hidden flex flex-col justify-evenly gap-32 z-50 text-lingo-green text-2xl ${translateClass} transition-transform ease-in duration-500 px-16 overflow-y-hidden`}
+        className={`h-full fixed left-0 top-[85px] right-0 bottom-0 bg-[#FFFFFE] sm:hidden flex flex-col justify-around gap-20 z-50 text-lingo-green text-2xl ${translateClass} transition-transform ease-in duration-500 px-16 overflow-y-hidden`}
       >
-        <section className="flex flex-col gap-10 justify-between h-[40%]">
+        <section className="flex flex-col gap-6 h-[50dvh]">
           {navItems.map((item) => (
             <Link href={item.href} key={item.name}>
-              <div
-                onClick={() => handleClose()}
-                className="w-fit cursor-pointer p-2 rounded hover:text-[#fff] hover:bg-lingo-green transition-all"
-              >
-                {item.name}
-              </div>
+              {item.name !== "რეგისტრაცია" ? (
+                <div
+                  onClick={() => handleClose()}
+                  className="w-fit cursor-pointer p-2 rounded hover:text-[#fff] hover:bg-lingo-green transition-all"
+                >
+                  {item.name}
+                </div>
+              ) : (
+                <Button
+                  extraStyles="font-normal"
+                  onClick={() => {
+                    handleClose();
+                  }}
+                >
+                  {item.name}
+                </Button>
+              )}
             </Link>
           ))}
         </section>
