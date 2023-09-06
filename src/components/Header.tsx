@@ -1,19 +1,20 @@
+"use client";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { AiOutlineCloseCircle } from "react-icons/ai";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "./Button";
+import HeaderLogo from "./HeaderLogo";
+import { useContext } from "react";
+import { MobileMenuContext } from "@/Context/MobileMenuContext";
 
 function Header() {
+  const { isOpen, handleOpen, handleClose } = useContext(MobileMenuContext);
+
   return (
     <>
       <header className="hidden animate-appear bg-[#fff] h-[110px] sm:flex justify-evenly items-center shadow-md">
-        <Link href="/">
-          <Image
-            src="/lingo-logo-svg.svg"
-            alt="lingo-logo"
-            width={150}
-            height={150}
-          />
-        </Link>
+        <HeaderLogo />
         <div className="flex gap-3 w-1/2 justify-end">
           <Link href="/register" className="flex items-center">
             <Button extraStyles="mr-5">რეგისტრაცია</Button>
@@ -55,6 +56,32 @@ function Header() {
           </a>
         </div>
       </header>
+      {/* <div className="flex items-center justify-between w-full animate-appear sm:hidden">
+        <Image
+          onClick={() => {
+            window.scrollTo(0, 0);
+          }}
+          src="/lingo-logo-svg.svg"
+          alt="lingo-logo"
+          width={120}
+          height={120}
+        />
+        {!isOpen ? (
+          <GiHamburgerMenu
+            color="#2f9e4d"
+            fontSize="20px"
+            cursor="pointer"
+            onClick={() => handleOpen()}
+          />
+        ) : (
+          <AiOutlineCloseCircle
+            color="#2f9e4d"
+            fontSize="25px"
+            cursor="pointer"
+            onClick={() => handleClose()}
+          />
+        )}
+      </div> */}
     </>
   );
 }

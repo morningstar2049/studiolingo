@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 const prices = {
-  "english-ინდივიდუალური-კვირაში 2-ჯერ": 260,
+  "english-ინდივიდუალური-კვირაში 2-ჯერ": 240,
   "english-ინდივიდუალური-კვირაში 3-ჯერ": 330,
   "english-ჯგუფური-კვირაში 2-ჯერ": 160,
   "english-ჯგუფური-კვირაში 3-ჯერ": 200,
