@@ -24,7 +24,7 @@ export default function MobileNavMenu() {
     <>
       <div
         style={{ fontFeatureSettings: "'case' on" }}
-        className={`h-[90dvh] fixed left-0 top-[85px] right-0 bottom-0 bg-[#FFFFFE] sm:hidden flex flex-col justify-evenly z-50 text-lingo-green text-[1.4rem] ${translateClass} transition-transform ease-in duration-500 px-16`}
+        className={`h-[90dvh] fixed left-0 top-[85px] right-0 bottom-0 bg-[#FFFFFE] sm:hidden flex flex-col justify-evenly z-50 text-lingo-green text-[1.4rem] ${translateClass} transition-transform ease-in duration-1000 px-16`}
       >
         <section className="flex flex-col gap-5 justify-between">
           {navItems.map((item) => (
