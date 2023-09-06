@@ -24,11 +24,28 @@ export default function MobileNavMenu() {
     <>
       <div
         style={{ fontFeatureSettings: "'case' on" }}
-        className={`h-full fixed left-0 top-[85px] right-0 bottom-0 bg-[#FFFFFE] sm:hidden flex flex-col justify-around gap-20 z-50 text-lingo-green text-2xl ${translateClass} transition-transform ease-in duration-500 px-16 overflow-y-hidden`}
+        className={`h-[90dvh] fixed left-0 top-[85px] right-0 bottom-0 bg-[#FFFFFE] sm:hidden flex flex-col justify-evenly z-50 text-lingo-green text-[1.4rem] ${translateClass} transition-transform ease-in duration-500 px-16`}
       >
-        <section className="flex flex-col gap-6 h-[50dvh]">
+        <section className="flex flex-col gap-5 justify-between">
           {navItems.map((item) => (
             <Link href={item.href} key={item.name}>
+              {item.name !== "რეგისტრაცია" ? (
+                <div
+                  onClick={() => handleClose()}
+                  className="w-fit cursor-pointer p-2 rounded hover:text-[#fff] hover:bg-lingo-green transition-all"
+                >
+                  {item.name}
+                </div>
+              ) : (
+                <Button
+                  extraStyles="font-normal"
+                  onClick={() => {
+                    handleClose();
+                  }}
+                >
+                  {item.name}
+                </Button>
+              )}
               {item.name !== "რეგისტრაცია" ? (
                 <div
                   onClick={() => handleClose()}

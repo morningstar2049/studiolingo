@@ -37,14 +37,17 @@ function Navbar() {
           ))}
         </div>
         <div className="flex items-center justify-between w-full animate-appear sm:hidden">
-          <Link href="/">
-            <Image
-              src="/lingo-logo-svg.svg"
-              alt="lingo-logo"
-              width={120}
-              height={120}
-            />
-          </Link>
+          {/* <Link href="/"> */}
+          <Image
+            onClick={() => {
+              window.scrollTo(0, 0);
+            }}
+            src="/lingo-logo-svg.svg"
+            alt="lingo-logo"
+            width={120}
+            height={120}
+          />
+          {/* </Link> */}
           {!isOpen ? (
             <GiHamburgerMenu
               color="#2f9e4d"
