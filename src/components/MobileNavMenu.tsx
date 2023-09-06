@@ -46,6 +46,23 @@ export default function MobileNavMenu() {
                   {item.name}
                 </Button>
               )}
+              {item.name !== "რეგისტრაცია" ? (
+                <div
+                  onClick={() => handleClose()}
+                  className="w-fit cursor-pointer p-2 rounded hover:text-[#fff] hover:bg-lingo-green transition-all"
+                >
+                  {item.name}
+                </div>
+              ) : (
+                <Button
+                  extraStyles="font-normal"
+                  onClick={() => {
+                    handleClose();
+                  }}
+                >
+                  {item.name}
+                </Button>
+              )}
             </Link>
           ))}
         </section>
