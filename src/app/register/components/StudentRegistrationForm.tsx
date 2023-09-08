@@ -12,22 +12,41 @@ import {
   FormControl,
   Button,
 } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 function StudentRegistrationForm() {
+  const [submitted, setSubmitted] = useState(false);
   const {
     register,
     formState: { errors },
     getValues,
+    reset,
   } = useForm();
+
+  useEffect(() => {
+    if (submitted) {
+      reset({ "entry.1065046570": "" });
+    }
+  }, [submitted, reset]);
 
   return (
     <>
+      <iframe
+        name="hidden_iframe"
+        id="hidden_iframe"
+        style={{ display: "none" }}
+      />
       <form
+        target="hidden_iframe"
         // action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSdAE-KxRzPqPnvcLi0jxc2YzYHe5mfF0klphICNoiT0wDnfSQ/formResponse"
         className="flex flex-col gap-5 p-10"
         action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSdAE-KxRzPqPnvcLi0jxc2YzYHe5mfF0klphICNoiT0wDnfSQ/formResponse"
         method="post"
+        onSubmit={(e) => {
+          console.log(e, "submitted");
+          setSubmitted(true);
+        }}
       >
         <TextField
           color="success"
@@ -211,13 +230,15 @@ function StudentRegistrationForm() {
             label="ყურადღებით გავეცანი სტუდიის ყველა წესს და ვეთანხმები"
           />
         </div>
-        <input type="hidden" name="hud" value="true" />
+        {/* <input type="hidden" name="hud" value="true" />
         <input
           type="hidden"
           name="dlut"
           value={`${Math.random() * 100000000}`}
-        />
-        <button type="submit">Submit</button>
+        /> */}
+        <button type="submit" className="bg-lingo-green">
+          Submit
+        </button>
       </form>
     </>
   );
