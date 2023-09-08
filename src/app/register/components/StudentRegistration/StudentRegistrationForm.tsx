@@ -12,84 +12,60 @@ import {
   FormControl,
   Button,
 } from "@mui/material";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 function StudentRegistrationForm() {
-  const [submitted, setSubmitted] = useState(false);
   const {
     register,
+    handleSubmit,
     formState: { errors },
     getValues,
     reset,
   } = useForm();
 
-  useEffect(() => {
-    if (submitted) {
-      reset({ "entry.1065046570": "" });
-    }
-  }, [submitted, reset]);
+  function onSubmit(data: any) {
+    console.log(data);
+  }
 
   return (
     <>
-      <iframe
-        name="hidden_iframe"
-        id="hidden_iframe"
-        style={{ display: "none" }}
-      />
       <form
-        target="hidden_iframe"
-        // action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSdAE-KxRzPqPnvcLi0jxc2YzYHe5mfF0klphICNoiT0wDnfSQ/formResponse"
         className="flex flex-col gap-5 p-10"
-        action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSdAE-KxRzPqPnvcLi0jxc2YzYHe5mfF0klphICNoiT0wDnfSQ/formResponse"
-        method="post"
-        onSubmit={(e) => {
-          console.log(e, "submitted");
-          setSubmitted(true);
-        }}
+        onSubmit={handleSubmit(onSubmit)}
       >
         <TextField
-          color="success"
           variant="outlined"
           label="სახელი, გვარი"
-          {...register("entry.2005620554")}
+          {...register("name", { required: "Name is required" })}
         />
         <TextField
           variant="outlined"
           label="ასაკი"
-          {...register("entry.1611228309")}
+          {...register("age", { required: "Age is required" })}
         />
         <div>
           <p>რომელი ენის/ენების სწავლა გსურთ?</p>
           <FormControlLabel
-            control={
-              <Checkbox value="ინგლისური" {...register("entry.1065046570")} />
-            }
+            control={<Checkbox value="ინგლისური" {...register("engBox")} />}
             label="ინგლისური"
           />
           <FormControlLabel
-            control={
-              <Checkbox value="გერმანული" {...register("entry.1065046570")} />
-            }
+            control={<Checkbox value="გერმანული" {...register("gerBox")} />}
             label="გერმანული"
           />
           <FormControlLabel
-            control={
-              <Checkbox value="ჩინური" {...register("entry.1065046570")} />
-            }
+            control={<Checkbox value="ჩინური" {...register("chinaBox")} />}
             label="ჩინური"
           />
           <FormControlLabel
-            control={
-              <Checkbox value="რუსული" {...register("entry.1065046570")} />
-            }
+            control={<Checkbox value="რუსული" {...register("rusBox")} />}
             label="რუსული"
           />
         </div>
         <TextField
           variant="outlined"
           label="მიზანი"
-          {...register("entry.839337160")}
+          {...register("objective")}
         />
         <FormControl fullWidth>
           <InputLabel id="demo-simple-select-label">
@@ -100,7 +76,7 @@ function StudentRegistrationForm() {
             id="demo-simple-select"
             // value={age}
             label="Age"
-            {...register("entry.2130961897")}
+            {...register("studentAmount")}
             // onChange={handleChange}
           >
             <MenuItem value={"ინდივიდუალური (მხოლოდ 1 მოსწავლე)"}>
@@ -118,7 +94,7 @@ function StudentRegistrationForm() {
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue="female"
-            {...register("entry.1166974658")}
+            {...register("type")}
           >
             <FormControlLabel
               value="ზოგადი (მოიცავს ოთხივე კომპონენტს: საუბარს, მოსმენას, წაკითხვას, წერას)"
@@ -147,9 +123,10 @@ function StudentRegistrationForm() {
             დონე, რომელსაც უკვე ფლობთ
           </InputLabel>
           <Select
+            defaultValue={"Choose"}
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            {...register("entry.858477092")}
+            {...register("level")}
             // value={age}
             //   label="დონე"
             // onChange={handleChange}
@@ -167,7 +144,7 @@ function StudentRegistrationForm() {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            {...register("entry.1096271263")}
+            {...register("frequency")}
             // value={age}
             //   label="დონე"
             // onChange={handleChange}
@@ -180,7 +157,10 @@ function StudentRegistrationForm() {
           <p>ჩვენთან გაკვეთილები მიმდინარეობს ონლაინ რეჟიმში</p>
           <FormControlLabel
             control={
-              <Checkbox value="ონლაინ" {...register("entry.1859775582")} />
+              <Checkbox
+                value="ონლაინ"
+                {...register("online", { required: "This field is required" })}
+              />
             }
             label="ონლაინ"
           />
@@ -189,14 +169,10 @@ function StudentRegistrationForm() {
         <TextField
           variant="outlined"
           label="ტელეფონის ნომერი"
-          {...register("entry.1469338775")}
+          {...register("number")}
         />
 
-        <TextField
-          variant="outlined"
-          label="ელფოსტა"
-          {...register("entry.1297167939")}
-        />
+        <TextField variant="outlined" label="ელფოსტა" {...register("email")} />
         <FormControl fullWidth>
           <InputLabel id="demo-simple-select-label">
             საიდან შეიტყვეთ ჩვენ შესახებ?
@@ -204,7 +180,7 @@ function StudentRegistrationForm() {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            {...register("entry.200136865")}
+            {...register("source")}
             // value={age}
             //   label="დონე"
             // onChange={handleChange}
@@ -224,21 +200,16 @@ function StudentRegistrationForm() {
                 value={
                   "ყურადღებით გავეცანი სტუდიის ყველა წესს, გაკვეთილების საფასურს და ვეთანხმები"
                 }
-                {...register("entry.161711356")}
+                {...register("rules")}
               />
             }
             label="ყურადღებით გავეცანი სტუდიის ყველა წესს და ვეთანხმები"
           />
         </div>
-        {/* <input type="hidden" name="hud" value="true" />
-        <input
-          type="hidden"
-          name="dlut"
-          value={`${Math.random() * 100000000}`}
-        /> */}
-        <button type="submit" className="bg-lingo-green">
+
+        <Button type="submit" variant="contained" className="bg-lingo-green">
           Submit
-        </button>
+        </Button>
       </form>
     </>
   );

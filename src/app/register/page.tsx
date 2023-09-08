@@ -1,4 +1,4 @@
-import StudentRegistrationForm from "./components/StudentRegistrationForm";
+import StudentRegistrationForm from "./components/StudentRegistration/StudentRegistrationForm";
 
 function page() {
   return (
