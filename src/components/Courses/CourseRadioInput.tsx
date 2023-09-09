@@ -59,7 +59,6 @@ export default function CourseRadioInput(props: CourseRadioInputProps) {
               px: 2,
               alignItems: "center",
               color: () => (choice === item ? "white" : "black"),
-              // fontWeight: () => (choice === item ? "bold" : "400"),
             }}
             slotProps={{
               action: ({ checked }) => ({

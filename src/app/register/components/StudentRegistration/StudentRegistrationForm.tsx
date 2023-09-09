@@ -2,8 +2,6 @@
 import {
   Checkbox,
   FormControlLabel,
-  FormLabel,
-  InputLabel,
   MenuItem,
   Radio,
   RadioGroup,
@@ -13,6 +11,7 @@ import {
   Button,
 } from "@mui/material";
 import { useForm } from "react-hook-form";
+import useRegisterStudent from "../../hooks/useRegisterStudent";
 
 function StudentRegistrationForm() {
   const {
@@ -23,14 +22,22 @@ function StudentRegistrationForm() {
     reset,
   } = useForm();
 
+  const registerStudent = useRegisterStudent();
+
   function onSubmit(data: any) {
-    console.log(data);
+    console.log("onSubmit");
+    if (Object.keys(errors).length) {
+      console.log(errors);
+    } else {
+      registerStudent(data).then(console.log);
+      reset();
+    }
   }
 
   return (
-    <>
+    <div className="flex items-center justify-center w-full h-full">
       <form
-        className="flex flex-col gap-5 p-10"
+        className="flex flex-col w-full gap-5 p-10 md-max:lg:w-[70%] lg:w-[50%]"
         onSubmit={handleSubmit(onSubmit)}
       >
         <TextField
@@ -46,38 +53,34 @@ function StudentRegistrationForm() {
         <div>
           <p>რომელი ენის/ენების სწავლა გსურთ?</p>
           <FormControlLabel
-            control={<Checkbox value="ინგლისური" {...register("engBox")} />}
+            control={<Checkbox value={true} {...register("engBox")} />}
             label="ინგლისური"
           />
           <FormControlLabel
-            control={<Checkbox value="გერმანული" {...register("gerBox")} />}
+            control={<Checkbox value={true} {...register("gerBox")} />}
             label="გერმანული"
           />
           <FormControlLabel
-            control={<Checkbox value="ჩინური" {...register("chinaBox")} />}
+            control={<Checkbox value={true} {...register("chinaBox")} />}
             label="ჩინური"
           />
           <FormControlLabel
-            control={<Checkbox value="რუსული" {...register("rusBox")} />}
+            control={<Checkbox value={true} {...register("rusBox")} />}
             label="რუსული"
           />
         </div>
         <TextField
           variant="outlined"
           label="მიზანი"
-          {...register("objective")}
+          {...register("objective", { required: "This field is required" })}
         />
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">
-            გაკვეთილებზე მოსწავლეთა სასურველი რაოდენობა
-          </InputLabel>
+        <FormControl fullWidth className="flex flex-col gap-2">
+          <p>გაკვეთილებზე მოსწავლეთა სასურველი რაოდენობა</p>
+          {/* <InputLabel id="demo-simple-select-label"></InputLabel> */}
           <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            // value={age}
-            label="Age"
-            {...register("studentAmount")}
-            // onChange={handleChange}
+            {...register("studentAmount", {
+              required: "This field is required",
+            })}
           >
             <MenuItem value={"ინდივიდუალური (მხოლოდ 1 მოსწავლე)"}>
               ინდივიდუალური
@@ -88,48 +91,36 @@ function StudentRegistrationForm() {
           </Select>
         </FormControl>
         <div>
-          <FormLabel id="demo-radio-buttons-group-label">
-            რომელი ტიპის გაკვეთილები გსურთ?
-          </FormLabel>
+          <p>რომელი ტიპის გაკვეთილები გსურთ?</p>
           <RadioGroup
-            aria-labelledby="demo-radio-buttons-group-label"
-            defaultValue="female"
-            {...register("type")}
+            {...register("type", { required: "This field is required" })}
           >
             <FormControlLabel
-              value="ზოგადი (მოიცავს ოთხივე კომპონენტს: საუბარს, მოსმენას, წაკითხვას, წერას)"
+              value="ზოგადი"
               control={<Radio />}
               label="ზოგადი"
             />
             <FormControlLabel
-              value="სასაუბრო ინგლისური/რუსული (მოიცავს საუბარს, მოსმენას, წაკითხვას; არ შედის წერითი დავალებები)"
+              value="სასაუბრო"
               control={<Radio />}
               label="სასაუბრო"
             />
             <FormControlLabel
-              value="ბიზნეს ინგლისური (უნდა ფლობდეთ ინგლისურის B1 დონეს)"
+              value="ბიზნეს"
               control={<Radio />}
               label="ბიზნესი ინგლისური"
             />
             <FormControlLabel
-              value="ბიზნეს რუსული (უნდა ფლობდეთ რუსულის A2 დონეს)"
+              value="ბიზნეს რუსული"
               control={<Radio />}
               label="ბიზნეს რუსული"
             />
           </RadioGroup>
         </div>
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">
-            დონე, რომელსაც უკვე ფლობთ
-          </InputLabel>
+        <FormControl fullWidth className="flex flex-col gap-2">
+          <p>თქვენი დონე</p>
           <Select
-            defaultValue={"Choose"}
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            {...register("level")}
-            // value={age}
-            //   label="დონე"
-            // onChange={handleChange}
+            {...register("level", { required: "This field is required" })}
           >
             <MenuItem value={"ნულიდან ვიწყებ"}>ნულიდან ვიწყებ</MenuItem>
             <MenuItem value={"საწყისი (A1-A2)"}>საწყისი (A1-A2)</MenuItem>
@@ -137,18 +128,9 @@ function StudentRegistrationForm() {
             <MenuItem value={"მაღალი (C1-C2)"}>მაღალი (C1-C2)</MenuItem>
           </Select>
         </FormControl>
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">
-            კვირაში რამდენი გაკვეთილი გსურთ?
-          </InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            {...register("frequency")}
-            // value={age}
-            //   label="დონე"
-            // onChange={handleChange}
-          >
+        <FormControl fullWidth className="flex flex-col gap-2">
+          <p>კვირაში გაკვეთილების ოდენობა</p>
+          <Select {...register("lesson_freq")}>
             <MenuItem value={"2 გაკვეთილი"}>2 გაკვეთილი</MenuItem>
             <MenuItem value={"3 გაკვეთილი"}>3 გაკვეთილი</MenuItem>
           </Select>
@@ -169,22 +151,13 @@ function StudentRegistrationForm() {
         <TextField
           variant="outlined"
           label="ტელეფონის ნომერი"
-          {...register("number")}
+          {...register("phone_number", { required: "This field is required" })}
         />
 
         <TextField variant="outlined" label="ელფოსტა" {...register("email")} />
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">
-            საიდან შეიტყვეთ ჩვენ შესახებ?
-          </InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            {...register("source")}
-            // value={age}
-            //   label="დონე"
-            // onChange={handleChange}
-          >
+        <FormControl fullWidth className="flex flex-col gap-2">
+          <p>საიდან შეიტყვეთ ჩვენ შესახებ?</p>
+          <Select {...register("source")}>
             <MenuItem value={"Facebook"}>Facebook</MenuItem>
             <MenuItem value={"Instagram"}>Instagram</MenuItem>
             <MenuItem value={"Linkedin"}>Linkedin</MenuItem>
@@ -196,22 +169,25 @@ function StudentRegistrationForm() {
           <FormControlLabel
             control={
               <Checkbox
-                // value="ყურადღებით გავეცანი სტუდიის ყველა წესს, გაკვეთილების საფასურს და ვეთანხმები"
+                // sx={{ fontFamily: "'FiraGO', sans-serif" }}
                 value={
                   "ყურადღებით გავეცანი სტუდიის ყველა წესს, გაკვეთილების საფასურს და ვეთანხმები"
                 }
-                {...register("rules")}
+                {...register("rules", { required: "This field is required" })}
               />
             }
             label="ყურადღებით გავეცანი სტუდიის ყველა წესს და ვეთანხმები"
           />
         </div>
-
-        <Button type="submit" variant="contained" className="bg-lingo-green">
+        <Button
+          type="submit"
+          variant="contained"
+          className="self-center w-1/4 bg-lingo-green"
+        >
           Submit
         </Button>
       </form>
-    </>
+    </div>
   );
 }
 
