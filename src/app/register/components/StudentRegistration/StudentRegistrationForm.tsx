@@ -1,4 +1,5 @@
 "use client";
+import "@/app/globals.css";
 import {
   Checkbox,
   FormControlLabel,
@@ -9,36 +10,68 @@ import {
   TextField,
   FormControl,
   Button,
+  Modal,
 } from "@mui/material";
-import { useForm } from "react-hook-form";
+import {
+  useForm,
+  Controller,
+  SubmitErrorHandler,
+  FieldErrors,
+} from "react-hook-form";
 import useRegisterStudent from "../../hooks/useRegisterStudent";
+import { TStudentRegistrationForm } from "./types";
+import { useState } from "react";
+import SuccessModal from "@/components/SuccessModal";
 
 function StudentRegistrationForm() {
+  const [isOpen, setIsOpen] = useState(false);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     getValues,
     reset,
-  } = useForm();
+  } = useForm<TStudentRegistrationForm>({
+    defaultValues: {
+      name: "",
+      age: "",
+      objective: "",
+      type: "",
+      level: "",
+      lesson_freq: "",
+      online: false,
+      phone_number: "",
+      email: "",
+      source: "",
+      engBox: false,
+      chinaBox: false,
+      gerBox: false,
+      rusBox: false,
+      studentAmount: "",
+      acceptRules: false,
+    },
+  });
 
   const registerStudent = useRegisterStudent();
 
-  function onSubmit(data: any) {
-    console.log("onSubmit");
-    if (Object.keys(errors).length) {
-      console.log(errors);
-    } else {
-      registerStudent(data).then(console.log);
+  function onSubmit(data: TStudentRegistrationForm) {
+    console.log(data);
+    registerStudent(data).then(() => {
+      setIsOpen(true);
       reset();
-    }
+    });
+  }
+
+  function onError(errors: FieldErrors<TStudentRegistrationForm>) {
+    console.log(errors);
   }
 
   return (
     <div className="flex items-center justify-center w-full h-full">
       <form
         className="flex flex-col w-full gap-5 p-10 md-max:lg:w-[70%] lg:w-[50%]"
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(onSubmit, onError)}
       >
         <TextField
           variant="outlined"
@@ -78,6 +111,7 @@ function StudentRegistrationForm() {
           <p>გაკვეთილებზე მოსწავლეთა სასურველი რაოდენობა</p>
           {/* <InputLabel id="demo-simple-select-label"></InputLabel> */}
           <Select
+            defaultValue={""}
             {...register("studentAmount", {
               required: "This field is required",
             })}
@@ -130,7 +164,9 @@ function StudentRegistrationForm() {
         </FormControl>
         <FormControl fullWidth className="flex flex-col gap-2">
           <p>კვირაში გაკვეთილების ოდენობა</p>
-          <Select {...register("lesson_freq")}>
+          <Select
+            {...register("lesson_freq", { required: "This field is required" })}
+          >
             <MenuItem value={"2 გაკვეთილი"}>2 გაკვეთილი</MenuItem>
             <MenuItem value={"3 გაკვეთილი"}>3 გაკვეთილი</MenuItem>
           </Select>
@@ -140,7 +176,7 @@ function StudentRegistrationForm() {
           <FormControlLabel
             control={
               <Checkbox
-                value="ონლაინ"
+                value={true}
                 {...register("online", { required: "This field is required" })}
               />
             }
@@ -169,11 +205,11 @@ function StudentRegistrationForm() {
           <FormControlLabel
             control={
               <Checkbox
-                // sx={{ fontFamily: "'FiraGO', sans-serif" }}
-                value={
-                  "ყურადღებით გავეცანი სტუდიის ყველა წესს, გაკვეთილების საფასურს და ვეთანხმები"
-                }
-                {...register("rules", { required: "This field is required" })}
+                sx={{ fontFamily: "'FiraGO', sans-serif" }}
+                value={true}
+                {...register("acceptRules", {
+                  required: "This field is required",
+                })}
               />
             }
             label="ყურადღებით გავეცანი სტუდიის ყველა წესს და ვეთანხმები"
@@ -182,11 +218,14 @@ function StudentRegistrationForm() {
         <Button
           type="submit"
           variant="contained"
-          className="self-center w-1/4 bg-lingo-green"
+          className="self-center w-fit bg-lingo-green"
         >
-          Submit
+          რეგისტრაცია
         </Button>
       </form>
+      <SuccessModal isOpen={isOpen} setIsOpen={setIsOpen}>
+        <p>Thank you for registering</p>
+      </SuccessModal>
     </div>
   );
 }
