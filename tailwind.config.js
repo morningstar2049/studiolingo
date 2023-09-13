@@ -22,6 +22,7 @@ module.exports = {
     },
     colors: {
       "lingo-green": "#2f9e4d",
+      "lingo-black": "#293142",
     },
   },
   plugins: [],

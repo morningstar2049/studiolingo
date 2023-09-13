@@ -10,18 +10,6 @@ export default function Home() {
       <main>
         <MainContent />
       </main>
-      <h1>dsadsa</h1>
-      <h1>dsadsa</h1>
-      <h1>dsadsa</h1>
-      <h1>dsadsa</h1>
-      <h1>dsadsa</h1>
-      <h1>dsadsa</h1>
-      <h1>dsadsa</h1>
-      <h1>dsadsa</h1>
-      <h1>dsadsa</h1>
-      <h1>dsadsa</h1>
-      <h1>dsadsa</h1>
-      <h1>dsadsa</h1>
     </>
   );
 }

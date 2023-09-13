@@ -22,7 +22,7 @@ export default function CourseRadioInput(props: CourseRadioInputProps) {
   const [choice, setChoice] = useState("");
   const courseTypeWidthClass =
     props.title === "კურსის ტიპი" && props.choices.length === 4
-      ? "flex flex-wrap h-[85px] w-[72%] sm:h-fit"
+      ? "flex flex-wrap h-[85px] w-[80%] sm:h-fit"
       : "w-fit";
   return (
     <div className="flex flex-col gap-5 sm:flex-row sm:items-center">

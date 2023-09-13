@@ -1,14 +1,8 @@
 "use client";
-import Image from "next/image";
-import { GiHamburgerMenu } from "react-icons/gi";
-import { AiOutlineCloseCircle } from "react-icons/ai";
-import { useContext, useState } from "react";
-import { MobileMenuContext } from "@/Context/MobileMenuContext";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 function Navbar() {
-  const { isOpen, handleOpen, handleClose } = useContext(MobileMenuContext);
   const pathname = usePathname();
   const navItems = [
     { name: "კურსები", href: "#courses" },
