@@ -5,14 +5,14 @@ function MainBanner() {
   return (
     <>
       <Image
-        src="/Phone.svg"
+        src="/Phone.png"
         alt="phone"
         fill={true}
         objectFit="cover"
         className="block animate-appear sm:hidden"
       />
       <Image
-        src="/Desktop.svg"
+        src="/Desktop.png"
         alt="desktop"
         fill={true}
         objectFit="contain"
