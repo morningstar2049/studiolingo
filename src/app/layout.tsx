@@ -43,7 +43,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${firago.variable} font-sans scroll-smooth`}>
-      <body>
+      <body className="">
         <MobileMenuContextProvider>
           <div className="sticky top-[-2px] z-10">
             <Header />

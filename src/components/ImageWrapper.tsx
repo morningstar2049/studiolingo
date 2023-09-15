@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-type TImageWrapperProps = {
+export type TImageWrapperProps = {
   src: string;
   alt: string;
   objectFit: "contain" | "cover" | "fill";
