@@ -43,7 +43,7 @@ function CorporateCoursesList() {
       </ul>
 
       <Link href="/register">
-        <Button extraStyles="w-full">რეგისტრაცია</Button>
+        <Button extraStyles="w-full sm:w-1/3">რეგისტრაცია</Button>
       </Link>
     </div>
   );
