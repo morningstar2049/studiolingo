@@ -17,7 +17,10 @@ export default function MobileNavMenu() {
     { name: "შეფასებები", href: "#reviews" },
     { name: "კარიერა", href: "#careers" },
     { name: "კონტაქტი", href: "#contact" },
-    { name: "რეგისტრაცია", href: "/register" },
+    {
+      name: "შემოგვიერთდი",
+      href: "https://docs.google.com/forms/d/e/1FAIpQLSfyXSZCZCGhCAHQV4Zn1AAuJxeb4Yll3Acs8EwkndGDmQTAZA/viewform?fbclid=IwAR1OVyQbCE_wBL2xDTIMfwI30o03Oc1eCdhRBSlvwEF6u4N48O2bzV88YAw",
+    },
   ];
 
   return (
@@ -26,10 +29,14 @@ export default function MobileNavMenu() {
         style={{ fontFeatureSettings: "'case' on" }}
         className={`h-[90dvh] fixed left-0 top-[85px] right-0 bottom-0 bg-[#FFFFFE] sm:hidden flex flex-col justify-evenly z-50 text-lingo-green text-[1.4rem] ${translateClass} transition-transform ease-in duration-500 px-16`}
       >
-        <section className="flex flex-col gap-5 justify-between">
+        <section className="flex flex-col justify-between gap-5">
           {navItems.map((item) => (
-            <Link href={item.href} key={item.name}>
-              {item.name !== "რეგისტრაცია" ? (
+            <Link
+              href={item.href}
+              key={item.name}
+              target={item.name === "შემოგვიერთდი" ? "_blank" : "_self"}
+            >
+              {item.name !== "შემოგვიერთდი" ? (
                 <div
                   onClick={() => handleClose()}
                   className="w-fit cursor-pointer p-2 rounded hover:text-[#fff] hover:bg-lingo-green transition-all"
@@ -84,6 +91,14 @@ export default function MobileNavMenu() {
               alt="linkedin-green"
               width={40}
               height={40}
+            />
+          </a>
+          <a href="https://www.youtube.com/@studio_lingo" target="_blank">
+            <Image
+              src="/youtube-green.svg"
+              alt="youtube-green"
+              width={43}
+              height={43}
             />
           </a>
         </section>

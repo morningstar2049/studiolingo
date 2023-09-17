@@ -16,9 +16,13 @@ function Header() {
       <header className="hidden animate-appear bg-[#fff] h-[110px] sm:flex justify-evenly items-center shadow-md">
         <HeaderLogo />
         <div className="flex justify-end w-1/2 gap-3">
-          <Link href="/register" className="flex items-center">
-            <Button extraStyles="mr-5">რეგისტრაცია</Button>
-          </Link>
+          <a
+            href="https://docs.google.com/forms/d/e/1FAIpQLSfyXSZCZCGhCAHQV4Zn1AAuJxeb4Yll3Acs8EwkndGDmQTAZA/viewform?fbclid=IwAR1OVyQbCE_wBL2xDTIMfwI30o03Oc1eCdhRBSlvwEF6u4N48O2bzV88YAw"
+            className="flex items-center"
+            target="_blank"
+          >
+            <Button extraStyles="mr-5">შემოგვიერთდი</Button>
+          </a>
           <a href="https://www.facebook.com/studiolingo" target="_blank">
             <Image
               src="/facebook-green.svg"
@@ -50,6 +54,14 @@ function Header() {
             <Image
               src="/linkedin-green.svg"
               alt="linkedin-green"
+              width={50}
+              height={50}
+            />
+          </a>
+          <a href="https://www.youtube.com/@studio_lingo" target="_blank">
+            <Image
+              src="/youtube-green.svg"
+              alt="youtube-green"
               width={50}
               height={50}
             />
