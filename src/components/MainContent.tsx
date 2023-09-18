@@ -2,6 +2,7 @@ import Corporate from "./Corporate/Corporate";
 import PartnersBanner from "./Corporate/PartnersBanner";
 import Courses from "./Courses/Courses";
 import MainBanner from "./MainBanner";
+import Team from "./Team/Team";
 
 function MainContent() {
   return (
@@ -11,6 +12,7 @@ function MainContent() {
       </div>
       <Courses />
       <Corporate />
+      <Team />
     </div>
   );
 }

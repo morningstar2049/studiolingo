@@ -1,4 +1,3 @@
-import ImageWrapper from "../ImageWrapper";
 import Image from "next/image";
 import CorporateCoursesAccordion from "./CorporateCoursesAccordion";
 import CorporateCoursesList from "./CorporateCoursesList";

@@ -57,7 +57,7 @@ function PartnersSliderCarousel() {
       {
         breakpoint: 1024,
         settings: {
-          dots: true,
+          dots: false,
           infinite: true,
           speed: 500,
           autoplay: true,
