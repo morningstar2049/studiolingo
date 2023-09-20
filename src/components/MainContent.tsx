@@ -2,6 +2,7 @@ import Corporate from "./Corporate/Corporate";
 import PartnersBanner from "./Corporate/PartnersBanner";
 import Courses from "./Courses/Courses";
 import MainBanner from "./MainBanner";
+import Reviews from "./Reviews/Reviews";
 import Team from "./Team/Team";
 
 function MainContent() {
@@ -13,6 +14,7 @@ function MainContent() {
       <Courses />
       <Corporate />
       <Team />
+      <Reviews />
     </div>
   );
 }
