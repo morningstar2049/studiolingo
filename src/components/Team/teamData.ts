@@ -25,7 +25,7 @@ export const team: Team[] = [
 
   {
     videoUrl:
-      "https://www.youtube.com/watch?v=Y8R96IJjs4I&ab_channel=StudioLingo",
+      "https://www.youtube.com/watch?v=eF6gPICV_Yo&ab_channel=StudioLingo",
     src: "/teacher-3.png",
     alt: "teacher3",
     fill: true,
