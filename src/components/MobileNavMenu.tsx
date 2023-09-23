@@ -15,7 +15,7 @@ export default function MobileNavMenu() {
     { name: "კორპორაციული", href: "#corporate" },
     { name: "ჩვენი გუნდი", href: "#team" },
     { name: "შეფასებები", href: "#reviews" },
-    { name: "კარიერა", href: "#careers" },
+    { name: "კარიერა", href: "#career" },
     { name: "კონტაქტი", href: "#contact" },
     {
       name: "შემოგვიერთდი",

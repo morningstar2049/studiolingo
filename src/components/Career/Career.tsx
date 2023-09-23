@@ -3,7 +3,7 @@ import Button from "../Button";
 
 function Career() {
   return (
-    <div className="flex flex-col justify-center gap-10 mt-20">
+    <div id="career" className="flex flex-col justify-center gap-10 mt-20">
       <h1
         style={{ fontFeatureSettings: "'case' on" }}
         className="mx-auto mb-10 text-2xl font-bold text-lingo-green sm:text-3xl"
