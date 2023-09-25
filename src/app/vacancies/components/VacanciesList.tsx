@@ -7,36 +7,42 @@ const vacancies: VacanciesListItemProps[] = [
     location: "თბილისი",
     time: "ნახევარი",
     salary: "კონკურენტული",
+    route: "englishTeacher",
   },
   {
     position: "გერმანულის მასწავლებელი",
     location: "თბილისი",
     time: "ნახევარი",
     salary: "კონკურენტული",
+    route: "germanTeacher",
   },
   {
     position: "ჩინურის მასწავლებელი",
     location: "თბილისი",
     time: "ნახევარი",
     salary: "კონკურენტული",
+    route: "chineseTeacher",
   },
   {
     position: "რუსულის მასწავლებელი",
     location: "თბილისი",
     time: "ნახევარი",
     salary: "კონკურენტული",
+    route: "russianTeacher",
   },
   {
     position: "კონტენტ კრეატორი",
     location: "თბილისი",
     time: "ნახევარი",
     salary: "კონკურენტული",
+    route: "contentCreator",
   },
   {
     position: "ადმინისტრატორი",
     location: "თბილისი",
     time: "ნახევარი",
     salary: "კონკურენტული",
+    route: "administrator",
   },
 ];
 
@@ -50,6 +56,7 @@ function VacanciesList() {
           location={vacancy.location}
           time={vacancy.time}
           salary={vacancy.salary}
+          route={vacancy.route}
         />
       ))}
     </div>
