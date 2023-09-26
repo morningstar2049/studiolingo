@@ -1,4 +1,5 @@
 import Career from "./Career/Career";
+import Contact from "./Contact/Contact";
 import Corporate from "./Corporate/Corporate";
 import PartnersBanner from "./Corporate/PartnersBanner";
 import Courses from "./Courses/Courses";
@@ -17,6 +18,7 @@ function MainContent() {
       <Team />
       <Reviews />
       <Career />
+      <Contact />
     </div>
   );
 }
