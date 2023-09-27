@@ -2,7 +2,6 @@
 import { GiHamburgerMenu } from "react-icons/gi";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import Image from "next/image";
-import Link from "next/link";
 import Button from "./Button";
 import HeaderLogo from "./HeaderLogo";
 import { useContext } from "react";
@@ -14,7 +13,7 @@ function Header() {
   return (
     <>
       <header className="hidden animate-appear bg-[#fff] h-[110px] sm:flex justify-evenly items-center shadow-md">
-        <HeaderLogo />
+        <HeaderLogo height={150} width={150} />
         <div className="flex justify-end w-1/2 gap-3">
           <a
             href="https://docs.google.com/forms/d/e/1FAIpQLSfyXSZCZCGhCAHQV4Zn1AAuJxeb4Yll3Acs8EwkndGDmQTAZA/viewform?fbclid=IwAR1OVyQbCE_wBL2xDTIMfwI30o03Oc1eCdhRBSlvwEF6u4N48O2bzV88YAw"
@@ -70,7 +69,7 @@ function Header() {
       </header>
       <header className="flex items-center justify-between px-10 shadow-md bg-[#fffffe] h-11 sm:hidden py-11">
         <div className="flex items-center justify-between w-full animate-appear sm:hidden">
-          <Image
+          {/* <Image
             onClick={() => {
               window.scrollTo(0, 0);
             }}
@@ -78,7 +77,8 @@ function Header() {
             alt="lingo-logo"
             width={120}
             height={120}
-          />
+          /> */}
+          <HeaderLogo height={120} width={120} />
           {!isOpen ? (
             <GiHamburgerMenu
               color="#2f9e4d"

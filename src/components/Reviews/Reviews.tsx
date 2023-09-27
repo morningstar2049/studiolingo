@@ -4,7 +4,7 @@ function Reviews() {
   return (
     <div
       id="reviews"
-      className="flex flex-col mt-[200px] scroll-m-[100px] sm:scroll-m-[200px]"
+      className="flex flex-col mt-[200px] scroll-m-[150px] sm:scroll-m-[200px]"
     >
       <h1
         style={{ fontFeatureSettings: "'case' on" }}
