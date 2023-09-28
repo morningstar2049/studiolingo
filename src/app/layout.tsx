@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "Studio Lingo",
   description: "Step into the new world",
   icons: {
-    icon: "/lingo-favicon.png",
+    icon: "/favicon.png",
   },
 };
 
@@ -45,7 +45,7 @@ export default function RootLayout({
   return (
     <>
       <Head>
-        <meta property="og:image" content="iliko.png" />
+        <meta property="og:image" content="/iliko.png" />
       </Head>
       <html lang="en" className={`${firago.variable} font-sans scroll-smooth`}>
         <body className="">

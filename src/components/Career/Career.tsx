@@ -5,7 +5,7 @@ function Career() {
   return (
     <div
       id="career"
-      className="flex flex-col justify-center gap-10 mt-20 scroll-m-[230px]"
+      className="flex flex-col justify-center gap-10 mt-20 scroll-m-[170px]"
     >
       <h1
         style={{ fontFeatureSettings: "'case' on" }}
