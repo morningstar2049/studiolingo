@@ -22,7 +22,9 @@ function Career() {
         allowFullScreen
       ></iframe>
       <Link href={"/vacancies"} className="flex justify-center">
-        <Button extraStyles="px-10">იხილეთ ვაკანსიები</Button>
+        <Button extraStyles="px-10 md:py-3 md:text-xl">
+          იხილეთ ვაკანსიები
+        </Button>
       </Link>
     </div>
   );

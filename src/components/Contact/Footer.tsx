@@ -5,7 +5,7 @@ function Footer() {
   return (
     <footer
       id="contact"
-      className="bg-lingo-black mt-20 grid grid-flow-row md:grid-flow-col place-items-center text-[#fff] text-base md:text-lg py-5"
+      className="bg-lingo-black mt-20 grid grid-flow-row md:grid-flow-col place-items-center text-[#fff] text-base md:text-lg py-5 h-[300px] lg:h-[240px]"
     >
       <p>© Studio Lingo - All rights reserved</p>
       <ImageWrapper
