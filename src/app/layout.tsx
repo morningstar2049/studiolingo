@@ -45,7 +45,19 @@ export default function RootLayout({
   return (
     <>
       <Head>
-        <meta property="og:image" content="/iliko.png" />
+        <meta itemProp="name" content="Studio Lingo" />
+        <meta itemProp="description" content="Step into the new world" />
+        <meta
+          itemProp="image"
+          content="https://metatags.io/images/meta-tags.png"
+        />
+        <meta
+          property="og:image"
+          content="https://metatags.io/images/meta-tags.png"
+        />
+        <meta property="og:image:width" content="300" />
+        <meta property="og:image:height" content="400" />
+        <meta property="og:image:alt" content="Studio Lingo" />
       </Head>
       <html lang="en" className={`${firago.variable} font-sans scroll-smooth`}>
         <body className="">
