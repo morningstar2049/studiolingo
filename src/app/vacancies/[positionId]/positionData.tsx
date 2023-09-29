@@ -9,6 +9,7 @@ type TPosition = {
   time: string;
   salaryType: string;
   googleFormLink: string;
+  metaImageUrl: string;
 };
 
 type TPositionData = {
@@ -77,6 +78,7 @@ export const positionData: TPositionData = {
     time: "ნახევარი",
     salaryType: "კონკურენტული",
     googleFormLink: "https://forms.gle/ZfJecL1KtjVWrX117",
+    metaImageUrl: "https://i.ibb.co/y5nVfrB/ger.png",
   },
   englishTeacher: {
     title: "ინგლისურის მასწავლებელი",
@@ -134,6 +136,7 @@ export const positionData: TPositionData = {
     time: "ნახევარი",
     salaryType: "კონკურენტული",
     googleFormLink: "https://forms.gle/KnmQ195et7hcYwYa8",
+    metaImageUrl: "https://i.ibb.co/gSSWFgt/eng.png",
   },
   russianTeacher: {
     title: "რუსულის მასწავლებელი",
@@ -191,6 +194,7 @@ export const positionData: TPositionData = {
     time: "ნახევარი",
     salaryType: "კონკურენტული",
     googleFormLink: "https://forms.gle/dXH4wyVBkR16aLyr7",
+    metaImageUrl: "https://i.ibb.co/S0Bk7vd/rus.png",
   },
 
   chineseTeacher: {
@@ -249,6 +253,7 @@ export const positionData: TPositionData = {
     time: "ნახევარი",
     salaryType: "კონკურენტული",
     googleFormLink: "https://forms.gle/j91uKUvSba3VJ7DD6",
+    metaImageUrl: "https://i.ibb.co/K9qNFxR/chi.png",
   },
 
   contentCreator: {
@@ -299,6 +304,7 @@ export const positionData: TPositionData = {
     time: "ნახევარი",
     salaryType: "კონკურენტული",
     googleFormLink: "https://forms.gle/qTVPZUeTDtcwWjQj9",
+    metaImageUrl: "https://i.ibb.co/7XR82K7/con.png",
   },
 
   administrator: {
@@ -341,5 +347,6 @@ export const positionData: TPositionData = {
     time: "ნახევარი",
     salaryType: "კონკურენტული",
     googleFormLink: "https://forms.gle/sNGvDbdSdDoi7oXA9",
+    metaImageUrl: "https://i.ibb.co/dBf0MSG/admin.png",
   },
 };
