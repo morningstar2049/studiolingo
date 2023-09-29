@@ -9,9 +9,12 @@ import MobileNavMenu from "@/components/MobileNavMenu";
 
 export const metadata: Metadata = {
   title: "Studio Lingo",
-  description: "Step into the new world",
+  description: "შეაბიჯე ახალ სამყაროში",
   icons: {
     icon: "/favicon.png",
+  },
+  openGraph: {
+    images: ["https://i.ibb.co/f8s59ww/page-Thumbnail.png"],
   },
 };
 
@@ -44,9 +47,6 @@ export default function RootLayout({
 }) {
   return (
     <>
-      <Head>
-        <meta property="og:image" content="/iliko.png" />
-      </Head>
       <html lang="en" className={`${firago.variable} font-sans scroll-smooth`}>
         <body className="">
           <MobileMenuContextProvider>
