@@ -10,9 +10,12 @@ import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "Studio Lingo",
-  description: "Step into the new world",
+  description: "შეაბიჯე ახალ სამყაროში",
   icons: {
     icon: "/favicon.png",
+  },
+  openGraph: {
+    images: ["https://i.ibb.co/f8s59ww/page-Thumbnail.png"],
   },
 };
 

@@ -27,13 +27,7 @@ export default function MobileNavMenu() {
             href: "https://docs.google.com/forms/d/e/1FAIpQLSfyXSZCZCGhCAHQV4Zn1AAuJxeb4Yll3Acs8EwkndGDmQTAZA/viewform?fbclid=IwAR1OVyQbCE_wBL2xDTIMfwI30o03Oc1eCdhRBSlvwEF6u4N48O2bzV88YAw",
           },
         ]
-      : [
-          { name: "მთავარი გვერდი", href: "/" },
-          {
-            name: "შემოგვიერთდი",
-            href: "https://docs.google.com/forms/d/e/1FAIpQLSfyXSZCZCGhCAHQV4Zn1AAuJxeb4Yll3Acs8EwkndGDmQTAZA/viewform?fbclid=IwAR1OVyQbCE_wBL2xDTIMfwI30o03Oc1eCdhRBSlvwEF6u4N48O2bzV88YAw",
-          },
-        ];
+      : [{ name: "მთავარი გვერდი", href: "/" }];
 
   return (
     <>
