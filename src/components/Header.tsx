@@ -6,9 +6,11 @@ import Button from "./Button";
 import HeaderLogo from "./HeaderLogo";
 import { useContext } from "react";
 import { MobileMenuContext } from "@/Context/MobileMenuContext";
+import { usePathname } from "next/navigation";
 
 function Header() {
   const { isOpen, handleOpen, handleClose } = useContext(MobileMenuContext);
+  const pathname = usePathname();
 
   return (
     <>
@@ -20,7 +22,9 @@ function Header() {
             className="flex items-center"
             target="_blank"
           >
-            <Button extraStyles="mr-5">შემოგვიერთდი</Button>
+            {pathname === "/" && (
+              <Button extraStyles="mr-5">შემოგვიერთდი</Button>
+            )}
           </a>
           <a href="https://www.facebook.com/studiolingo" target="_blank">
             <Image
@@ -69,15 +73,6 @@ function Header() {
       </header>
       <header className="flex items-center justify-between px-10 shadow-md bg-[#fffffe] h-11 sm:hidden py-11">
         <div className="flex items-center justify-between w-full animate-appear sm:hidden">
-          {/* <Image
-            onClick={() => {
-              window.scrollTo(0, 0);
-            }}
-            src="/lingo-logo-svg.svg"
-            alt="lingo-logo"
-            width={120}
-            height={120}
-          /> */}
           <HeaderLogo height={120} width={120} />
           {!isOpen ? (
             <GiHamburgerMenu
