@@ -113,9 +113,19 @@ export const team: Team[] = [
     extraStyles: "h-[300px] lg:h-[500px]",
   },
   {
-    videoUrl: "",
+    videoUrl:
+      "https://www.youtube.com/watch?v=4nDRyA-TtDY&ab_channel=StudioLingo",
     src: "/teacher-13.png",
     alt: "teacher13",
+    fill: true,
+    objectFit: "contain",
+    extraStyles: "h-[300px] lg:h-[500px]",
+  },
+  {
+    videoUrl:
+      "https://www.youtube.com/watch?v=U6gU7a_TWIs&ab_channel=StudioLingo",
+    src: "/teacher-14.png",
+    alt: "teacher14",
     fill: true,
     objectFit: "contain",
     extraStyles: "h-[300px] lg:h-[500px]",
