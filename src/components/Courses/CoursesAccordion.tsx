@@ -16,9 +16,9 @@ export default function CoursesAccordion() {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <p className="text-[#fff] rounded-md bg-lingo-green p-2 font-bold w-[120px] text-center">
-            ინგლისური
-          </p>
+          <h1 className="text-[#fff] rounded-md bg-lingo-green p-2 font-bold w-[205px] text-center">
+            ინგლისურის კურსები
+          </h1>
         </AccordionSummary>
         <AccordionDetails>
           <CourseDetails courseTitle="english" />
@@ -30,9 +30,9 @@ export default function CoursesAccordion() {
           aria-controls="panel2a-content"
           id="panel2a-header"
         >
-          <p className="text-[#fff] rounded-md bg-lingo-green p-2 font-bold w-[120px] text-center">
-            გერმანული
-          </p>
+          <h1 className="text-[#fff] rounded-md bg-lingo-green p-2 font-bold w-[205px] text-center">
+            გერმანულის კურსები
+          </h1>
         </AccordionSummary>
         <AccordionDetails>
           <CourseDetails courseTitle="german" />
@@ -44,9 +44,9 @@ export default function CoursesAccordion() {
           aria-controls="panel3a-content"
           id="panel3a-header"
         >
-          <p className="text-[#fff] rounded-md bg-lingo-green p-2 font-bold w-[120px] text-center">
-            რუსული
-          </p>
+          <h1 className="text-[#fff] rounded-md bg-lingo-green p-2 font-bold w-[205px] text-center">
+            რუსულის კურსები
+          </h1>
         </AccordionSummary>
         <AccordionDetails>
           <CourseDetails courseTitle="russian" />
@@ -58,9 +58,9 @@ export default function CoursesAccordion() {
           aria-controls="panel3a-content"
           id="panel3a-header"
         >
-          <p className="text-[#fff] rounded-md bg-lingo-green p-2 font-bold w-[120px] text-center">
-            ჩინური
-          </p>
+          <h1 className="text-[#fff] rounded-md bg-lingo-green p-2 font-bold w-[205px] text-center">
+            ჩინურის კურსები
+          </h1>
         </AccordionSummary>
         <AccordionDetails>
           <CourseDetails courseTitle="chinese" />
