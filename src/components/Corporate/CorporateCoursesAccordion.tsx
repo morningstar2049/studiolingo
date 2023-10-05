@@ -4,10 +4,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Button from "../Button";
 function CorporateCoursesAccordion() {
   return (
-    <div
-      //   style={{ fontFeatureSettings: "'case' on" }}
-      className="p-3 sm:p-0 sm:w-[48%]"
-    >
+    <div className="p-3 sm:p-0 sm:w-[48%]">
       <Accordion className="p-2 shadow-none">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon sx={{ color: "#2f9e4d" }} />}
@@ -35,7 +32,7 @@ function CorporateCoursesAccordion() {
           <br />
           <br />
           <a
-            href="https://docs.google.com/forms/d/e/1FAIpQLSfeNR6hwsJibqzcgUX_vggOqTqu36G1QUegCWLosX1Vm4g86g/viewform?fbclid=IwAR0mbIZMwE6QNKCUBJfZm_zdme22_mQZs62uhgwgitQPee9O5-JCL-0d99Y"
+            href="https://docs.google.com/forms/d/e/1FAIpQLSdnC-n4UDzM2mqdtvbK9KxgXK0oTqf6bSMuNkY8YlhMaHpk2Q/viewform"
             target="_blank"
           >
             <Button extraStyles="w-full m-auto">შემოგვიერთდი</Button>
@@ -69,7 +66,7 @@ function CorporateCoursesAccordion() {
           <br />
           <br />
           <a
-            href="https://docs.google.com/forms/d/e/1FAIpQLSfeNR6hwsJibqzcgUX_vggOqTqu36G1QUegCWLosX1Vm4g86g/viewform?fbclid=IwAR0mbIZMwE6QNKCUBJfZm_zdme22_mQZs62uhgwgitQPee9O5-JCL-0d99Y"
+            href="https://docs.google.com/forms/d/e/1FAIpQLSdnC-n4UDzM2mqdtvbK9KxgXK0oTqf6bSMuNkY8YlhMaHpk2Q/viewform"
             target="_blank"
           >
             <Button extraStyles="w-full m-auto">შემოგვიერთდი</Button>
