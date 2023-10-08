@@ -79,6 +79,10 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
           </ul>
         </div>
       )}
+      <p>
+        თუ ხარ მოტივირებული და ამ ვაკანსიით დაინტერესებული, შემოგვიერთდი ჩვენს
+        გუნდში და გახდი ჩვენი გუნდის წარმატების ისტორიის განუყოფელი ნაწილი!
+      </p>
       <a href={position.googleFormLink} target="_blank">
         <Button>განაცხადის გაგზავნა</Button>
       </a>
