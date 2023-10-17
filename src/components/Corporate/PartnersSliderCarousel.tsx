@@ -6,6 +6,13 @@ import ImageWrapper, { TImageWrapperProps } from "../ImageWrapper";
 
 const partners: TImageWrapperProps[] = [
   {
+    src: "/redix.png",
+    alt: "redix",
+    fill: true,
+    objectFit: "contain",
+    extraStyles: "h-[150px]",
+  },
+  {
     src: "/ants.png",
     alt: "ants",
     fill: true,
