@@ -2,7 +2,6 @@ import { BiTimeFive, BiWallet } from "react-icons/bi";
 import { positionData } from "../positionData";
 import { IoLocationOutline } from "react-icons/io5";
 import Button from "@/components/Button";
-import Link from "next/link";
 
 export type TPositionKey =
   | "englishTeacher"
