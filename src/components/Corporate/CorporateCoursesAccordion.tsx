@@ -11,7 +11,7 @@ const courseData = [
     business:
       " კურსის განმავლობაში გაივლით ინგლისურად არაერთ თემას, როგორებიცაა:ფინანსები და ბუღალტერია, მარკეტინგი, ადამიანური რესურსები(HR), ბიზნეს სამართალი, ლოჯისტიკა.",
     syllabusUrl:
-      "https://docs.google.com/document/d/1FjS25q9cRhJZ14XZ149VGtMMCOT-hLQWaRSEV8j8p4I/edit?fbclid=IwAR2sLPjvhRfhvr07X2dTRw9HiZlLn4tYGl0OHQIZrW8pQx_tiiEP2AIv7fg#heading=h.y286pqovbf7j",
+      "https://docs.google.com/forms/d/e/1FAIpQLSdnC-n4UDzM2mqdtvbK9KxgXK0oTqf6bSMuNkY8YlhMaHpk2Q/viewform",
   },
   {
     lang: "რუსული",
@@ -20,7 +20,7 @@ const courseData = [
     business:
       "კურსის განმავლობაში რუსულად ისწავლით არაერთ თემას: ორგანიზაციას, გაყიდვებს, ბაზარს, კლიენტებთან მომსახურებას, საქმიან შეხვედრებს და სხვა.",
     syllabusUrl:
-      "https://docs.google.com/document/d/1-vaGSU7Eoxx2EdyaNPTPr-0LHZTPp1_5yBpycxNXvLg/edit?fbclid=IwAR2vZIUlmocDkFPEoNqQuzHC9g6SdI2ot0Kns4jcce4z8hmwr3yESLHzQag#heading=h.34c4msje6vt3",
+      "https://docs.google.com/forms/d/e/1FAIpQLSdnC-n4UDzM2mqdtvbK9KxgXK0oTqf6bSMuNkY8YlhMaHpk2Q/viewform",
   },
 ];
 
