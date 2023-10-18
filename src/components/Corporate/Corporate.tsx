@@ -1,7 +1,6 @@
 import Image from "next/image";
 import CorporateCoursesAccordion from "./CorporateCoursesAccordion";
 import PartnersBanner from "./PartnersBanner";
-import CorporateVideo from "./CorporateVideo";
 
 function Corporate() {
   return (
@@ -21,7 +20,6 @@ function Corporate() {
           />
         </div>
       </div>
-      <CorporateVideo />
     </div>
   );
 }
