@@ -14,8 +14,7 @@ export const team: Team[] = [
     extraStyles: "h-[300px] lg:h-[500px]",
   },
   {
-    videoUrl:
-      "https://www.youtube.com/watch?v=cK394Z1jTWw&ab_channel=StudioLingo",
+    videoUrl: "https://www.youtube.com/shorts/YP1CfSXW2pE",
     src: "/teacher-2.png",
     alt: "teacher2",
     fill: true,
@@ -34,8 +33,7 @@ export const team: Team[] = [
   },
 
   {
-    videoUrl:
-      "https://www.youtube.com/watch?v=ysyPp_tnmV0&ab_channel=StudioLingo",
+    videoUrl: "https://www.youtube.com/shorts/bSn2iFihpk8",
     src: "/teacher-4.png",
     alt: "teacher4",
     fill: true,
@@ -43,8 +41,7 @@ export const team: Team[] = [
     extraStyles: "h-[300px] lg:h-[500px]",
   },
   {
-    videoUrl:
-      "https://www.youtube.com/watch?v=yPx9G-nvOo8&ab_channel=StudioLingo",
+    videoUrl: "https://www.youtube.com/shorts/5wSEMrIiauo",
     src: "/teacher-5.png",
     alt: "teacher5",
     fill: true,
@@ -52,8 +49,7 @@ export const team: Team[] = [
     extraStyles: "h-[300px] lg:h-[500px]",
   },
   {
-    videoUrl:
-      "https://www.youtube.com/watch?v=lnHJ-s6qMX0&ab_channel=StudioLingo",
+    videoUrl: "https://www.youtube.com/shorts/vaXVV0tu99Q",
     src: "/teacher-6.png",
     alt: "teacher6",
     fill: true,
@@ -69,8 +65,7 @@ export const team: Team[] = [
     extraStyles: "h-[300px] lg:h-[500px]",
   },
   {
-    videoUrl:
-      "https://www.youtube.com/watch?v=ezOU9YWXCyY&ab_channel=StudioLingo",
+    videoUrl: "https://www.youtube.com/shorts/rW3Srpsh6m0",
     src: "/teacher-8.png",
     alt: "teacher8",
     fill: true,
@@ -78,8 +73,7 @@ export const team: Team[] = [
     extraStyles: "h-[300px] lg:h-[500px]",
   },
   {
-    videoUrl:
-      "https://www.youtube.com/watch?v=fWfWFLtx1wA&ab_channel=StudioLingo",
+    videoUrl: "https://www.youtube.com/shorts/Dn-7pWFT8n8",
     src: "/teacher-9.png",
     alt: "teacher9",
     fill: true,
@@ -95,8 +89,7 @@ export const team: Team[] = [
     extraStyles: "h-[300px] lg:h-[500px]",
   },
   {
-    videoUrl:
-      "https://www.youtube.com/watch?v=kotN7-0Wpr0&ab_channel=StudioLingo",
+    videoUrl: "https://www.youtube.com/shorts/HPSIxvR-J2o",
     src: "/teacher-11.png",
     alt: "teacher11",
     fill: true,
