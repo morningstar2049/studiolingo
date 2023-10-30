@@ -73,8 +73,7 @@ export const team: Team[] = [
     extraStyles: "h-[300px] lg:h-[500px]",
   },
   {
-    videoUrl:
-      "https://www.youtube.com/watch?v=fWfWFLtx1wA&ab_channel=StudioLingo",
+    videoUrl: "https://www.youtube.com/shorts/Dn-7pWFT8n8",
     src: "/teacher-9.png",
     alt: "teacher9",
     fill: true,
@@ -90,8 +89,7 @@ export const team: Team[] = [
     extraStyles: "h-[300px] lg:h-[500px]",
   },
   {
-    videoUrl:
-      "https://www.youtube.com/watch?v=kotN7-0Wpr0&ab_channel=StudioLingo",
+    videoUrl: "https://www.youtube.com/shorts/HPSIxvR-J2o",
     src: "/teacher-11.png",
     alt: "teacher11",
     fill: true,
