@@ -33,7 +33,7 @@ export const team: Team[] = [
   },
 
   {
-    videoUrl: "https://www.youtube.com/shorts/bSn2iFihpk8",
+    videoUrl: "https://www.youtube.com/shorts/eoxGPakshQ0",
     src: "/teacher-4.png",
     alt: "teacher4",
     fill: true,
