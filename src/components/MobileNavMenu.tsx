@@ -7,7 +7,6 @@ import Button from "./Button";
 import { usePathname } from "next/navigation";
 
 export default function MobileNavMenu() {
-  // ! Tailwind classes need to be hardcoded, computed values don't work.
   const { isOpen, handleClose } = useContext(MobileMenuContext);
   const translateClass = isOpen ? `translate-x-[0%]` : "translate-x-[101%]";
   const pathname = usePathname();

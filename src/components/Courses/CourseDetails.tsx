@@ -18,11 +18,7 @@ export default function CourseDetails(props: CourseDetailsProps) {
 
   return (
     <div className="flex flex-col gap-5">
-      {(props.courseTitle === "german" || props.courseTitle === "chinese") && (
-        <strong className="text-lingo-green">
-          კურსის ხანგრძლივობა - 4 თვე
-        </strong>
-      )}
+      <strong className="text-lingo-green">კურსის ხანგრძლივობა - 4 თვე</strong>
       {(props.courseTitle === "english" || props.courseTitle === "russian") && (
         <section>
           <CourseRadioInput
@@ -54,11 +50,17 @@ export default function CourseDetails(props: CourseDetailsProps) {
         />
       </section>
       <p>
-        {props.courseTitle === "german" || props.courseTitle === "chinese"
-          ? "კურსის სრული ღირებულება : "
-          : "ფასი თვიურად :"}{" "}
-        <strong>{price} ლარი</strong>
+        კურსის სრული ღირებულება : <strong>{price} ლარი</strong>
       </p>
+      <section className="flex flex-col gap-2">
+        <h1 className="font-bold text-lingo-green">გადახდის მეთოდები :</h1>
+        <ul className="px-5 list-decimal">
+          <li>
+            წინასწარ ერთიანად - <strong>10%</strong> ფასდაკლება
+          </li>
+          <li>ორ ნაწილად</li>
+        </ul>
+      </section>
     </div>
   );
 }
