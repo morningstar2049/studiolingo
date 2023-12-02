@@ -1,8 +1,10 @@
 "use client";
 
+import { HTMLProps } from "react";
+
 type ButtonProps = {
   children: React.ReactNode;
-  extraStyles?: string;
+  extraStyles?: React.ComponentProps<"div">["className"];
   onClick?: () => void;
 };
 

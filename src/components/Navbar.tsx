@@ -26,7 +26,7 @@ function Navbar() {
       name: "ჩვენი გუნდი",
       href: "#team",
     },
-    { name: "კარიერა", href: "#career" },
+    { name: "კარიერა", href: "/career" },
     { name: "მასალები", href: "/materials" },
     { name: "ენის ტესტი", href: "/language-test" },
     { name: "კონტაქტი", href: "#contact" },

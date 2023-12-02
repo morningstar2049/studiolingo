@@ -22,7 +22,7 @@ function Header() {
             className="flex items-center"
             target="_blank"
           >
-            {pathname === "/" && (
+            {pathname !== "/career" && (
               <Button extraStyles="mr-5">შემოგვიერთდი</Button>
             )}
           </a>
