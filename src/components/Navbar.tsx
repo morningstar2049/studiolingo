@@ -1,15 +1,33 @@
 "use client";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+import NavItem from "./NavItem";
+
+type HRef = `#${string}` | `/${string}`;
+
+export type TNavItem = {
+  name: string;
+  href?: HRef;
+  menuItems?: Omit<TNavItem, "menuItems">[];
+};
 
 function Navbar() {
   const pathname = usePathname();
-  const navItems = [
-    { name: "კურსები", href: "#courses" },
-    { name: "კორპორაციული", href: "#corporate" },
-    { name: "ჩვენი გუნდი", href: "#team" },
-    { name: "შეფასებები", href: "#reviews" },
+
+  const navItems: TNavItem[] = [
+    {
+      name: "კურსები",
+      menuItems: [
+        { name: "სტანდარტული კურსები", href: "#courses" },
+        { name: "კურსები კომპანიებისთვის", href: "#corporate" },
+        { name: "შეფასებები", href: "#reviews" },
+      ],
+    },
+    {
+      name: "ჩვენს შესახებ",
+      menuItems: [{ name: "ჩვენი გუნდი", href: "#team" }],
+    },
     { name: "კარიერა", href: "#career" },
+    { name: "მასალები", href: "/materials" },
     { name: "კონტაქტი", href: "#contact" },
   ];
 
@@ -23,11 +41,12 @@ function Navbar() {
       >
         <div className="hidden animate-appear sm:flex sm:max-lg:justify-around lg:justify-evenly sm:max-lg:w-full lg:w-[83%]">
           {navItems.map((item) => (
-            <Link href={item.href} key={item.name}>
-              <div className="cursor-pointer p-1 rounded hover:text-lingo-green hover:bg-[#fff] transition-all">
-                {item.name}
-              </div>
-            </Link>
+            <NavItem
+              key={item.name}
+              name={item.name}
+              href={item.href}
+              menuItems={item.menuItems}
+            />
           ))}
         </div>
       </nav>
