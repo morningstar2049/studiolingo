@@ -23,11 +23,12 @@ function Navbar() {
       ],
     },
     {
-      name: "ჩვენს შესახებ",
-      menuItems: [{ name: "ჩვენი გუნდი", href: "#team" }],
+      name: "ჩვენი გუნდი",
+      href: "#team",
     },
     { name: "კარიერა", href: "#career" },
     { name: "მასალები", href: "/materials" },
+    { name: "ენის ტესტი", href: "/language-test" },
     { name: "კონტაქტი", href: "#contact" },
   ];
 
