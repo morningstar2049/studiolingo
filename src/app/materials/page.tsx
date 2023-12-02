@@ -1,5 +1,7 @@
-import React from "react";
-import PdfWrapper from "./components/PdfWrapper";
+import dynamic from "next/dynamic";
+const PdfWrapper = dynamic(() => import("./components/PdfWrapper"), {
+  ssr: false,
+});
 
 const pdfs = [
   "/pdfs/eng_a1_compressed.pdf",
