@@ -50,7 +50,7 @@ export default function CourseDetails(props: CourseDetailsProps) {
         />
       </section>
       <p>
-        კურსის სრული ღირებულება : <strong>{price} ლარი</strong>
+        კურსის სრული ღირებულება : <strong>{price} ლარი (4 თვის)</strong>
       </p>
       <section className="flex flex-col gap-2">
         <h1 className="font-bold text-lingo-green">გადახდის მეთოდები :</h1>
