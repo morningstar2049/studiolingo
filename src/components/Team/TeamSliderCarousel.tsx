@@ -39,10 +39,17 @@ function TeamSliderCarousel() {
         {team.map((teamMember) =>
           teamMember.videoUrl ? (
             <a key={teamMember.alt} href={teamMember.videoUrl} target="_blank">
-              <ImageWrapper {...teamMember} />
+              <ImageWrapper
+                {...teamMember}
+                extraStyles="h-[300px] lg:h-[400px]"
+              />
             </a>
           ) : (
-            <ImageWrapper key={teamMember.alt} {...teamMember} />
+            <ImageWrapper
+              key={teamMember.alt}
+              {...teamMember}
+              extraStyles="h-[300px] lg:h-[400px]"
+            />
           )
         )}
       </Slider>

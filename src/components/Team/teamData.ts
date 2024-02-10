@@ -11,7 +11,6 @@ export const team: Team[] = [
     alt: "teacher1",
     fill: true,
     objectFit: "contain",
-    extraStyles: "h-[300px] lg:h-[500px]",
   },
   {
     videoUrl: "https://www.youtube.com/shorts/YP1CfSXW2pE",
@@ -19,7 +18,6 @@ export const team: Team[] = [
     alt: "teacher2",
     fill: true,
     objectFit: "contain",
-    extraStyles: "h-[300px] lg:h-[500px]",
   },
 
   {
@@ -29,7 +27,6 @@ export const team: Team[] = [
     alt: "teacher3",
     fill: true,
     objectFit: "contain",
-    extraStyles: "h-[300px] lg:h-[500px]",
   },
 
   {
@@ -38,7 +35,6 @@ export const team: Team[] = [
     alt: "teacher4",
     fill: true,
     objectFit: "contain",
-    extraStyles: "h-[300px] lg:h-[500px]",
   },
   {
     videoUrl: "https://www.youtube.com/shorts/5wSEMrIiauo",
@@ -46,7 +42,6 @@ export const team: Team[] = [
     alt: "teacher5",
     fill: true,
     objectFit: "contain",
-    extraStyles: "h-[300px] lg:h-[500px]",
   },
   {
     videoUrl: "https://www.youtube.com/shorts/vaXVV0tu99Q",
@@ -54,7 +49,6 @@ export const team: Team[] = [
     alt: "teacher6",
     fill: true,
     objectFit: "contain",
-    extraStyles: "h-[300px] lg:h-[500px]",
   },
   {
     videoUrl: "https://www.youtube.com/shorts/zpsfc4bdiok",
@@ -62,7 +56,6 @@ export const team: Team[] = [
     alt: "teacher7",
     fill: true,
     objectFit: "contain",
-    extraStyles: "h-[300px] lg:h-[500px]",
   },
   {
     videoUrl: "https://www.youtube.com/shorts/rW3Srpsh6m0",
@@ -70,7 +63,6 @@ export const team: Team[] = [
     alt: "teacher8",
     fill: true,
     objectFit: "contain",
-    extraStyles: "h-[300px] lg:h-[500px]",
   },
   {
     videoUrl: "https://www.youtube.com/shorts/Dn-7pWFT8n8",
@@ -78,7 +70,6 @@ export const team: Team[] = [
     alt: "teacher9",
     fill: true,
     objectFit: "contain",
-    extraStyles: "h-[300px] lg:h-[500px]",
   },
   {
     videoUrl: "https://www.youtube.com/shorts/8BxdV3L5mOk",
@@ -86,7 +77,6 @@ export const team: Team[] = [
     alt: "teacher10",
     fill: true,
     objectFit: "contain",
-    extraStyles: "h-[300px] lg:h-[500px]",
   },
   {
     videoUrl: "https://www.youtube.com/shorts/HPSIxvR-J2o",
@@ -94,16 +84,6 @@ export const team: Team[] = [
     alt: "teacher11",
     fill: true,
     objectFit: "contain",
-    extraStyles: "h-[300px] lg:h-[500px]",
-  },
-  {
-    videoUrl:
-      "https://www.youtube.com/watch?v=50Wo3vhv2uk&ab_channel=StudioLingo",
-    src: "/teacher-12.png",
-    alt: "teacher12",
-    fill: true,
-    objectFit: "contain",
-    extraStyles: "h-[300px] lg:h-[500px]",
   },
   {
     videoUrl:
@@ -112,7 +92,6 @@ export const team: Team[] = [
     alt: "teacher13",
     fill: true,
     objectFit: "contain",
-    extraStyles: "h-[300px] lg:h-[500px]",
   },
   {
     videoUrl:
@@ -121,6 +100,5 @@ export const team: Team[] = [
     alt: "teacher14",
     fill: true,
     objectFit: "contain",
-    extraStyles: "h-[300px] lg:h-[500px]",
   },
 ];

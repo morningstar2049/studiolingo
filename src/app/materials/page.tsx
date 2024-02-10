@@ -1,11 +1,11 @@
 import PdfWrapper from "./components/PdfWrapper";
 
-type TPdfs = {
+type TPdf = {
   thumbnail: string;
   href: string;
-}[];
+};
 
-const pdfs: TPdfs = [
+const pdfs: TPdf[] = [
   {
     thumbnail: "/pdfs/eng_a1.png",
     href: "https://drive.google.com/file/d/1wWRINP-AA2xEYW9ef-kSQ0mtHRkb9-FE/view?usp=drive_link",
@@ -13,6 +13,10 @@ const pdfs: TPdfs = [
   {
     thumbnail: "/pdfs/eng_a2.png",
     href: "https://drive.google.com/file/d/1jmshg9mW6-eWZ9RQEvGIF7CbOVcTy3x6/view?usp=sharing",
+  },
+  {
+    thumbnail: "/pdfs/eng_b1.jpg",
+    href: "https://drive.google.com/file/d/1kerJ41-C_ZNUVO59UA7TJ4eOwI66ISsn/view",
   },
   {
     thumbnail: "/pdfs/ger_a1.png",
