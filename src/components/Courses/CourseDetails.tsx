@@ -58,7 +58,7 @@ export default function CourseDetails(props: CourseDetailsProps) {
           <li>
             წინასწარ ერთიანად - <strong>10%</strong> ფასდაკლება
           </li>
-          <li>ორ ნაწილად</li>
+          <li>{props.courseTitle === "chinese" ? "სამ" : "ორ"} ნაწილად</li>
         </ul>
       </section>
     </div>
