@@ -8,19 +8,19 @@ type TPdf = {
 const pdfs: TPdf[] = [
   {
     thumbnail: "/pdfs/eng_a1.png",
-    href: "https://drive.google.com/file/d/1wWRINP-AA2xEYW9ef-kSQ0mtHRkb9-FE/view?usp=drive_link",
+    href: "https://drive.google.com/file/d/1-fYP1WTP7lfRVKswN7df_PU7NArfdiom/view",
   },
   {
     thumbnail: "/pdfs/eng_a2.png",
-    href: "https://drive.google.com/file/d/1jmshg9mW6-eWZ9RQEvGIF7CbOVcTy3x6/view?usp=sharing",
+    href: "https://drive.google.com/file/d/1n-6rNEGx_7YYJsXohjKByEmMNrqHdWyL/view",
   },
   {
-    thumbnail: "/pdfs/eng_b1.jpg",
-    href: "https://drive.google.com/file/d/1kerJ41-C_ZNUVO59UA7TJ4eOwI66ISsn/view",
+    thumbnail: "/pdfs/eng_b1.png",
+    href: "https://drive.google.com/file/d/1WcJYwJmA3i1g_Wlf-Zc_ogpLEMxsiknk/view",
   },
   {
     thumbnail: "/pdfs/ger_a1.png",
-    href: "https://drive.google.com/file/d/1LcGDZ5kRR8jRMekgWggMN0aKWD9y_XSx/view?usp=sharing",
+    href: "https://drive.google.com/file/d/1PPF-n0CiwGMV28rLra4zUbuPlHZo2ZaC/view",
   },
 ];
 
