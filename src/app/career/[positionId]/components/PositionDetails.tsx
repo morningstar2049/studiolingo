@@ -6,7 +6,6 @@ import Button from "@/components/Button";
 export type TPositionKey =
   | "englishTeacher"
   | "germanTeacher"
-  | "russianTeacher"
   | "chineseTeacher"
   | "contentCreator"
   | "administrator";
