@@ -24,13 +24,6 @@ const vacancies: VacanciesListItemProps[] = [
     route: "chineseTeacher",
   },
   {
-    position: "რუსულის მასწავლებელი",
-    location: "თბილისი",
-    time: "ნახევარი",
-    salary: "კონკურენტული",
-    route: "russianTeacher",
-  },
-  {
     position: "კონტენტ კრეატორი",
     location: "თბილისი",
     time: "ნახევარი",

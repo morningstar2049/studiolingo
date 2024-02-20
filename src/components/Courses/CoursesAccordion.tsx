@@ -45,20 +45,6 @@ export default function CoursesAccordion() {
           id="panel3a-header"
         >
           <h1 className="text-[#fff] rounded-md bg-lingo-green p-2 font-bold w-[205px] text-center">
-            რუსულის კურსები
-          </h1>
-        </AccordionSummary>
-        <AccordionDetails>
-          <CourseDetails courseTitle="russian" />
-        </AccordionDetails>
-      </Accordion>
-      <Accordion className="p-3 shadow-none">
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon sx={{ color: "#2f9e4d" }} />}
-          aria-controls="panel3a-content"
-          id="panel3a-header"
-        >
-          <h1 className="text-[#fff] rounded-md bg-lingo-green p-2 font-bold w-[205px] text-center">
             ჩინურის კურსები
           </h1>
         </AccordionSummary>

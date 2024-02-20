@@ -1,11 +1,10 @@
 "use client";
-
 import { useState } from "react";
 import useCalculatePrice from "@/hooks/useCalculatePrice";
 import CourseRadioInput from "./CourseRadioInput";
 
 type CourseDetailsProps = {
-  courseTitle: "english" | "german" | "russian" | "chinese";
+  courseTitle: "english" | "german" | "chinese";
 };
 
 export default function CourseDetails(props: CourseDetailsProps) {
@@ -19,7 +18,7 @@ export default function CourseDetails(props: CourseDetailsProps) {
   return (
     <div className="flex flex-col gap-5">
       <strong className="text-lingo-green">კურსის ხანგრძლივობა - 4 თვე</strong>
-      {(props.courseTitle === "english" || props.courseTitle === "russian") && (
+      {props.courseTitle === "english" && (
         <section>
           <CourseRadioInput
             title="კურსის ტიპი"
