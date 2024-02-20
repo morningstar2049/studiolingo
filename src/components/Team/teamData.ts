@@ -93,12 +93,4 @@ export const team: Team[] = [
     fill: true,
     objectFit: "contain",
   },
-  {
-    videoUrl:
-      "https://www.youtube.com/watch?v=U6gU7a_TWIs&ab_channel=StudioLingo",
-    src: "/teacher-14.png",
-    alt: "teacher14",
-    fill: true,
-    objectFit: "contain",
-  },
 ];

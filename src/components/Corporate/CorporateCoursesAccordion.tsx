@@ -13,15 +13,6 @@ const courseData = [
     syllabusUrl:
       "https://docs.google.com/document/d/1FjS25q9cRhJZ14XZ149VGtMMCOT-hLQWaRSEV8j8p4I/edit?fbclid=IwAR2sLPjvhRfhvr07X2dTRw9HiZlLn4tYGl0OHQIZrW8pQx_tiiEP2AIv7fg#heading=h.y286pqovbf7j",
   },
-  {
-    lang: "რუსული",
-    general:
-      "კურსის განმავლობაში ისწავლით ბუნერბრივად საუბარს, უცხოელი პარტნიორების თავისუფლად გაგებას, დახვეწილი ენით წერას და გამართულად წაკითხვას.",
-    business:
-      "კურსის განმავლობაში რუსულად ისწავლით არაერთ თემას: ორგანიზაციას, გაყიდვებს, ბაზარს, კლიენტებთან მომსახურებას, საქმიან შეხვედრებს და სხვა.",
-    syllabusUrl:
-      "https://docs.google.com/document/d/1-vaGSU7Eoxx2EdyaNPTPr-0LHZTPp1_5yBpycxNXvLg/edit?fbclid=IwAR2vZIUlmocDkFPEoNqQuzHC9g6SdI2ot0Kns4jcce4z8hmwr3yESLHzQag#heading=h.34c4msje6vt3",
-  },
 ];
 
 function CorporateCoursesAccordion() {
