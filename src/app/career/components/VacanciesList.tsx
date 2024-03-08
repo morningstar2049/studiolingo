@@ -1,4 +1,3 @@
-import React from "react";
 import VacanciesListItem, { VacanciesListItemProps } from "./VacanciesListItem";
 
 const vacancies: VacanciesListItemProps[] = [
@@ -36,6 +35,13 @@ const vacancies: VacanciesListItemProps[] = [
     time: "ნახევარი",
     salary: "კონკურენტული",
     route: "administrator",
+  },
+  {
+    position: "რეპორტიორი",
+    location: "თბილისი",
+    time: "კვირაში 3-6 სთ",
+    salary: "კონკურენტული",
+    route: "reporter",
   },
 ];
 

@@ -18,6 +18,10 @@ export default function CourseDetails(props: CourseDetailsProps) {
   return (
     <div className="flex flex-col gap-5">
       <strong className="text-lingo-green">კურსის ხანგრძლივობა - 4 თვე</strong>
+      <strong className="text-lingo-black">
+        გაკვეთილის ხანგრძლივობა - 1 სთ 30 წთ{" "}
+        {props.courseTitle === "chinese" && "(ჯგუფური 2 სთ-მდე)"}
+      </strong>
       {props.courseTitle === "english" && (
         <section>
           <CourseRadioInput

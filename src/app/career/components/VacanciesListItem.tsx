@@ -4,7 +4,7 @@ import { IoLocationOutline } from "react-icons/io5";
 
 export type VacanciesListItemProps = {
   position: string;
-  time: "სრული" | "ნახევარი";
+  time: string;
   location: string;
   salary: string;
   route: string;
