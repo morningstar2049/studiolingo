@@ -18,7 +18,7 @@ function VacanciesListItem({
   route,
 }: VacanciesListItemProps) {
   return (
-    <div className="bg-[whitesmoke] lg:w-[70%] w-full flex flex-col gap-8 lg:gap-0 items-center p-5 rounded-lg shadow-md lg:flex-row lg:shadow-lg justify-evenly lg:justify-around">
+    <div className="bg-[whitesmoke] lg:w-[70%] w-full flex flex-col gap-8 lg:gap-10 items-center p-5 rounded-lg shadow-md lg:flex-row lg:shadow-lg justify-evenly">
       <Link
         className="font-bold p-2 sm:w-[25%] w-[95%] rounded-lg text-base text-center bg-lingo-green text-[#fff]"
         href={`/career/${route}`}

@@ -8,7 +8,8 @@ export type TPositionKey =
   | "germanTeacher"
   | "chineseTeacher"
   | "contentCreator"
-  | "administrator";
+  | "administrator"
+  | "reporter";
 
 type TPositionDetailsProps = {
   positionKey: TPositionKey;
@@ -77,7 +78,9 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
           </ul>
         </div>
       )}
-      {positionKey === "contentCreator" || positionKey === "administrator" ? (
+      {positionKey === "contentCreator" ||
+      positionKey === "administrator" ||
+      positionKey === "reporter" ? (
         <p>
           თუ ხარ მოტივირებული და ამ ვაკანსიით დაინტერესებული, შემოგვიერთდი ჩვენს
           გუნდში და გახდი ჩვენი გუნდის წარმატების ისტორიის განუყოფელი ნაწილი!
