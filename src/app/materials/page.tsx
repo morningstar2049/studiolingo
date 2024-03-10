@@ -20,7 +20,7 @@ const pdfs: TPdf[] = [
   },
   {
     thumbnail: "/pdfs/ger_a1.png",
-    href: "https://drive.google.com/file/d/1PPF-n0CiwGMV28rLra4zUbuPlHZo2ZaC/view",
+    href: "https://drive.google.com/file/d/1iifwjn5oWE2arrdoFOywNB1Xg_HQsus5/view?fbclid=IwAR36bWX9h7tYaBx1SjNBB0iHQJf4dE_ZWcuVxK0WFaY8ncplt-l-v44tuA0",
   },
 ];
 
