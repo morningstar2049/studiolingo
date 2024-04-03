@@ -17,7 +17,11 @@ export default function CourseDetails(props: CourseDetailsProps) {
 
   return (
     <div className="flex flex-col gap-5">
-      <strong className="text-lingo-green">კურსის ხანგრძლივობა - 4 თვე</strong>
+      {props.courseTitle !== "chinese" && (
+        <strong className="text-lingo-green">
+          კურსის ხანგრძლივობა - 4 თვე
+        </strong>
+      )}
       <strong className="text-lingo-black">
         გაკვეთილის ხანგრძლივობა - 1 სთ 30 წთ{" "}
         {props.courseTitle === "chinese" && "(ჯგუფური 2 სთ-მდე)"}
@@ -53,15 +57,30 @@ export default function CourseDetails(props: CourseDetailsProps) {
         />
       </section>
       <p>
-        კურსის სრული ღირებულება : <strong>{price} ლარი (4 თვის)</strong>
+        კურსის სრული ღირებულება :{" "}
+        <strong>
+          {price} ლარი{" "}
+          {props.courseTitle === "chinese" ? "(ყოველ თვე)" : "(4 თვის)"}
+        </strong>
       </p>
       <section className="flex flex-col gap-2">
         <h1 className="font-bold text-lingo-green">გადახდის მეთოდები :</h1>
         <ul className="px-5 list-decimal">
-          <li>
-            წინასწარ ერთიანად - <strong>10%</strong> ფასდაკლება
-          </li>
-          <li>{props.courseTitle === "chinese" ? "სამ" : "ორ"} ნაწილად</li>
+          {props.courseTitle === "chinese" ? (
+            <>
+              <li>ყოველ თვე წინასწარ</li>
+              <li>
+                4 თვის ერთად წინასწარ - <strong>10%</strong> ფასდაკლება
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
+                წინასწარ ერთიანად - <strong>10%</strong> ფასდაკლება
+              </li>
+              <li>ორ ნაწილად</li>
+            </>
+          )}
         </ul>
       </section>
     </div>

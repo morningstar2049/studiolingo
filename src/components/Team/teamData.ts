@@ -93,4 +93,11 @@ export const team: Team[] = [
     fill: true,
     objectFit: "contain",
   },
+  {
+    videoUrl: "https://www.youtube.com/shorts/HKRrq8RzbuU",
+    src: "/teacher-15.png",
+    alt: "teacher15",
+    fill: true,
+    objectFit: "contain",
+  },
 ];
