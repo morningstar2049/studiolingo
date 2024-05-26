@@ -57,10 +57,12 @@ export default function CourseDetails(props: CourseDetailsProps) {
         />
       </section>
       <p>
-        კურსის სრული ღირებულება :{" "}
         <strong>
-          {price} ლარი{" "}
-          {props.courseTitle === "chinese" ? "(ყოველ თვე)" : "(4 თვის)"}
+          {price
+            ? price +
+              " ლარი " +
+              (props.courseTitle === "chinese" ? "(ყოველ თვე)" : "(4 თვის)")
+            : "ფასის სანახავად მონიშნეთ სასურველი ვარიანტები სამივე კატეგორიიდან"}
         </strong>
       </p>
       <section className="flex flex-col gap-2">

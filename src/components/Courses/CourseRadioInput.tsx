@@ -57,6 +57,7 @@ export default function CourseRadioInput(props: CourseRadioInputProps) {
             sx={{
               fontFamily: "'FiraGO', sans-serif",
               px: 2,
+              py: 1,
               alignItems: "center",
               color: () => (choice === item ? "white" : "black"),
               // fontWeight: () => (choice === item ? "bold" : "400"),

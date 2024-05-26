@@ -19,6 +19,10 @@ const pdfs: TPdf[] = [
     href: "https://drive.google.com/file/d/1WcJYwJmA3i1g_Wlf-Zc_ogpLEMxsiknk/view",
   },
   {
+    thumbnail: "/pdfs/eng_b2.png",
+    href: "https://drive.google.com/file/d/1q7bGMOKIKxfADeJsoWxrjh1MepwBtua1/view",
+  },
+  {
     thumbnail: "/pdfs/ger_a1.png",
     href: "https://drive.google.com/file/d/1iifwjn5oWE2arrdoFOywNB1Xg_HQsus5/view?fbclid=IwAR36bWX9h7tYaBx1SjNBB0iHQJf4dE_ZWcuVxK0WFaY8ncplt-l-v44tuA0",
   },
