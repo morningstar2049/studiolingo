@@ -26,11 +26,15 @@ const pdfs: TPdf[] = [
     thumbnail: "/pdfs/ger_a1.png",
     href: "https://drive.google.com/file/d/1iifwjn5oWE2arrdoFOywNB1Xg_HQsus5/view?fbclid=IwAR36bWX9h7tYaBx1SjNBB0iHQJf4dE_ZWcuVxK0WFaY8ncplt-l-v44tuA0",
   },
+  {
+    thumbnail: "/pdfs/ger_a2.png",
+    href: "https://drive.google.com/file/d/18dhkRESCew0u3NgFhIM-49czWc64mvGb/view",
+  },
 ];
 
 function MaterialsPage() {
   return (
-    <div className="flex flex-col items-center w-full sm:flex-row justify-evenly">
+    <div className="flex flex-col flex-wrap items-center w-full sm:flex-row justify-evenly">
       {pdfs.map((pdf) => (
         <PdfWrapper
           key={pdf.thumbnail}
