@@ -18,7 +18,7 @@ const vacancies: VacanciesListItemProps[] = [
   {
     position: "კონტენტ კრეატორი",
     location: "თბილისი",
-    time: "ნახევარი",
+    time: "სრული",
     salary: "კონკურენტული",
     route: "contentCreator",
   },

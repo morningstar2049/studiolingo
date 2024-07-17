@@ -46,6 +46,12 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
         </ul>
       </div>
       <p>{position.extraText}</p>
+      {position.workHours ? <div>
+        <h2 className="text-xl font-bold text-lingo-green">
+          სამუშაო გრაფიკი:
+        </h2>
+        <p className="py-5">{position.workHours}</p>
+      </div> : null}
       <div>
         <h2 className="text-xl font-bold text-lingo-green">
           თქვენგან ვითხოვთ, რომ:
@@ -70,11 +76,12 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
       {positionKey === "contentCreator" && (
         <div>
           <h2 className="text-xl font-bold text-lingo-green">
-            შერჩევა არის ორეტაპიანი:
+            შერჩევა არის სამეტაპიანი:
           </h2>
           <ul className="p-5 list-disc">
-            <li>რეზიუმეების გადარჩევა</li>
-            <li>გასაუბრება და პრაქტიკული დავალება.</li>
+            <li>შევსებული ფორმების გადარჩევა</li>
+            <li>პრაქტიკული დავალების შესრულება</li>
+            <li>ონლაინ გასაუბრება.</li>
           </ul>
         </div>
       )}
