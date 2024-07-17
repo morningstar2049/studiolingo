@@ -312,7 +312,7 @@ export const positionData: TPositionData = {
     time: "სრული",
     salaryType: "კონკურენტული",
     googleFormLink: "https://forms.gle/qTVPZUeTDtcwWjQj9",
-    metaImageUrl: "https://i.ibb.co/7XR82K7/con.png",
+    metaImageUrl: "https://i.ibb.co/4W6ShbN/desktop-vacancy-cover.png",
   },
 
   administrator: {
