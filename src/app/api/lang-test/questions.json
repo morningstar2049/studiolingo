@@ -1,0 +1,30 @@
+{
+  "levelTest": [
+    {
+      "id": 1,
+      "question": "The Joy UI Button behaves similarly to the native HTML <button>, so it wraps around the text displayed on its surface.",
+      "choices": [
+        "The demo below shows the three basic states available to the Button: default, disabled, and loading.",
+        "I am good, thank you!",
+        "I am fine",
+        "Pashol Naxui"
+      ],
+      "answer": 3,
+      "level": "A1"
+    },
+    {
+      "id": 2,
+      "question": "What are you doing?",
+      "choices": ["Nothing", "Playing video games!", "Working", "Cyka Blyad"],
+      "answer": 2,
+      "level": "A1"
+    },
+    {
+      "id": 3,
+      "question": "What's the weather like in Tbilisi?",
+      "choices": ["Good", "Shit!", "Meh", "Fantastic"],
+      "answer": 1,
+      "level": "A1"
+    }
+  ]
+}
