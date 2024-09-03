@@ -45,11 +45,11 @@ export default function CoursesAccordion() {
           id="panel3a-header"
         >
           <h1 className="text-[#fff] rounded-md bg-lingo-green p-2 font-bold w-[205px] text-center">
-            ჩინურის კურსები
+            ინგლისური მოზარდებისთვის
           </h1>
         </AccordionSummary>
         <AccordionDetails>
-          <CourseDetails courseTitle="chinese" />
+          <CourseDetails courseTitle="englishForTeens" />
         </AccordionDetails>
       </Accordion>
     </div>

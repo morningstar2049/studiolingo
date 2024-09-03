@@ -4,13 +4,13 @@ import useCalculatePrice from "@/hooks/useCalculatePrice";
 import CourseRadioInput from "./CourseRadioInput";
 
 type CourseDetailsProps = {
-  courseTitle: "english" | "german" | "chinese";
+  courseTitle: "english" | "german" | "englishForTeens";
 };
 
 const courseDescriptions: {
   english: JSX.Element;
   german: JSX.Element;
-  chinese: JSX.Element;
+  englishForTeens: JSX.Element;
 } = {
   english: (
     <div style={{ fontFeatureSettings: "normal" }}>
@@ -132,7 +132,67 @@ const courseDescriptions: {
       </p>
     </div>
   ),
-  chinese: <></>,
+  englishForTeens: (
+    <div style={{ fontFeatureSettings: "normal" }}>
+      <p>
+        ინგლისური ენის კურსი ითვალისწინებს პრაქტიკულ და ინტერაქციულ მუშაობას
+        სკოლის მოსწავლეებთან ჯგუფურად - მასწავლებელი მუდმივად კონცენტრირდება
+        გრამატიკულ წესებზე, მდიდარი ლექსიკის შესწავლასა და მათ სწორ
+        გამოყენებაზე.
+      </p>
+      <br />
+      <p>
+        გაკვეთილები ტარდება ინტერაქტიული და შემოქმედებითი{" "}
+        <span className="text-lingo-green font-bold">მიდგომებით</span> ,რაც
+        მოზარდებისთვის მოტივაციის ზრდას და ნასწავლის პრაქტიკაში გამოყენებას
+        უზრუნველყოფს.
+      </p>
+      <br />
+      <p>
+        კურსის განმავლობაში მოსწავლეები გამოიყენებენ{" "}
+        <span className="text-lingo-green font-bold">
+          სუპერ თანამედროვე მასალებს
+        </span>{" "}
+        ,რომლებიც მოიცავს სკოლის მოსწავლეებისთვის განკუთვნილ წიგნებს დონეების
+        მიხედვით; აუდიო და ვიდეო მასალებს; სასწავლო ონლაინ პლატფორმას, რომელსაც
+        მასწავლებელთან ერთად გამოიყენებენ; სპეციალურ ვიდეო თამაშებს ინგლისური
+        ენის გასაუმჯობესებლად.
+      </p>
+      <br />
+      <p>
+        რაც მთავარია, ჩვენი მასალების{" "}
+        <span className="text-lingo-green font-bold">სავარჯიშოები</span>{" "}
+        განკუთვნილია როლური თამაშების, დისკუსიებისა და ჯგუფური პროექტებისთვისაც.
+        ანუ, თქვენ გექნებათ გარანტია, რომ თქვენი შილი მაქსიმალურად იქნება
+        ჩართული ამა თუ იმ განმავითარებელ ინგლისურენოვან აქტივობაში.
+      </p>
+      <br />
+      <p>
+        დიდი ყურადღება ექცევა{" "}
+        <span className="text-lingo-green font-bold">
+          განვლილი მასალის გამეორება
+        </span>
+        საც, რისთვისაც ვატარებთ შემაჯამებელ გაკვეთილებს.
+      </p>
+      <br />
+      <p>
+        ამასთან, კურსი ქმნის მოსწავლეებისთვის მეგობრულ, მხარდაჭერილ და, რაც
+        მთავარია, სწავლის მიმართ მომთხოვნ{" "}
+        <span className="text-lingo-green font-bold">გარემოს</span>, სადაც ისინი
+        შეძლებენ ენის სწავლის პროცესში წინსვლასა და საკუთარი თავის განვითარებას.
+      </p>
+      <br />
+      <p>
+        1 ჯგუფური გაკვეთილი გრძელდება 90 წთ-მდე და ერთი სრული კურსი მოიცავს 4
+        თვეს და ვასწავლით დონეებს სრულიად ნულიდან მოწინავე დონის ჩათვლით
+        (A1-B2). კურსი განკუთვნილია{" "}
+        <span className="text-lingo-green font-bold">
+          10-დან 16 წლამდე მოზარდები
+        </span>
+        სთვის
+      </p>
+    </div>
+  ),
 };
 
 export default function CourseDetails(props: CourseDetailsProps) {
@@ -146,14 +206,13 @@ export default function CourseDetails(props: CourseDetailsProps) {
   return (
     <div className="flex flex-col gap-5">
       {courseDescriptions[props.courseTitle]}
-      {props.courseTitle !== "chinese" && (
+      {props.courseTitle !== "englishForTeens" && (
         <strong className="text-lingo-green">
           კურსის ხანგრძლივობა - 4 თვე
         </strong>
       )}
       <strong className="text-lingo-black">
-        გაკვეთილის ხანგრძლივობა - 1 სთ 30 წთ{" "}
-        {props.courseTitle === "chinese" && "(ჯგუფური 2 სთ-მდე)"}
+        გაკვეთილის ხანგრძლივობა - 1 სთ 30 წთ
       </strong>
       {props.courseTitle === "english" && (
         <section>
@@ -169,14 +228,16 @@ export default function CourseDetails(props: CourseDetailsProps) {
           />
         </section>
       )}
-      <section>
-        <CourseRadioInput
-          title="გაკვეთილის ტიპი"
-          choices={["ინდივიდუალური", "ჯგუფური"]}
-          selectedItems={selectedItems}
-          setSelectedItems={setSelectedItems}
-        />
-      </section>
+      {props.courseTitle !== "englishForTeens" && (
+        <section>
+          <CourseRadioInput
+            title="გაკვეთილის ტიპი"
+            choices={["ინდივიდუალური", "ჯგუფური"]}
+            selectedItems={selectedItems}
+            setSelectedItems={setSelectedItems}
+          />
+        </section>
+      )}
       <section>
         <CourseRadioInput
           title="გაკვეთილის სიხშირე"
@@ -190,14 +251,16 @@ export default function CourseDetails(props: CourseDetailsProps) {
           {price
             ? price +
               " ლარი " +
-              (props.courseTitle === "chinese" ? "(ყოველ თვე)" : "(4 თვის)")
+              (props.courseTitle === "englishForTeens"
+                ? "(ყოველ თვე)"
+                : "(4 თვის)")
             : "ფასის სანახავად მონიშნეთ სასურველი ვარიანტები სამივე კატეგორიიდან"}
         </strong>
       </p>
       <section className="flex flex-col gap-2">
         <h1 className="font-bold text-lingo-green">გადახდის მეთოდები :</h1>
         <ul className="px-5 list-decimal">
-          {props.courseTitle === "chinese" ? (
+          {props.courseTitle === "englishForTeens" ? (
             <>
               <li>ყოველ თვე წინასწარ</li>
               <li>

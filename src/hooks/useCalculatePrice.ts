@@ -13,10 +13,8 @@ const prices = {
   "russian-ინდივიდუალური-კვირაში 3-ჯერ": 1280,
   "russian-ჯგუფური-კვირაში 2-ჯერ": 600,
   "russian-ჯგუფური-კვირაში 3-ჯერ": 800,
-  "chinese-ინდივიდუალური-კვირაში 2-ჯერ": 340,
-  "chinese-ინდივიდუალური-კვირაში 3-ჯერ": 490,
-  "chinese-ჯგუფური-კვირაში 2-ჯერ": 230,
-  "chinese-ჯგუფური-კვირაში 3-ჯერ": 290,
+  "englishForTeens-კვირაში 2-ჯერ": 680,
+  "englishForTeens-კვირაში 3-ჯერ": 840,
 };
 
 function useCalculatePrice(
@@ -26,19 +24,13 @@ function useCalculatePrice(
     "გაკვეთილის სიხშირე": string;
   }
 ) {
-  const [price, setPrice] = useState(0);
-
   const lang = courseTitle;
   const type = selectedItems["გაკვეთილის ტიპი"];
   const frequency = selectedItems["გაკვეთილის სიხშირე"];
 
-  useEffect(() => {
-    // @ts-ignore
-    setPrice(prices[[lang, type, frequency].join("-")] || 0);
-  }, [frequency, lang, type]);
-
   return {
-    price,
+    // @ts-ignore
+    price: prices[[lang, type, frequency].filter(Boolean).join("-")] || 0,
   };
 }
 
