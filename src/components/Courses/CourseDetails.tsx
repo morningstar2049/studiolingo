@@ -249,32 +249,17 @@ export default function CourseDetails(props: CourseDetailsProps) {
       <p>
         <strong>
           {price
-            ? price +
-              " ლარი " +
-              (props.courseTitle === "englishForTeens"
-                ? "(ყოველ თვე)"
-                : "(4 თვის)")
+            ? price + " ლარი " + "(4 თვის)"
             : "ფასის სანახავად მონიშნეთ სასურველი ვარიანტები სამივე კატეგორიიდან"}
         </strong>
       </p>
       <section className="flex flex-col gap-2">
         <h1 className="font-bold text-lingo-green">გადახდის მეთოდები :</h1>
         <ul className="px-5 list-decimal">
-          {props.courseTitle === "englishForTeens" ? (
-            <>
-              <li>ყოველ თვე წინასწარ</li>
-              <li>
-                4 თვის ერთად წინასწარ - <strong>10%</strong> ფასდაკლება
-              </li>
-            </>
-          ) : (
-            <>
-              <li>
-                წინასწარ ერთიანად - <strong>10%</strong> ფასდაკლება
-              </li>
-              <li>ორ ნაწილად</li>
-            </>
-          )}
+          <li>
+            წინასწარ ერთიანად - <strong>10%</strong> ფასდაკლება
+          </li>
+          <li>ორ ნაწილად</li>
         </ul>
       </section>
     </div>
