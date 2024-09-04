@@ -17,7 +17,7 @@ function Header() {
       <header className="hidden animate-appear bg-[#fff] h-[110px] sm:flex justify-evenly items-center shadow-md">
         <HeaderLogo height={150} width={150} />
         <div className="flex justify-end w-1/2 gap-3">
-          <a
+          {/* <a
             href="https://docs.google.com/forms/d/e/1FAIpQLSfyXSZCZCGhCAHQV4Zn1AAuJxeb4Yll3Acs8EwkndGDmQTAZA/viewform?fbclid=IwAR1OVyQbCE_wBL2xDTIMfwI30o03Oc1eCdhRBSlvwEF6u4N48O2bzV88YAw"
             className="flex items-center"
             target="_blank"
@@ -25,7 +25,7 @@ function Header() {
             {!pathname.includes("career") && (
               <Button extraStyles="mr-5">შემოგვიერთდი</Button>
             )}
-          </a>
+          </a> */}
           <a href="https://www.facebook.com/studiolingo" target="_blank">
             <Image
               src="/facebook-green.svg"

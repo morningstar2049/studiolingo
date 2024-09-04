@@ -2,9 +2,19 @@
 import { useState } from "react";
 import useCalculatePrice from "@/hooks/useCalculatePrice";
 import CourseRadioInput from "./CourseRadioInput";
+import Button from "../Button";
 
 type CourseDetailsProps = {
   courseTitle: "english" | "german" | "englishForTeens";
+};
+
+const courseUrls: { [key in CourseDetailsProps["courseTitle"]]: string } = {
+  english:
+    "https://docs.google.com/forms/d/e/1FAIpQLSfyXSZCZCGhCAHQV4Zn1AAuJxeb4Yll3Acs8EwkndGDmQTAZA/viewform?fbclid=IwAR1OVyQbCE_wBL2xDTIMfwI30o03Oc1eCdhRBSlvwEF6u4N48O2bzV88YAw",
+  german:
+    "https://docs.google.com/forms/d/e/1FAIpQLSfyXSZCZCGhCAHQV4Zn1AAuJxeb4Yll3Acs8EwkndGDmQTAZA/viewform?fbclid=IwAR1OVyQbCE_wBL2xDTIMfwI30o03Oc1eCdhRBSlvwEF6u4N48O2bzV88YAw",
+  englishForTeens:
+    "https://docs.google.com/forms/d/e/1FAIpQLScWvfV_Xb5WxrzScAnxtJLjPbh23kFIkywyj6TSmaHp9udZVA/viewform",
 };
 
 const courseDescriptions: {
@@ -214,6 +224,9 @@ export default function CourseDetails(props: CourseDetailsProps) {
       <strong className="text-lingo-black">
         გაკვეთილის ხანგრძლივობა - 1 სთ 30 წთ
       </strong>
+      {props.courseTitle === "englishForTeens" && (
+        <strong className="text-lingo-black">ჯგუფში 3 ან 4 მოსწავლე</strong>
+      )}
       {props.courseTitle === "english" && (
         <section>
           <CourseRadioInput
@@ -262,6 +275,9 @@ export default function CourseDetails(props: CourseDetailsProps) {
           <li>ორ ნაწილად</li>
         </ul>
       </section>
+      <a href={courseUrls[props.courseTitle]} target="_blank">
+        <Button extraStyles="w-full lg:w-[50%]">შემოგვიერთდი</Button>
+      </a>
     </div>
   );
 }

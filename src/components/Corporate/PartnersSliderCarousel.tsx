@@ -1,7 +1,7 @@
 "use client";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Slider from "react-slick";
+import Slider, { Settings } from "react-slick";
 import ImageWrapper, { TImageWrapperProps } from "../ImageWrapper";
 
 const partners: TImageWrapperProps[] = [
@@ -50,16 +50,15 @@ const partners: TImageWrapperProps[] = [
 ];
 
 function PartnersSliderCarousel() {
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    autoplay: true,
-    autoplaySpeed: 1000,
-    cssEase: "linear",
+  const settings: Settings = {
     slidesToShow: 4,
     slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 0,
+    speed: 2000,
     arrows: false,
+    cssEase: "linear",
+    dots: false,
     responsive: [
       {
         breakpoint: 1024,

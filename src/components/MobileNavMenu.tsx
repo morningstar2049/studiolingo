@@ -27,11 +27,6 @@ export default function MobileNavMenu() {
     { name: "მასალები", href: "/materials" },
     { name: "ენის ტესტი", href: "/language-test" },
     { name: "კონტაქტი", href: "/#contact" },
-    {
-      name: "შემოგვიერთდი",
-      // @ts-ignore
-      href: "https://docs.google.com/forms/d/e/1FAIpQLSfyXSZCZCGhCAHQV4Zn1AAuJxeb4Yll3Acs8EwkndGDmQTAZA/viewform?fbclid=IwAR1OVyQbCE_wBL2xDTIMfwI30o03Oc1eCdhRBSlvwEF6u4N48O2bzV88YAw",
-    },
   ];
 
   return (
