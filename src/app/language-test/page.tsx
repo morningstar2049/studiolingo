@@ -5,7 +5,7 @@ async function page() {
   const { levelTest }: TLevelTest = await response.json();
 
   return (
-    <div className="p-5 w-full flex items-center justify-center h-[calc(100vh-110px)]">
+    <div className="p-4 w-full flex items-center justify-center h-[calc(100vh-110px)]">
       <LevelTest levelTest={levelTest} />
     </div>
   );
