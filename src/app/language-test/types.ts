@@ -4,10 +4,16 @@ type TQuestion = {
   id: number;
   question: string;
   choices: string[];
-  answer: number;
+  answer: string;
   level: TLevel;
+  audioFile: string | null;
 };
 
 type TLevelTest = {
   levelTest: TQuestion[];
+};
+
+type TSubmittedAnswer = {
+  answer: string | null;
+  level: TLevel | null;
 };
