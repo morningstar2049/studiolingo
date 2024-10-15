@@ -8,15 +8,15 @@ type TPdf = {
 const pdfs: TPdf[] = [
   {
     thumbnail: "/pdfs/eng_a1.png",
-    href: "https://drive.google.com/file/d/1-fYP1WTP7lfRVKswN7df_PU7NArfdiom/view",
+    href: "https://drive.google.com/file/d/12nWuMyYxmgfS_PBVBYkpi5ZsCv7wTBGz/view?usp=sharing",
   },
   {
     thumbnail: "/pdfs/eng_a2.png",
-    href: "https://drive.google.com/file/d/1n-6rNEGx_7YYJsXohjKByEmMNrqHdWyL/view",
+    href: "https://drive.google.com/file/d/1tFq8G-J1hhkKcSLRgDzdMIs1dJJK1AvV/view?usp=sharing",
   },
   {
     thumbnail: "/pdfs/eng_b1.png",
-    href: "https://drive.google.com/file/d/1WcJYwJmA3i1g_Wlf-Zc_ogpLEMxsiknk/view",
+    href: "https://drive.google.com/file/d/1YblNrPN-xk87tVdKOx2D7f_nlMLFPrgx/view?usp=sharing",
   },
   {
     thumbnail: "/pdfs/eng_b2.png",
@@ -24,11 +24,11 @@ const pdfs: TPdf[] = [
   },
   {
     thumbnail: "/pdfs/ger_a1.png",
-    href: "https://drive.google.com/file/d/1iifwjn5oWE2arrdoFOywNB1Xg_HQsus5/view?fbclid=IwAR36bWX9h7tYaBx1SjNBB0iHQJf4dE_ZWcuVxK0WFaY8ncplt-l-v44tuA0",
+    href: "https://drive.google.com/file/d/1LTYWBANlV0BSIQr0zaoYi15FE3Brxb9X/view?usp=sharing",
   },
   {
     thumbnail: "/pdfs/ger_a2.png",
-    href: "https://drive.google.com/file/d/18dhkRESCew0u3NgFhIM-49czWc64mvGb/view",
+    href: "https://drive.google.com/file/d/1GNWZjGuF239dW9Rcr1uFnEzz-uqvjwGx/view?usp=sharing",
   },
 ];
 
