@@ -9,29 +9,61 @@ import Button from "@mui/joy/Button";
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-const submittedAnswers: TSubmittedAnswer[] = [];
 const questionTimer = 40;
 let intervalId: NodeJS.Timer | undefined;
+const incorrectAnswersCounter: TIncorrectAnswersCounter = [];
+let level: TLevel;
 
 function LevelTest({ levelTest }: TLevelTest) {
-  console.log(submittedAnswers, "answers");
+  console.log(incorrectAnswersCounter, "incorrectAnswersCounter");
+
   const [value, setValue] = useState("");
   const [questionNumber, setQuestionNumber] = useState(0);
   const [remainingTime, setRemainingTime] = useState(questionTimer);
-  const isTestFinished = questionNumber === levelTest.length;
+
+  const isTestFinished =
+    incorrectAnswersCounter.reduce((prev, curr) => {
+      return prev + curr.count;
+    }, 0) === 5 || questionNumber === levelTest.length;
 
   const handleNextQuestion = useCallback(
-    (answer: string) => {
-      if (answer) {
-        const submittedAnswer: TSubmittedAnswer = {
-          answer,
-          level: levelTest.find(
-            (question) => question.id === questionNumber + 1
-          )?.level as TLevel,
-        };
-        submittedAnswers.push(submittedAnswer);
-      } else {
-        submittedAnswers.push({ answer: null, level: null });
+    async (answer: string) => {
+      const question = levelTest[questionNumber];
+
+      if (answer !== question.choices[question.answer]) {
+        const sameLevelQuestionIndex = incorrectAnswersCounter.findIndex(
+          (el) => el.level === question.level
+        );
+        if (sameLevelQuestionIndex >= 0) {
+          incorrectAnswersCounter[sameLevelQuestionIndex].count += 1;
+        } else {
+          incorrectAnswersCounter.push({
+            level: question.level,
+            count: 1,
+          });
+        }
+      }
+
+      if (
+        incorrectAnswersCounter.reduce((prev, curr) => {
+          //TODO: add logic when there are not 5 mistakes and test is finished.
+          return prev + curr.count;
+        }, 0) === 5
+      ) {
+        // handleFindLevel(incorrectAnswersCounter);
+        const postReq = await fetch("http://localhost:4000/api/lang-test", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify(incorrectAnswersCounter),
+        });
+
+        const testResult = await postReq.json();
+
+        console.log(testResult);
+
+        return;
       }
 
       setValue("");
