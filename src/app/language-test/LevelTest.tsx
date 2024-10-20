@@ -8,11 +8,11 @@ import FormLabel from "@mui/material/FormLabel";
 import Button from "@mui/joy/Button";
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { TextField } from "@mui/material";
 
 const questionTimer = 40;
 let intervalId: NodeJS.Timer | undefined;
 const incorrectAnswersCounter: TIncorrectAnswersCounter = [];
-let level: TLevel;
 
 function LevelTest({ levelTest }: TLevelTest) {
   console.log(incorrectAnswersCounter, "incorrectAnswersCounter");
@@ -20,6 +20,9 @@ function LevelTest({ levelTest }: TLevelTest) {
   const [value, setValue] = useState("");
   const [questionNumber, setQuestionNumber] = useState(0);
   const [remainingTime, setRemainingTime] = useState(questionTimer);
+  const [testResult, setTestResult] = useState<TLevel>();
+
+  const currentQuestion = levelTest[questionNumber];
 
   const isTestFinished =
     incorrectAnswersCounter.reduce((prev, curr) => {
@@ -28,19 +31,37 @@ function LevelTest({ levelTest }: TLevelTest) {
 
   const handleNextQuestion = useCallback(
     async (answer: string) => {
-      const question = levelTest[questionNumber];
+      const currentQuestion = levelTest[questionNumber];
 
-      if (answer !== question.choices[question.answer]) {
-        const sameLevelQuestionIndex = incorrectAnswersCounter.findIndex(
-          (el) => el.level === question.level
-        );
-        if (sameLevelQuestionIndex >= 0) {
-          incorrectAnswersCounter[sameLevelQuestionIndex].count += 1;
-        } else {
-          incorrectAnswersCounter.push({
-            level: question.level,
-            count: 1,
-          });
+      if (currentQuestion.audioFile === null) {
+        if (answer !== currentQuestion.choices[currentQuestion.answer]) {
+          const sameLevelQuestionIndex = incorrectAnswersCounter.findIndex(
+            (el) => el.level === currentQuestion.level
+          );
+          if (sameLevelQuestionIndex >= 0) {
+            incorrectAnswersCounter[sameLevelQuestionIndex].count += 1;
+          } else {
+            incorrectAnswersCounter.push({
+              level: currentQuestion.level,
+              count: 1,
+            });
+          }
+        }
+      } else {
+        if (
+          answer.trim().toLowerCase() !== currentQuestion.answer.toLowerCase()
+        ) {
+          const sameLevelQuestionIndex = incorrectAnswersCounter.findIndex(
+            (el) => el.level === currentQuestion.level
+          );
+          if (sameLevelQuestionIndex >= 0) {
+            incorrectAnswersCounter[sameLevelQuestionIndex].count += 1;
+          } else {
+            incorrectAnswersCounter.push({
+              level: currentQuestion.level,
+              count: 1,
+            });
+          }
         }
       }
 
@@ -50,7 +71,6 @@ function LevelTest({ levelTest }: TLevelTest) {
           return prev + curr.count;
         }, 0) === 5
       ) {
-        // handleFindLevel(incorrectAnswersCounter);
         const postReq = await fetch("http://localhost:4000/api/lang-test", {
           headers: {
             "Content-Type": "application/json",
@@ -59,11 +79,9 @@ function LevelTest({ levelTest }: TLevelTest) {
           body: JSON.stringify(incorrectAnswersCounter),
         });
 
-        const testResult = await postReq.json();
+        const testResult: TTestResult = await postReq.json();
 
-        console.log(testResult);
-
-        return;
+        setTestResult(testResult.resultLevel);
       }
 
       setValue("");
@@ -89,7 +107,7 @@ function LevelTest({ levelTest }: TLevelTest) {
     }
   }, [remainingTime, handleNextQuestion, value]);
 
-  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue((event.target as HTMLInputElement).value);
   };
 
@@ -104,7 +122,7 @@ function LevelTest({ levelTest }: TLevelTest) {
     <div>
       {isTestFinished ? (
         <div className="text-2xl text-lingo-green text-center font-bold">
-          Test Finished
+          Test Finished, Your level is : {testResult}
         </div>
       ) : (
         <>
@@ -125,58 +143,67 @@ function LevelTest({ levelTest }: TLevelTest) {
                   key={questionNumber}
                 >
                   <FormLabel sx={{ fontSize: "20px", color: "#000" }}>
-                    {levelTest[questionNumber].question}
+                    {currentQuestion.question}
                   </FormLabel>
-                  <RadioGroup
-                    name="levelTest"
-                    value={value}
-                    onChange={handleRadioChange}
-                  >
-                    <List
-                      sx={{
-                        minWidth: 240,
-                        "--List-gap": "0.5rem",
-                        "--ListItem-paddingY": "1rem",
-                        "--ListItem-radius": "8px",
-                        "--ListItemDecorator-size": "32px",
-                      }}
+                  {!currentQuestion.audioFile ? (
+                    <RadioGroup
+                      name="levelTest"
+                      value={value}
+                      onChange={handleChange}
                     >
-                      {levelTest[questionNumber].choices.map((item, index) => (
-                        <ListItem
-                          variant="outlined"
-                          key={item}
-                          sx={{ boxShadow: "sm" }}
-                        >
-                          <Radio
-                            overlay
-                            value={item}
-                            label={item}
-                            sx={{
-                              flexGrow: 1,
-                              color: "#2f9e4d",
-                              "& .MuiRadio-radio": {
-                                color: "#2f9e4d",
-                              },
-                              "& .MuiRadio-label": {
-                                color: "#293142",
-                              },
-                            }}
-                            color="success"
-                            slotProps={{
-                              action: ({ checked }) => ({
-                                sx: () => ({
-                                  ...(checked && {
-                                    inset: -1,
-                                    border: "1px solid #2f9e4d",
+                      <List
+                        sx={{
+                          minWidth: 240,
+                          "--List-gap": "0.5rem",
+                          "--ListItem-paddingY": "1rem",
+                          "--ListItem-radius": "8px",
+                          "--ListItemDecorator-size": "32px",
+                        }}
+                      >
+                        {currentQuestion.choices &&
+                          currentQuestion.choices.map((item) => (
+                            <ListItem
+                              variant="outlined"
+                              key={item}
+                              sx={{ boxShadow: "sm" }}
+                            >
+                              <Radio
+                                overlay
+                                value={item}
+                                label={item}
+                                sx={{
+                                  flexGrow: 1,
+                                  color: "#2f9e4d",
+                                  "& .MuiRadio-radio": {
+                                    color: "#2f9e4d",
+                                  },
+                                  "& .MuiRadio-label": {
+                                    color: "#293142",
+                                  },
+                                }}
+                                color="success"
+                                slotProps={{
+                                  action: ({ checked }) => ({
+                                    sx: () => ({
+                                      ...(checked && {
+                                        inset: -1,
+                                        border: "1px solid #2f9e4d",
+                                      }),
+                                    }),
                                   }),
-                                }),
-                              }),
-                            }}
-                          />
-                        </ListItem>
-                      ))}
-                    </List>
-                  </RadioGroup>
+                                }}
+                              />
+                            </ListItem>
+                          ))}
+                      </List>
+                    </RadioGroup>
+                  ) : (
+                    <TextField
+                      label="Your Answer"
+                      value={value}
+                      onChange={handleChange}
+                    />
+                  )}
                   <Button
                     disabled={!value}
                     type="submit"
