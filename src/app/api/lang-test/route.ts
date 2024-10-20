@@ -1,7 +1,8 @@
+import { NextResponse } from "next/server";
 import questions from "./questions.json";
 
 export function GET() {
-  return Response.json(questions);
+  return NextResponse.json(questions);
 }
 
 const levels: TLevel[] = ["A1", "A2", "B1", "B1+", "B2", "C1"];
@@ -21,7 +22,7 @@ export async function POST(request: Request) {
   if (incorrectAnswers.length === 5) {
     resultLevel =
       incorrectAnswers[Math.floor(incorrectAnswers.length / 2) + 1].level;
-    return Response.json({
+    return NextResponse.json({
       resultLevel,
     });
   }
@@ -32,7 +33,7 @@ export async function POST(request: Request) {
 
   if (mistakesSum < 5) {
     resultLevel = mistakesToLevelsMap[mistakesSum];
-    return Response.json({
+    return NextResponse.json({
       resultLevel,
     });
   }
@@ -49,15 +50,15 @@ export async function POST(request: Request) {
 
   if (mostMistakesLevelIndex > 0) {
     resultLevel = levels[mostMistakesLevelIndex - 1];
-    return Response.json({
+    return NextResponse.json({
       resultLevel,
     });
   } else {
     resultLevel = levels[mostMistakesLevelIndex];
-    return Response.json({
+    return NextResponse.json({
       resultLevel,
     });
   }
 
-  return Response.json(incorrectAnswers);
+  return NextResponse.json(incorrectAnswers);
 }

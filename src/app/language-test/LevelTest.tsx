@@ -13,6 +13,7 @@ import { TextField } from "@mui/material";
 const questionTimer = 40;
 let intervalId: NodeJS.Timer | undefined;
 const incorrectAnswersCounter: TIncorrectAnswersCounter = [];
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 function LevelTest({ levelTest }: TLevelTest) {
   console.log(incorrectAnswersCounter, "incorrectAnswersCounter");
@@ -71,7 +72,7 @@ function LevelTest({ levelTest }: TLevelTest) {
           return prev + curr.count;
         }, 0) === 5
       ) {
-        const postReq = await fetch("http://localhost:4000/api/lang-test", {
+        const postReq = await fetch(`${apiUrl}/api/lang-test`, {
           headers: {
             "Content-Type": "application/json",
           },

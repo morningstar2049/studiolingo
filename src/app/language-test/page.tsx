@@ -1,7 +1,8 @@
 import LevelTest from "./LevelTest";
 
-async function page() {
-  const response = await fetch("http://localhost:4000/api/lang-test");
+export default async function Page() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const response = await fetch(`${apiUrl}/api/lang-test`);
   const { levelTest }: TLevelTest = await response.json();
 
   return (
@@ -10,5 +11,3 @@ async function page() {
     </div>
   );
 }
-
-export default page;
