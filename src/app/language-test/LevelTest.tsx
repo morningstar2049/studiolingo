@@ -11,18 +11,21 @@ import { AnimatePresence, motion } from "framer-motion";
 import { TextField } from "@mui/material";
 
 const questionTimer = 40;
+const audioQuestionTimer = 60;
 let intervalId: NodeJS.Timer | undefined;
 const incorrectAnswersCounter: TIncorrectAnswersCounter = [];
 
 function LevelTest({ levelTest }: TLevelTest) {
-  console.log(incorrectAnswersCounter, "incorrectAnswersCounter");
+  // console.log(incorrectAnswersCounter, "incorrectAnswersCounter");
 
   const [value, setValue] = useState("");
   const [questionNumber, setQuestionNumber] = useState(0);
-  const [remainingTime, setRemainingTime] = useState(questionTimer);
-  const [testResult, setTestResult] = useState<TLevel>();
-
   const currentQuestion = levelTest[questionNumber];
+  console.log(currentQuestion);
+  const [remainingTime, setRemainingTime] = useState(
+    currentQuestion.audioFile ? audioQuestionTimer : questionTimer
+  );
+  const [testResult, setTestResult] = useState<TLevel>();
 
   const isTestFinished =
     incorrectAnswersCounter.reduce((prev, curr) => {
@@ -88,7 +91,11 @@ function LevelTest({ levelTest }: TLevelTest) {
 
       setValue("");
       setQuestionNumber((prev) => prev + 1);
-      setRemainingTime(questionTimer);
+      setRemainingTime(
+        levelTest[questionNumber + 1]?.audioFile
+          ? audioQuestionTimer
+          : questionTimer
+      );
     },
     [levelTest, questionNumber]
   );
@@ -123,8 +130,11 @@ function LevelTest({ levelTest }: TLevelTest) {
   return (
     <div>
       {isTestFinished ? (
-        <div className="text-2xl text-lingo-green text-center font-bold">
-          Test Finished, Your level is : {testResult}
+        <div className="text-xl text-lingo-black text-center">
+          Test Finished, your level is : {testResult}
+          <div className="text-3xl text-lingo-green font-bold mt-3">
+            {testResult || "B1"}
+          </div>
         </div>
       ) : (
         <>
@@ -200,11 +210,18 @@ function LevelTest({ levelTest }: TLevelTest) {
                       </List>
                     </RadioGroup>
                   ) : (
-                    <TextField
-                      label="Your Answer"
-                      value={value}
-                      onChange={handleChange}
-                    />
+                    <>
+                      <audio
+                        controls
+                        src={`/audios/${currentQuestion.audioFile}`}
+                      />
+                      <TextField
+                        label="Your Answer"
+                        value={value}
+                        onChange={handleChange}
+                        color="success"
+                      />
+                    </>
                   )}
                   <Button
                     disabled={!value}
