@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     return prev + curr.count;
   }, 0);
 
-  if (mistakesSum < 5 || !!incorrectAnswers.length) {
+  if (mistakesSum < 5 || !incorrectAnswers.length) {
     resultLevel = mistakesToLevelsMap[mistakesSum];
     return NextResponse.json({
       resultLevel,
@@ -59,6 +59,4 @@ export async function POST(request: Request) {
       resultLevel,
     });
   }
-
-  return NextResponse.json(incorrectAnswers);
 }

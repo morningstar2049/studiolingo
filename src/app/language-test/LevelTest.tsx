@@ -16,11 +16,9 @@ let intervalId: NodeJS.Timer | undefined;
 const incorrectAnswersCounter: TIncorrectAnswersCounter = [];
 
 function LevelTest({ levelTest }: TLevelTest) {
-  // console.log(incorrectAnswersCounter, "incorrectAnswersCounter");
-
   const [value, setValue] = useState("");
   const [questionNumber, setQuestionNumber] = useState(0);
-  const currentQuestion = levelTest[questionNumber];
+  const currentQuestion = levelTest[questionNumber] || {};
   console.log(currentQuestion);
   const [remainingTime, setRemainingTime] = useState(
     currentQuestion.audioFile ? audioQuestionTimer : questionTimer
@@ -72,9 +70,9 @@ function LevelTest({ levelTest }: TLevelTest) {
 
       if (
         incorrectAnswersCounter.reduce((prev, curr) => {
-          //TODO: add logic when there are not 5 mistakes and test is finished.
           return prev + curr.count;
-        }, 0) === 5
+        }, 0) === 5 ||
+        questionNumber === levelTest.length
       ) {
         const postReq = await fetch(`/api/lang-test`, {
           headers: {
@@ -227,7 +225,7 @@ function LevelTest({ levelTest }: TLevelTest) {
                     disabled={!value}
                     type="submit"
                     variant="soft"
-                    className="bg-lingo-green hover:bg-[#2f904d]"
+                    className="bg-lingo-green hover:bg-[#2f904d] w-[200px] mx-auto"
                     color="success"
                     sx={{
                       color: "#FFF",
