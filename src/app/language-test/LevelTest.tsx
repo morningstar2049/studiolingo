@@ -19,7 +19,7 @@ function LevelTest({ levelTest }: TLevelTest) {
   const [value, setValue] = useState("");
   const [questionNumber, setQuestionNumber] = useState(0);
   const currentQuestion = levelTest[questionNumber] || {};
-  console.log(currentQuestion);
+  console.log(currentQuestion, "currr");
   const [remainingTime, setRemainingTime] = useState(
     currentQuestion.audioFile ? audioQuestionTimer : questionTimer
   );
@@ -73,7 +73,7 @@ function LevelTest({ levelTest }: TLevelTest) {
         incorrectAnswersCounter.reduce((prev, curr) => {
           return prev + curr.count;
         }, 0) === 5 ||
-        questionNumber === levelTest.length
+        questionNumber === levelTest.length - 1
       ) {
         setIsLoading(true);
         const postReq = await fetch(`/api/lang-test`, {
