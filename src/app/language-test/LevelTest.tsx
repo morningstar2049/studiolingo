@@ -8,7 +8,7 @@ import FormLabel from "@mui/material/FormLabel";
 import Button from "@mui/joy/Button";
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { TextField } from "@mui/material";
+import { CircularProgress, TextField } from "@mui/material";
 
 const questionTimer = 40;
 const audioQuestionTimer = 60;
@@ -24,6 +24,7 @@ function LevelTest({ levelTest }: TLevelTest) {
     currentQuestion.audioFile ? audioQuestionTimer : questionTimer
   );
   const [testResult, setTestResult] = useState<TLevel>();
+  const [isLoading, setIsLoading] = useState(false);
 
   const isTestFinished =
     incorrectAnswersCounter.reduce((prev, curr) => {
@@ -74,6 +75,7 @@ function LevelTest({ levelTest }: TLevelTest) {
         }, 0) === 5 ||
         questionNumber === levelTest.length
       ) {
+        setIsLoading(true);
         const postReq = await fetch(`/api/lang-test`, {
           headers: {
             "Content-Type": "application/json",
@@ -85,6 +87,7 @@ function LevelTest({ levelTest }: TLevelTest) {
         const testResult: TTestResult = await postReq.json();
 
         setTestResult(testResult.resultLevel);
+        setIsLoading(false);
       }
 
       setValue("");
@@ -125,13 +128,17 @@ function LevelTest({ levelTest }: TLevelTest) {
 
   console.log(value, "radioValue");
 
+  if (isLoading) {
+    return <CircularProgress sx={{ color: "#2f9e4d" }} />;
+  }
+
   return (
     <div>
       {isTestFinished ? (
         <div className="text-xl text-lingo-black text-center">
-          Test Finished, your level is : {testResult}
+          Test Finished, your level is :
           <div className="text-3xl text-lingo-green font-bold mt-3">
-            {testResult || "B1"}
+            {testResult}
           </div>
         </div>
       ) : (
