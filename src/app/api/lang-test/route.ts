@@ -5,7 +5,7 @@ export function GET() {
   return NextResponse.json(questions);
 }
 
-const levels: TLevel[] = ["A1", "A2", "B1", "B1+", "B2", "C1"];
+const levels: TLevel[] = ["Beginner", "A1", "A2", "B1", "B1+", "B2", "C1"];
 
 const mistakesToLevelsMap: { [key: number]: TLevel } = {
   0: "C1",
@@ -49,7 +49,11 @@ export async function POST(request: Request) {
   );
 
   if (mostMistakesLevelIndex > 0) {
-    resultLevel = levels[mostMistakesLevelIndex - 1];
+    if (mostMistakesLevels.length > 1) {
+      resultLevel = levels[mostMistakesLevelIndex];
+    } else {
+      resultLevel = levels[mostMistakesLevelIndex - 1];
+    }
     return NextResponse.json({
       resultLevel,
     });

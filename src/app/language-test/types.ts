@@ -1,4 +1,4 @@
-type TLevel = "A1" | "A2" | "B1" | "B1+" | "B2" | "C1";
+type TLevel = "Beginner" | "A1" | "A2" | "B1" | "B1+" | "B2" | "C1";
 
 type TQuestion =
   | {
