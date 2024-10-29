@@ -18,9 +18,9 @@
     },
     {
       "id": 3,
-      "question": "Do you have ___ tickets? 🔊",
+      "question": "ჩაწერეთ სიტყვა, რომელიც გესმით 🔊",
       "choices": null,
-      "answer": "fifty",
+      "answer": "photograph",
       "level": "A1",
       "audioFile": "A1-audio.mp3"
     },
@@ -92,7 +92,7 @@
     },
     {
       "id": 11,
-      "question": "They have a kind of ___ that we don’t see. 🔊",
+      "question": "\"They have a kind of ___ that we don’t see. 🔊\"",
       "choices": null,
       "answer": "illness",
       "level": "A2",
@@ -100,7 +100,7 @@
     },
     {
       "id": 12,
-      "question": "When you want to do some exercise, you go to this place. What (place) is it?",
+      "question": "When you want to do some exercise, you go to this place. What place is it?",
       "choices": ["Police station", "Gym", "Concert hall", "Post office"],
       "answer": 1,
       "level": "A2",
@@ -206,7 +206,7 @@
     },
     {
       "id": 24,
-      "question": "The physical symptoms are ___, feeling hot or cold, shaking… 🔊",
+      "question": "\"The physical symptoms are ___, feeling hot or cold, shaking… 🔊\"",
       "choices": null,
       "answer": "sweating",
       "level": "B1",
@@ -214,7 +214,7 @@
     },
     {
       "id": 25,
-      "question": "People don’t tend to read in ___ so much. 🔊",
+      "question": "\"People don’t tend to read in ___ so much. 🔊\"",
       "choices": null,
       "answer": "depth",
       "level": "B1+",
@@ -322,7 +322,7 @@
     },
     {
       "id": 36,
-      "question": "I started saving because I thought it would be great to go in ___ for a year. 🔊",
+      "question": "\"I started saving because I thought it would be great to go in ___ for a year. 🔊\"",
       "choices": null,
       "answer": "volunteer",
       "level": "B2",
@@ -399,7 +399,7 @@
     },
     {
       "id": 45,
-      "question": "And through this we would hopefully get away from the infuriating falsehoods that are being widely ___ . 🔊",
+      "question": "\"And through this we would hopefully get away from the infuriating falsehoods that are being widely ___ . 🔊\"",
       "choices": null,
       "answer": "disseminated",
       "level": "C1",

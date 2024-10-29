@@ -19,7 +19,7 @@ function LevelTest({ levelTest }: TLevelTest) {
   const [value, setValue] = useState("");
   const [questionNumber, setQuestionNumber] = useState(0);
   const currentQuestion = levelTest[questionNumber] || {};
-  console.log(currentQuestion, "currr");
+  console.log(incorrectAnswersCounter, "counter");
   const [remainingTime, setRemainingTime] = useState(
     currentQuestion.audioFile ? audioQuestionTimer : questionTimer
   );
@@ -34,8 +34,6 @@ function LevelTest({ levelTest }: TLevelTest) {
   const handleNextQuestion = useCallback(
     async (answer: string) => {
       const currentQuestion = levelTest[questionNumber];
-
-      console.log(answer, "answer");
 
       if (currentQuestion.audioFile === null) {
         if (answer !== currentQuestion.choices[currentQuestion.answer]) {
@@ -125,8 +123,6 @@ function LevelTest({ levelTest }: TLevelTest) {
     event.preventDefault();
     handleNextQuestion(value);
   };
-
-  console.log(value, "radioValue");
 
   if (isLoading) {
     return <CircularProgress sx={{ color: "#2f9e4d" }} />;
