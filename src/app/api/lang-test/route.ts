@@ -5,7 +5,15 @@ export function GET() {
   return NextResponse.json(questions);
 }
 
-const levels: TLevel[] = ["Beginner", "A1", "A2", "B1", "B1+", "B2", "C1"];
+const levels: TLevel[] = [
+  "სრულიად დამწყები",
+  "A1",
+  "A2",
+  "B1",
+  "B1+",
+  "B2",
+  "C1",
+];
 
 const mistakesToLevelsMap: { [key: number]: TLevel } = {
   0: "C1",

@@ -1,4 +1,4 @@
-import LevelTest from "./LevelTest";
+import LevelTestWrapper from "./LevelTestWrapper";
 
 export default async function Page() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -10,7 +10,7 @@ export default async function Page() {
 
   return (
     <div className="p-4 w-full flex items-center justify-center h-[calc(100vh-110px)]">
-      <LevelTest levelTest={levelTest} />
+      <LevelTestWrapper levelTest={levelTest} />
     </div>
   );
 }

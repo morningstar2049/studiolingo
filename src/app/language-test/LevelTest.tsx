@@ -15,11 +15,22 @@ const audioQuestionTimer = 60;
 let intervalId: NodeJS.Timer | undefined;
 const incorrectAnswersCounter: TIncorrectAnswersCounter = [];
 
+const levelsMap: Record<TLevel, string> = {
+  "სრულიად დამწყები": "სრულიად დამწყები",
+  A1: "საწყისი",
+  A2: "საბაზისო",
+  B1: "საშუალო",
+  "B1+": "საშუალოზე მაღალი",
+  B2: "მოწინავე",
+  C1: "მაღალი",
+};
+
+const levelsArr = Object.keys(levelsMap) as TLevel[];
+
 function LevelTest({ levelTest }: TLevelTest) {
   const [value, setValue] = useState("");
   const [questionNumber, setQuestionNumber] = useState(0);
   const currentQuestion = levelTest[questionNumber] || {};
-  console.log(incorrectAnswersCounter, "counter");
   const [remainingTime, setRemainingTime] = useState(
     currentQuestion.audioFile ? audioQuestionTimer : questionTimer
   );
@@ -132,10 +143,33 @@ function LevelTest({ levelTest }: TLevelTest) {
     <div>
       {isTestFinished ? (
         <div className="text-xl text-lingo-black text-center">
-          Test Finished, your level is :
-          <div className="text-3xl text-lingo-green font-bold mt-3">
-            {testResult}
-          </div>
+          {testResult === "C1" ? (
+            <>
+              თქვენი ინგლისურის მიახლოებითი დონეა{" "}
+              <strong className="text-lingo-green text-xl">{testResult}</strong>
+            </>
+          ) : (
+            <>
+              თქვენი ინგლისურის მიახლოებითი დონეა{" "}
+              <strong className="text-lingo-green text-2xl">
+                {testResult}
+              </strong>{" "}
+              {testResult !== "სრულიად დამწყები"
+                ? `(${levelsMap[testResult as TLevel]})`
+                : ""}
+              და შეგიძლიათ დაიწყოთ{" "}
+              <strong className="text-lingo-green text-2xl">
+                {levelsArr[levelsArr.findIndex((el) => el === testResult) + 1]}
+              </strong>{" "}
+              (
+              {
+                levelsMap[
+                  levelsArr[levelsArr.findIndex((el) => el === testResult) + 1]
+                ]
+              }
+              ) დონის სწავლა.
+            </>
+          )}
         </div>
       ) : (
         <>
@@ -155,7 +189,13 @@ function LevelTest({ levelTest }: TLevelTest) {
                   transition={{ duration: 0.2 }}
                   key={questionNumber}
                 >
-                  <FormLabel sx={{ fontSize: "20px", color: "#000" }}>
+                  <FormLabel
+                    sx={{
+                      fontSize: "20px",
+                      color: "#000",
+                      textAlign: "center",
+                    }}
+                  >
                     {currentQuestion.question}
                   </FormLabel>
                   {!currentQuestion.audioFile ? (
