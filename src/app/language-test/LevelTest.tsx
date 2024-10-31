@@ -126,6 +126,10 @@ function LevelTest({ levelTest }: TLevelTest) {
     }
   }, [remainingTime, handleNextQuestion, value]);
 
+  useEffect(() => {
+    typeof window !== undefined && window.scrollTo(0, 0);
+  }, []);
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue((event.target as HTMLInputElement).value);
   };
@@ -175,7 +179,7 @@ function LevelTest({ levelTest }: TLevelTest) {
         </div>
       ) : (
         <>
-          <div className="text-2xl text-lingo-green text-center font-bold mb-16 w-[100px] mx-auto">
+          <div className="text-2xl text-lingo-green text-center font-bold mt-5 mb-16 w-[100px] mx-auto">
             00 : {remainingTime < 10 ? `0${remainingTime}` : remainingTime}
           </div>
           <div className="flex flex-col justify-center items-center gap-20 h-full">
