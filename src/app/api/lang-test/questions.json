@@ -1,0 +1,433 @@
+{
+  "levelTest": [
+    {
+      "id": 1,
+      "question": "What color is the sky?",
+      "choices": ["Green", "Blue", "Yellow", "Purple"],
+      "answer": 1,
+      "level": "A1",
+      "audioFile": null
+    },
+    {
+      "id": 2,
+      "question": "They want to go to the beach with some friends ___ Sunday.",
+      "choices": ["at", "in", "the", "on"],
+      "answer": 3,
+      "level": "A1",
+      "audioFile": null
+    },
+    {
+      "id": 3,
+      "question": "ჩაწერეთ სიტყვა, რომელიც გესმით 🔊",
+      "choices": null,
+      "answer": "photograph",
+      "level": "A1",
+      "audioFile": "A1-audio.mp3"
+    },
+    {
+      "id": 4,
+      "question": "Which one is a fruit?",
+      "choices": ["Potato", "Bread", "Peach", "Rice"],
+      "answer": 2,
+      "level": "A1",
+      "audioFile": null
+    },
+    {
+      "id": 5,
+      "question": "I love music but I ___ like TV.",
+      "choices": ["do", "don’t", "does", "doesn’t"],
+      "answer": 1,
+      "level": "A1",
+      "audioFile": null
+    },
+    {
+      "id": 6,
+      "question": "What time is it if the clock shows 12:00?",
+      "choices": ["Midnight", "Noon", "Morning", "Evening"],
+      "answer": 1,
+      "level": "A1",
+      "audioFile": null
+    },
+    {
+      "id": 7,
+      "question": "How are you?",
+      "choices": [
+        "My name is John.",
+        "I’m fine, thank you.",
+        "I live in New York.",
+        "I am 20 years old."
+      ],
+      "answer": 1,
+      "level": "A1",
+      "audioFile": null
+    },
+    {
+      "id": 8,
+      "question": "Choose the correct sentence:",
+      "choices": [
+        "She like ice cream.",
+        "She liking ice cream.",
+        "She likes ice cream.",
+        "She is like ice cream."
+      ],
+      "answer": 2,
+      "level": "A1",
+      "audioFile": null
+    },
+    {
+      "id": 9,
+      "question": "They ___ a taxi to the airport an hour ago.",
+      "choices": ["take", "are taking", "will take", "took"],
+      "answer": 3,
+      "level": "A2",
+      "audioFile": null
+    },
+    {
+      "id": 10,
+      "question": "I’m ___ learn to cook.",
+      "choices": ["go to", "going", "going to", "go"],
+      "answer": 2,
+      "level": "A2",
+      "audioFile": null
+    },
+    {
+      "id": 11,
+      "question": "ჩაწერეთ გამოტოვებული სიტყვა : \"They have a kind of ___ that we don’t see. 🔊\"",
+      "choices": null,
+      "answer": "illness",
+      "level": "A2",
+      "audioFile": "A2-audio.mp3"
+    },
+    {
+      "id": 12,
+      "question": "When you want to do some exercise, you go to this place. What place is it?",
+      "choices": ["Police station", "Gym", "Concert hall", "Post office"],
+      "answer": 1,
+      "level": "A2",
+      "audioFile": null
+    },
+    {
+      "id": 13,
+      "question": "How often do you eat breakfast?",
+      "choices": ["Yesterday", "Always", "Tomorrow", "Now"],
+      "answer": 1,
+      "level": "A2",
+      "audioFile": null
+    },
+    {
+      "id": 14,
+      "question": "Nick’s smartphone looks much ___ than yours.",
+      "choices": ["more big", "biggest", "most big", "bigger"],
+      "answer": 3,
+      "level": "A2",
+      "audioFile": null
+    },
+    {
+      "id": 15,
+      "question": "It's made from milk. People often have it for breakfast. What can it be?",
+      "choices": ["Melon", "Yoghurt", "Garlic", "Honey"],
+      "answer": 1,
+      "level": "A2",
+      "audioFile": null
+    },
+    {
+      "id": 16,
+      "question": "I am the first person people meet when they come to our hotel. Who am I?",
+      "choices": ["Chef", "Actor", "Receptionist", "Mechanic"],
+      "answer": 2,
+      "level": "A2",
+      "audioFile": null
+    },
+    {
+      "id": 17,
+      "question": "I’ve been waiting here ___ 2 hours.",
+      "choices": ["for", "since", "during", "until"],
+      "answer": 0,
+      "level": "B1",
+      "audioFile": null
+    },
+    {
+      "id": 18,
+      "question": "I don’t think I ___ get the job. I didn’t answer all their questions in the interview very well.",
+      "choices": ["‘ll", "might", "won’t", "might not"],
+      "answer": 0,
+      "level": "B1",
+      "audioFile": null
+    },
+    {
+      "id": 19,
+      "question": "What is the synonym of 'easygoing'?",
+      "choices": ["Sociable", "Carefree", "Fun", "Anxious"],
+      "answer": 1,
+      "level": "B1",
+      "audioFile": null
+    },
+    {
+      "id": 20,
+      "question": "Which sentence has the same meaning as the following one: 'The cat chased the mouse'?",
+      "choices": [
+        "The mouse has been chased by the cat.",
+        "The mouse was chased by the cat.",
+        "The mouse is chased by the cat.",
+        "The mouse had been chased by the cat."
+      ],
+      "answer": 1,
+      "level": "B1",
+      "audioFile": null
+    },
+    {
+      "id": 21,
+      "question": "I ___ play tennis every weekend.",
+      "choices": ["used to", "use to", "used", "am used to"],
+      "answer": 0,
+      "level": "B1",
+      "audioFile": null
+    },
+    {
+      "id": 22,
+      "question": "I’m not keen on ___ .",
+      "choices": ["run", "to running", "to run", "running"],
+      "answer": 3,
+      "level": "B1",
+      "audioFile": null
+    },
+    {
+      "id": 23,
+      "question": "What does 'turn down' mean in this sentence: 'Please turn down the music'?",
+      "choices": [
+        "Increase the volume",
+        "Start the music",
+        "Decrease the volume",
+        "Stop the music"
+      ],
+      "answer": 2,
+      "level": "B1",
+      "audioFile": null
+    },
+    {
+      "id": 24,
+      "question": "ჩაწერეთ გამოტოვებული სიტყვა: \"The physical symptoms are ___, feeling hot or cold, shaking… 🔊\"",
+      "choices": null,
+      "answer": "sweating",
+      "level": "B1",
+      "audioFile": "B1-audio.mp3"
+    },
+    {
+      "id": 25,
+      "question": "ჩაწერეთ გამოტოვებული სიტყვა: \"People don’t tend to read in ___ so much. 🔊\"",
+      "choices": null,
+      "answer": "depth",
+      "level": "B1+",
+      "audioFile": "B1+-audio.mp3"
+    },
+    {
+      "id": 26,
+      "question": "Choose the correct sentence:",
+      "choices": [
+        "If I had money, I will buy a car.",
+        "If I had money, I would buy a car.",
+        "If I have money, I would buy a car.",
+        "If I would have money, I will buy a car."
+      ],
+      "answer": 1,
+      "level": "B1+",
+      "audioFile": null
+    },
+    {
+      "id": 27,
+      "question": "We ___ to work yesterday when we heard a loud crash behind us.",
+      "choices": ["have been walking", "‘ve walked", "were walking", "walked"],
+      "answer": 2,
+      "level": "B1+",
+      "audioFile": null
+    },
+    {
+      "id": 28,
+      "question": "That shop’s not ___ it used to be.",
+      "choices": [
+        "more cheap than",
+        "as cheap as",
+        "the cheapest as",
+        "as cheaper as"
+      ],
+      "answer": 1,
+      "level": "B1+",
+      "audioFile": null
+    },
+    {
+      "id": 29,
+      "question": "What’s the synonym of 'terrific'?",
+      "choices": ["massive", "slight", "tiny", "filthy"],
+      "answer": 0,
+      "level": "B1+",
+      "audioFile": null
+    },
+    {
+      "id": 30,
+      "question": "A waterless, desolate area of land with little or no vegetation, typically covered with sand. What is it?",
+      "choices": ["Rainforest", "Valley", "Cave", "Desert"],
+      "answer": 3,
+      "level": "B1+",
+      "audioFile": null
+    },
+    {
+      "id": 31,
+      "question": "The chips are typically ___ .",
+      "choices": ["creamy", "soft", "crunchy", "sour"],
+      "answer": 2,
+      "level": "B1+",
+      "audioFile": null
+    },
+    {
+      "id": 32,
+      "question": "Which word is most related to cooking?",
+      "choices": ["smuggle", "subscribe", "squeeze", "warn"],
+      "answer": 2,
+      "level": "B1+",
+      "audioFile": null
+    },
+    {
+      "id": 33,
+      "question": "Sarah told me that James ___ join our campaign the next day.",
+      "choices": ["would", "will", "can", "is going to"],
+      "answer": 0,
+      "level": "B2",
+      "audioFile": null
+    },
+    {
+      "id": 34,
+      "question": "Which sentence is correct?",
+      "choices": [
+        "I am used to getting up early.",
+        "I am used to get up early.",
+        "I used getting up early.",
+        "I use to getting up early."
+      ],
+      "answer": 0,
+      "level": "B2",
+      "audioFile": null
+    },
+    {
+      "id": 35,
+      "question": "What is the meaning of 'break down' in this context: 'My car broke down on the way home'?",
+      "choices": [
+        "Was stolen",
+        "Ran out of fuel",
+        "Stopped working",
+        "Was cleaned"
+      ],
+      "answer": 2,
+      "level": "B2",
+      "audioFile": null
+    },
+    {
+      "id": 36,
+      "question": "ჩაწერეთ გამოტოვებული სიტყვა: \"I started saving because I thought it would be great to go in ___ for a year. 🔊\"",
+      "choices": null,
+      "answer": "volunteer",
+      "level": "B2",
+      "audioFile": "B2-audio.mp3"
+    },
+    {
+      "id": 37,
+      "question": "Which word is the correct synonym for 'increase'?",
+      "choices": ["Shrink", "Dwindle", "Surge", "Diminish"],
+      "answer": 2,
+      "level": "B2",
+      "audioFile": null
+    },
+    {
+      "id": 38,
+      "question": "Had I known about the party, I ___ have gone.",
+      "choices": ["will", "would", "could", "should"],
+      "answer": 1,
+      "level": "B2",
+      "audioFile": null
+    },
+    {
+      "id": 39,
+      "question": "What is the opposite of 'generous'?",
+      "choices": ["Bountiful", "Lavish", "Indulgent", "Stingy"],
+      "answer": 3,
+      "level": "B2",
+      "audioFile": null
+    },
+    {
+      "id": 40,
+      "question": "I finally got ___ to organizing my files after weeks of putting it off.",
+      "choices": ["over", "around", "off", "through"],
+      "answer": 1,
+      "level": "B2",
+      "audioFile": null
+    },
+    {
+      "id": 41,
+      "question": "What’s the definition of 'mind-boggling'?",
+      "choices": [
+        "Baffling",
+        "Terrifying",
+        "Unable to see",
+        "Almost impossible to imagine"
+      ],
+      "answer": 3,
+      "level": "C1",
+      "audioFile": null
+    },
+    {
+      "id": 42,
+      "question": "It's a very ___ image. You can't look at it without feeling something.",
+      "choices": ["iconic", "evocative", "gritty", "nonsensical"],
+      "answer": 1,
+      "level": "C1",
+      "audioFile": null
+    },
+    {
+      "id": 43,
+      "question": "When I got down to the platform, the train ___ through the station.",
+      "choices": ["whirled", "whooshed", "plunged", "whizzed"],
+      "answer": 1,
+      "level": "C1",
+      "audioFile": null
+    },
+    {
+      "id": 44,
+      "question": "We were walking through the woods when we ___ a trap set by hunters.",
+      "choices": ["stored up", "dug up", "threw out", "chanced upon"],
+      "answer": 3,
+      "level": "C1",
+      "audioFile": null
+    },
+    {
+      "id": 45,
+      "question": "ჩაწერეთ გამოტოვებული სიტყვა: \"And through this we would hopefully get away from the infuriating falsehoods that are being widely ___ . 🔊\"",
+      "choices": null,
+      "answer": "disseminated",
+      "level": "C1",
+      "audioFile": "C1-audio.mp3"
+    },
+    {
+      "id": 46,
+      "question": "Which word is closest in meaning to 'ubiquitous'?",
+      "choices": ["Scarce", "Commonplace", "Sparse", "Concealed"],
+      "answer": 1,
+      "level": "C1",
+      "audioFile": null
+    },
+    {
+      "id": 47,
+      "question": "I wish I ___ so busy tomorrow.",
+      "choices": ["am not", "will not be", "were not", "was not"],
+      "answer": 2,
+      "level": "C1",
+      "audioFile": null
+    },
+    {
+      "id": 48,
+      "question": "Her success was due to her ___ dedication to the project.",
+      "choices": ["unwavering", "restless", "expressive", "rigid"],
+      "answer": 0,
+      "level": "C1",
+      "audioFile": null
+    }
+  ]
+}

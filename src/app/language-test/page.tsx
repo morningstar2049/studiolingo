@@ -1,11 +1,18 @@
-import React from "react";
+import LevelTestWrapper from "./LevelTestWrapper";
 
-function page() {
+export default async function Page() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (!apiUrl) {
+    return null;
+  }
+  const response = await fetch(`${apiUrl}/api/lang-test`, {
+    cache: "no-cache",
+  });
+  const { levelTest }: TLevelTest = await response.json();
+
   return (
-    <div className="flex items-center justify-center h-[calc(100vh-110px)] text-3xl text-lingo-green font-bold">
-      Coming Soon
+    <div className="p-4 w-full flex items-center justify-center h-[calc(100vh-110px)]">
+      <LevelTestWrapper levelTest={levelTest} />
     </div>
   );
 }
-
-export default page;
