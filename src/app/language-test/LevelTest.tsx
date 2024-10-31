@@ -146,7 +146,9 @@ function LevelTest({ levelTest }: TLevelTest) {
           {testResult === "C1" ? (
             <>
               თქვენი ინგლისურის მიახლოებითი დონეა{" "}
-              <strong className="text-lingo-green text-xl">{testResult}</strong>
+              <strong className="text-lingo-green text-xl">
+                {testResult} ({levelsMap[testResult as TLevel]})
+              </strong>
             </>
           ) : (
             <>
