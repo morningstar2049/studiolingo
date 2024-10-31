@@ -155,7 +155,7 @@ function LevelTest({ levelTest }: TLevelTest) {
                 {testResult}
               </strong>{" "}
               {testResult !== "სრულიად დამწყები"
-                ? `(${levelsMap[testResult as TLevel]})`
+                ? `(${levelsMap[testResult as TLevel]}) `
                 : ""}
               და შეგიძლიათ დაიწყოთ{" "}
               <strong className="text-lingo-green text-2xl">

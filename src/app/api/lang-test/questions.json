@@ -92,7 +92,7 @@
     },
     {
       "id": 11,
-      "question": "\"They have a kind of ___ that we don’t see. 🔊\"",
+      "question": "ჩაწერეთ გამოტოვებული სიტყვა : \"They have a kind of ___ that we don’t see. 🔊\"",
       "choices": null,
       "answer": "illness",
       "level": "A2",
@@ -206,7 +206,7 @@
     },
     {
       "id": 24,
-      "question": "\"The physical symptoms are ___, feeling hot or cold, shaking… 🔊\"",
+      "question": "ჩაწერეთ გამოტოვებული სიტყვა: \"The physical symptoms are ___, feeling hot or cold, shaking… 🔊\"",
       "choices": null,
       "answer": "sweating",
       "level": "B1",
@@ -214,7 +214,7 @@
     },
     {
       "id": 25,
-      "question": "\"People don’t tend to read in ___ so much. 🔊\"",
+      "question": "ჩაწერეთ გამოტოვებული სიტყვა: \"People don’t tend to read in ___ so much. 🔊\"",
       "choices": null,
       "answer": "depth",
       "level": "B1+",
@@ -322,7 +322,7 @@
     },
     {
       "id": 36,
-      "question": "\"I started saving because I thought it would be great to go in ___ for a year. 🔊\"",
+      "question": "ჩაწერეთ გამოტოვებული სიტყვა: \"I started saving because I thought it would be great to go in ___ for a year. 🔊\"",
       "choices": null,
       "answer": "volunteer",
       "level": "B2",
@@ -399,7 +399,7 @@
     },
     {
       "id": 45,
-      "question": "\"And through this we would hopefully get away from the infuriating falsehoods that are being widely ___ . 🔊\"",
+      "question": "ჩაწერეთ გამოტოვებული სიტყვა: \"And through this we would hopefully get away from the infuriating falsehoods that are being widely ___ . 🔊\"",
       "choices": null,
       "answer": "disseminated",
       "level": "C1",
