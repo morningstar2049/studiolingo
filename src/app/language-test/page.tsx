@@ -5,7 +5,9 @@ export default async function Page() {
   if (!apiUrl) {
     return null;
   }
-  const response = await fetch(`${apiUrl}/api/lang-test`);
+  const response = await fetch(`${apiUrl}/api/lang-test`, {
+    cache: "no-cache",
+  });
   const { levelTest }: TLevelTest = await response.json();
 
   return (
