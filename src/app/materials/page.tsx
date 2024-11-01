@@ -34,7 +34,7 @@ const pdfs: TPdf[] = [
 
 function MaterialsPage() {
   return (
-    <div className="flex flex-col flex-wrap items-center w-full sm:flex-row justify-evenly">
+    <div className="flex flex-col flex-wrap items-center w-full sm:flex-row justify-evenly gap-5">
       {pdfs.map((pdf) => (
         <PdfWrapper
           key={pdf.thumbnail}
