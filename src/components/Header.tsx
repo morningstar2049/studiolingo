@@ -10,7 +10,6 @@ import { usePathname } from "next/navigation";
 
 function Header() {
   const { isOpen, handleOpen, handleClose } = useContext(MobileMenuContext);
-  const pathname = usePathname();
 
   return (
     <>
