@@ -8,7 +8,7 @@ export default function CoursesAccordion() {
   return (
     <div
       style={{ fontFeatureSettings: "'case' on" }}
-      className="p-3 sm:p-0 sm:w-[48%]"
+      className="p-3 sm:p-0 sm:w-[48%] self-center"
     >
       <Accordion className="p-2 shadow-none">
         <AccordionSummary
