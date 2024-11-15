@@ -25,7 +25,7 @@ function MainBanner() {
       >
         შეაბიჯე ახალ სამყაროში
       </h1> */}
-      <h1 className="text-[#fff] animate-appear w-full z-10 sm:w-fit text-center sm:font-bold text-base sm:text-3xl absolute translate-x-[-50%] translate-y-[-50%] top-[25%] sm:max-lg:top-[70%] lg:top-[65%] left-[50%] tracking-[2px]">
+      <h1 className="text-[#fff] animate-appear w-full z-10 sm:w-fit text-center font-bold text-base sm:text-3xl absolute translate-x-[-50%] translate-y-[-50%] top-[25%] sm:max-lg:top-[70%] lg:top-[65%] left-[50%] tracking-[2px]">
         აქ ენებს სუპერ მასწავლებლები თანამედროვე და პრაქტიკული მეთოდებით
         ასწავლიან
       </h1>
