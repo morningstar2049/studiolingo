@@ -11,12 +11,13 @@ function Corporate() {
       <PartnersBanner />
       <div className="block sm:flex sm:justify-evenly sm:p-5">
         <CorporateCoursesAccordion />
-        <div className="hidden sm:block relative h-[500px] w-[500px]">
+        <div className="hidden sm:block relative h-[500px] w-[720px]">
           <Image
             src="/corporate-pic.png"
             alt="corporate"
             fill={true}
             objectFit="cover"
+            className="rounded-3xl"
           />
         </div>
       </div>

@@ -12,7 +12,7 @@ export default function IlikoMessage() {
         objectFit="contain"
         className="animate-appear flex-1 max-w-xs"
       />
-      <h1 className="flex-1 text-2xl sm:text-4xl text-lingo-black text-center max-w-sm sm:max-w-xl">
+      <h1 className="flex-1 text-2xl sm:text-4xl text-lingo-black text-center max-w-sm sm:max-w-xl font-bold">
         ჩვენთან <span className="text-lingo-green">ყოველი გაკვეთილი</span>{" "}
         მორგებული იქნება <span className="text-lingo-green">თქვენზე</span>
       </h1>
