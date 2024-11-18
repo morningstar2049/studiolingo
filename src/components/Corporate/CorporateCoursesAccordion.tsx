@@ -19,7 +19,7 @@ function CorporateCoursesAccordion() {
   return (
     <div className="p-3 sm:p-0 sm:w-[48%]">
       {courseData.map((item) => (
-        <Accordion key={item.lang} className="p-2 shadow-none">
+        <Accordion key={item.lang} className="p-2 shadow-none" defaultExpanded>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon sx={{ color: "#2f9e4d" }} />}
             aria-controls="panel2a-content"

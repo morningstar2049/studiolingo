@@ -1,15 +1,16 @@
+/* eslint-disable @next/next/no-img-element */
 import { BiTimeFive, BiWallet } from "react-icons/bi";
 import { positionData } from "../positionData";
 import { IoLocationOutline } from "react-icons/io5";
 import Button from "@/components/Button";
+import Image from "next/image";
 
 export type TPositionKey =
   | "englishTeacher"
   | "germanTeacher"
   | "chineseTeacher"
   | "contentCreator"
-  | "administrator"
-  | "reporter";
+  | "administrator";
 
 type TPositionDetailsProps = {
   positionKey: TPositionKey;
@@ -46,12 +47,14 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
         </ul>
       </div>
       <p>{position.extraText}</p>
-      {position.workHours ? <div>
-        <h2 className="text-xl font-bold text-lingo-green">
-          სამუშაო გრაფიკი:
-        </h2>
-        <p className="py-5">{position.workHours}</p>
-      </div> : null}
+      {position.workHours ? (
+        <div>
+          <h2 className="text-xl font-bold text-lingo-green">
+            სამუშაო გრაფიკი:
+          </h2>
+          <p className="py-5">{position.workHours}</p>
+        </div>
+      ) : null}
       <div>
         <h2 className="text-xl font-bold text-lingo-green">
           თქვენგან ვითხოვთ, რომ:
@@ -61,6 +64,13 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
             <li key={i}>{req}</li>
           ))}
         </ul>
+      </div>
+      <div className="hidden sm:flex justify-center">
+        <img
+          src="/career-pic.jpeg"
+          alt="career"
+          className="object-contain rounded-2xl w-[700px]"
+        />
       </div>
       <div>
         <h2 className="text-xl font-bold text-lingo-green">
@@ -85,9 +95,7 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
           </ul>
         </div>
       )}
-      {positionKey === "contentCreator" ||
-      positionKey === "administrator" ||
-      positionKey === "reporter" ? (
+      {positionKey === "contentCreator" || positionKey === "administrator" ? (
         <p>
           თუ ხარ მოტივირებული და ამ ვაკანსიით დაინტერესებული, შემოგვიერთდი ჩვენს
           გუნდში და გახდი ჩვენი გუნდის წარმატების ისტორიის განუყოფელი ნაწილი!

@@ -29,13 +29,13 @@ const vacancies: VacanciesListItemProps[] = [
     salary: "კონკურენტული",
     route: "administrator",
   },
-  {
-    position: "რეპორტიორი",
-    location: "თბილისი",
-    time: "კვირაში 3-6 სთ",
-    salary: "კონკურენტული",
-    route: "reporter",
-  },
+  // {
+  //   position: "რეპორტიორი",
+  //   location: "თბილისი",
+  //   time: "კვირაში 3-6 სთ",
+  //   salary: "კონკურენტული",
+  //   route: "reporter",
+  // },
 ];
 
 function VacanciesList() {
