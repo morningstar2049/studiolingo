@@ -75,8 +75,8 @@ const courseDescriptions: {
       </p>
       <br />
       <p>
-        1 ინდივიდუალური/ჯგუფური კურსის ხანგრძლივობაა 4 თვე და ვასწავლით A1 - C1
-        დონეებს. მოსწავლეების მინიმალური ასაკია 17.
+        კურსის ხანგრძლივობა ინდივიდუალურია, ხოლო მინიმალური პერიოდია 4 თვე და
+        ვასწავლით A1-C1 დონეებს.
       </p>
     </div>
   ),
@@ -137,8 +137,8 @@ const courseDescriptions: {
       <br />
 
       <p>
-        1 ინდივიდუალური/ჯგუფური კურსის ხანგრძლივობაა 4 თვე და ვასწავლით A1 - C1
-        დონეებს. მოსწავლეების მინიმალური ასაკია 17.
+        კურსის ხანგრძლივობა ინდივიდუალურია, ხოლო მინიმალური პერიოდია 4 თვე და
+        ვასწავლით A1-C1 დონეებს.
       </p>
     </div>
   ),
@@ -193,8 +193,8 @@ const courseDescriptions: {
       </p>
       <br />
       <p>
-        1 ჯგუფური გაკვეთილი გრძელდება 90 წთ-მდე და ერთი სრული კურსი მოიცავს 4
-        თვეს და ვასწავლით დონეებს სრულიად ნულიდან მოწინავე დონის ჩათვლით
+        1 ჯგუფური გაკვეთილი გრძელდება 90 წთ-მდე და სწავლის პერიოდი
+        ინდივიდუალურია, ვასწავლით დონეებს სრულიად ნულიდან მოწინავე დონის ჩათვლით
         (A1-B2). კურსი განკუთვნილია{" "}
         <span className="text-lingo-green font-bold">
           10-დან 16 წლამდე მოზარდები
@@ -218,7 +218,7 @@ export default function CourseDetails(props: CourseDetailsProps) {
       {courseDescriptions[props.courseTitle]}
       {props.courseTitle !== "englishForTeens" && (
         <strong className="text-lingo-green">
-          კურსის ხანგრძლივობა - 4 თვე
+          სწავლის მინიმალური პერიოდი - 4 თვე
         </strong>
       )}
       <strong className="text-lingo-black">
@@ -263,16 +263,27 @@ export default function CourseDetails(props: CourseDetailsProps) {
         <strong>
           {price
             ? price + " ლარი " + "(4 თვის)"
-            : "ფასის სანახავად მონიშნეთ სასურველი ვარიანტები სამივე კატეგორიიდან"}
+            : "ფასის სანახავად მონიშნეთ სასურველი ვარიანტები მოცემული კატეგორიებიდან"}
         </strong>
       </p>
       <section className="flex flex-col gap-2">
         <h1 className="font-bold text-lingo-green">გადახდის მეთოდები :</h1>
         <ul className="px-5 list-decimal">
-          <li>
-            წინასწარ ერთიანად - <strong>10%</strong> ფასდაკლება
-          </li>
-          <li>ორ ნაწილად</li>
+          {props.courseTitle !== "englishForTeens" ? (
+            <>
+              <li>
+                4 თვის წინასწარ ერთიანად - <strong>10%</strong> ფასდაკლება
+              </li>
+              <li>4 თვის ორ ნაწილად</li>
+            </>
+          ) : (
+            <>
+              <li>ყოველ თვე</li>
+              <li>
+                4 თვის წინასწარ ერთიანად - <strong>10%</strong> ფასდაკლება
+              </li>
+            </>
+          )}
         </ul>
       </section>
       <a href={courseUrls[props.courseTitle]} target="_blank">
