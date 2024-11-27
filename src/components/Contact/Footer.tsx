@@ -15,12 +15,12 @@ function Footer() {
         className="bg-lingo-black mt-20 grid grid-flow-row md:grid-flow-col place-items-center text-[#fff] text-base md:text-lg py-5 h-[300px] lg:h-[240px]"
       >
         <div className="flex flex-col items-center gap-5">
-          <p
+          {/* <p
             className="font-bold cursor-pointer"
             onClick={() => setIsTermsModalOpen(true)}
           >
             წესები და პირობები
-          </p>
+          </p> */}
           <p
             className="font-bold cursor-pointer"
             onClick={() => setIsConfidentialityModalOpen(true)}

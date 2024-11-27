@@ -76,7 +76,7 @@ const courseDescriptions: {
       <br />
       <p>
         კურსის ხანგრძლივობა ინდივიდუალურია, ხოლო მინიმალური პერიოდია 4 თვე და
-        ვასწავლით A1-C1 დონეებს.
+        ვასწავლით A1-C1 დონეებს. მოსწავლეების მინიმალური ასაკია 17.
       </p>
     </div>
   ),
@@ -138,7 +138,7 @@ const courseDescriptions: {
 
       <p>
         კურსის ხანგრძლივობა ინდივიდუალურია, ხოლო მინიმალური პერიოდია 4 თვე და
-        ვასწავლით A1-C1 დონეებს.
+        ვასწავლით A1-C1 დონეებს. მოსწავლეების მინიმალური ასაკია 17.
       </p>
     </div>
   ),
@@ -193,9 +193,8 @@ const courseDescriptions: {
       </p>
       <br />
       <p>
-        1 ჯგუფური გაკვეთილი გრძელდება 90 წთ-მდე და სწავლის პერიოდი
-        ინდივიდუალურია, ვასწავლით დონეებს სრულიად ნულიდან მოწინავე დონის ჩათვლით
-        (A1-B2). კურსი განკუთვნილია{" "}
+        სწავლის პერიოდი ინდივიდუალურია, ვასწავლით დონეებს სრულიად ნულიდან
+        მოწინავე დონის ჩათვლით (A1-B2). კურსი განკუთვნილია{" "}
         <span className="text-lingo-green font-bold">
           10-დან 16 წლამდე მოზარდები
         </span>
@@ -241,16 +240,14 @@ export default function CourseDetails(props: CourseDetailsProps) {
           />
         </section>
       )}
-      {props.courseTitle !== "englishForTeens" && (
-        <section>
-          <CourseRadioInput
-            title="გაკვეთილის ტიპი"
-            choices={["ინდივიდუალური", "ჯგუფური"]}
-            selectedItems={selectedItems}
-            setSelectedItems={setSelectedItems}
-          />
-        </section>
-      )}
+      <section>
+        <CourseRadioInput
+          title="გაკვეთილის ტიპი"
+          choices={["ინდივიდუალური", "ჯგუფური"]}
+          selectedItems={selectedItems}
+          setSelectedItems={setSelectedItems}
+        />
+      </section>
       <section>
         <CourseRadioInput
           title="გაკვეთილის სიხშირე"
@@ -262,7 +259,9 @@ export default function CourseDetails(props: CourseDetailsProps) {
       <p>
         <strong>
           {price
-            ? price + " ლარი " + "(4 თვის)"
+            ? price +
+              " ლარი " +
+              `(${props.courseTitle === "englishForTeens" ? 1 : 4} თვის)`
             : "ფასის სანახავად მონიშნეთ სასურველი ვარიანტები მოცემული კატეგორიებიდან"}
         </strong>
       </p>
@@ -272,9 +271,16 @@ export default function CourseDetails(props: CourseDetailsProps) {
           {props.courseTitle !== "englishForTeens" ? (
             <>
               <li>
-                4 თვის წინასწარ ერთიანად - <strong>10%</strong> ფასდაკლება
+                4 თვის წინასწარ ერთიანად{" "}
+                {selectedItems["გაკვეთილის ტიპი"] === "ინდივიდუალური" ? (
+                  <>
+                    - <strong>10%</strong> ფასდაკლება
+                  </>
+                ) : null}
               </li>
-              <li>4 თვის ორ ნაწილად</li>
+              {selectedItems["გაკვეთილის ტიპი"] === "ინდივიდუალური" ? (
+                <li>4 თვის ორ ნაწილად</li>
+              ) : null}
             </>
           ) : (
             <>
