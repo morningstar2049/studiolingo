@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
-
 const prices = {
-  "english-ინდივიდუალური-კვირაში 2-ჯერ": 990,
-  "english-ინდივიდუალური-კვირაში 3-ჯერ": 1350,
+  "english-ინდივიდუალური-კვირაში 2-ჯერ": 1200,
+  "english-ინდივიდუალური-კვირაში 3-ჯერ": 1600,
   "english-ჯგუფური-კვირაში 2-ჯერ": 670,
   "english-ჯგუფური-კვირაში 3-ჯერ": 830,
   "german-ინდივიდუალური-კვირაში 2-ჯერ": 1080,
@@ -31,8 +29,10 @@ function useCalculatePrice(
   const frequency = selectedItems["გაკვეთილის სიხშირე"];
 
   return {
-    // @ts-ignore
-    price: prices[[lang, type, frequency].filter(Boolean).join("-")] || 0,
+    price:
+      prices[
+        [lang, type, frequency].filter(Boolean).join("-") as keyof typeof prices
+      ] || 0,
   };
 }
 
