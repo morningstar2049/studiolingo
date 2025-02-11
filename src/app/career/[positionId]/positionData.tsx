@@ -186,7 +186,7 @@ export const positionData: TPositionData = {
       </>
     ),
     location: "თბილისი",
-    time: "ნახევარი",
+    time: "სრული",
     salaryType: "კონკურენტული",
     googleFormLink: "https://forms.gle/KnmQ195et7hcYwYa8",
     metaImageUrl: "https://i.ibb.co/gSSWFgt/eng.png",

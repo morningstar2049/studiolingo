@@ -19,16 +19,6 @@ export const team: Team[] = [
     fill: true,
     objectFit: "contain",
   },
-
-  {
-    videoUrl:
-      "https://www.youtube.com/watch?v=eF6gPICV_Yo&ab_channel=StudioLingo",
-    src: "/teacher-3.png",
-    alt: "teacher3",
-    fill: true,
-    objectFit: "contain",
-  },
-
   {
     videoUrl: "https://www.youtube.com/shorts/eoxGPakshQ0",
     src: "/teacher-4.png",
@@ -68,13 +58,6 @@ export const team: Team[] = [
     videoUrl: "https://www.youtube.com/shorts/Dn-7pWFT8n8",
     src: "/teacher-9.png",
     alt: "teacher9",
-    fill: true,
-    objectFit: "contain",
-  },
-  {
-    videoUrl: "https://www.youtube.com/shorts/HPSIxvR-J2o",
-    src: "/teacher-11.png",
-    alt: "teacher11",
     fill: true,
     objectFit: "contain",
   },
