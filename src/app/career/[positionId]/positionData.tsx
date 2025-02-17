@@ -189,7 +189,7 @@ export const positionData: TPositionData = {
     time: "სრული",
     salaryType: "კონკურენტული",
     googleFormLink: "https://forms.gle/KnmQ195et7hcYwYa8",
-    metaImageUrl: "https://i.ibb.co/gSSWFgt/eng.png",
+    metaImageUrl: "https://i.ibb.co/DPsqp1VW/English-teacher.png",
   },
   chineseTeacher: {
     title: "ჩინურის მასწავლებელი",
@@ -324,7 +324,7 @@ export const positionData: TPositionData = {
     time: "სრული",
     salaryType: "კონკურენტული",
     googleFormLink: "https://forms.gle/qTVPZUeTDtcwWjQj9",
-    metaImageUrl: "https://i.ibb.co/4W6ShbN/desktop-vacancy-cover.png",
+    metaImageUrl: "https://i.ibb.co/QvFB3VJx/content-creator.png",
   },
 
   administrator: {
@@ -367,7 +367,7 @@ export const positionData: TPositionData = {
     time: "ნახევარი",
     salaryType: "კონკურენტული",
     googleFormLink: "https://forms.gle/sNGvDbdSdDoi7oXA9",
-    metaImageUrl: "https://i.ibb.co/dBf0MSG/admin.png",
+    metaImageUrl: "https://i.ibb.co/8gSDB4wp/administrator.png",
   },
   // reporter: {
   //   title: "რეპორტიორი",
