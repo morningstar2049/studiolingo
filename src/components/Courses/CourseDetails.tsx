@@ -286,7 +286,12 @@ export default function CourseDetails(props: CourseDetailsProps) {
             <>
               <li>ყოველ თვე</li>
               <li>
-                4 თვის წინასწარ ერთიანად - <strong>10%</strong> ფასდაკლება
+                4 თვის წინასწარ ერთიანად
+                {selectedItems["გაკვეთილის ტიპი"] === "ინდივიდუალური" ? (
+                  <>
+                    - <strong>10%</strong> ფასდაკლება
+                  </>
+                ) : null}
               </li>
             </>
           )}
