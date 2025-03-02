@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import { MobileMenuContextProvider } from "@/Context/MobileMenuContext";
 import MobileNavMenu from "@/components/MobileNavMenu";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
   title: "Studio Lingo",
@@ -50,6 +51,7 @@ export default function RootLayout({
     <>
       <html lang="en" className={`${firago.variable} font-sans scroll-smooth`}>
         <body>
+          <Analytics />
           <div id="fb-root" />
 
           <div id="fb-customer-chat" className="fb-customerchat" />
