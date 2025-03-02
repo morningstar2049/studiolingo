@@ -1,13 +1,13 @@
 import VacanciesListItem, { VacanciesListItemProps } from "./VacanciesListItem";
 
 export const vacancies: VacanciesListItemProps[] = [
-  // {
-  //   position: "ინგლისურის მასწავლებელი",
-  //   location: "თბილისი",
-  //   time: "სრული",
-  //   salary: "კონკურენტული",
-  //   route: "englishTeacher",
-  // },
+  {
+    position: "ინგლისურის მასწავლებელი",
+    location: "თბილისი",
+    time: "სრული",
+    salary: "კონკურენტული",
+    route: "englishTeacher",
+  },
   // {
   //   position: "გერმანულის მასწავლებელი",
   //   location: "თბილისი",

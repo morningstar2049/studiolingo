@@ -278,9 +278,6 @@ export default function CourseDetails(props: CourseDetailsProps) {
                   </>
                 ) : null}
               </li>
-              {selectedItems["გაკვეთილის ტიპი"] === "ინდივიდუალური" ? (
-                <li>4 თვის ორ ნაწილად</li>
-              ) : null}
             </>
           ) : (
             <>

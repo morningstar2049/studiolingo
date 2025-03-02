@@ -24,7 +24,7 @@ export default function CoursesAccordion() {
           <CourseDetails courseTitle="english" />
         </AccordionDetails>
       </Accordion>
-      <Accordion className="p-3 shadow-none">
+      {/* <Accordion className="p-3 shadow-none">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon sx={{ color: "#2f9e4d" }} />}
           aria-controls="panel2a-content"
@@ -37,7 +37,7 @@ export default function CoursesAccordion() {
         <AccordionDetails>
           <CourseDetails courseTitle="german" />
         </AccordionDetails>
-      </Accordion>
+      </Accordion> */}
       <Accordion className="p-3 shadow-none">
         <AccordionSummary
           expandIcon={<ExpandMoreIcon sx={{ color: "#2f9e4d" }} />}
