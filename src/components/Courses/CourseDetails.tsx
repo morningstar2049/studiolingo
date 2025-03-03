@@ -270,14 +270,7 @@ export default function CourseDetails(props: CourseDetailsProps) {
         <ul className="px-5 list-decimal">
           {props.courseTitle !== "englishForTeens" ? (
             <>
-              <li>
-                4 თვის წინასწარ ერთიანად{" "}
-                {selectedItems["გაკვეთილის ტიპი"] === "ინდივიდუალური" ? (
-                  <>
-                    - <strong>10%</strong> ფასდაკლება
-                  </>
-                ) : null}
-              </li>
+              <li>4 თვის წინასწარ ერთიანად</li>
             </>
           ) : (
             <>
