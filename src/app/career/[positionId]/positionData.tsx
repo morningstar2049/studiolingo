@@ -55,7 +55,7 @@ export const positionData: TPositionData = {
         ცოცხალ შეკრებებზე გასართობ აქტივობებს (ჩვენი გართობები{" "}
         <a
           className="underline text-lingo-green"
-          href="https://www.youtube.com/shorts/wFeKM5Woe84"
+          href="https://shorturl.at/fkZIk"
           target="_blank"
         >
           იხილეთ აქ
@@ -134,7 +134,7 @@ export const positionData: TPositionData = {
         ცოცხალ შეკრებებზე გასართობ აქტივობებს (ჩვენი გართობები:{" "}
         <a
           className="underline text-lingo-green"
-          href="https://www.youtube.com/shorts/wFeKM5Woe84"
+          href="https://shorturl.at/fkZIk"
           target="_blank"
         >
           იხილეთ აქ
@@ -159,9 +159,8 @@ export const positionData: TPositionData = {
         <br />
         თუკი კანდიდატი ფლობს ინგლისურის სწავლების მინიმუმ 1 წლიან გამოცდილებას,
         ფლობს CELTA / DELTA სერთიფიკატს და შერჩევის სამივე ეტაპს უმაღლესი
-        შედეგებით გაივლის, მისთვის გამოსაცდელი სტაჟირების ხანგრძლივობა იქნება
-        მხოლოდ 1-2 თვე იმისათვის, რომ ისწავლოს და გაეცნოს ჩვენი გაკვეთილების
-        მოდელებს.
+        შედეგებით გაივლის, მისთვის სტაჟირების ხანგრძლივობა იქნება მხოლოდ 1-2 თვე
+        იმისათვის, რომ ისწავლოს და გაეცნოს ჩვენი გაკვეთილების მოდელებს.
         <br />
         <br />
         <strong className="text-lingo-green">სამუშაოს გრაფიკი:</strong> სრული
@@ -219,7 +218,7 @@ export const positionData: TPositionData = {
         ცოცხალ შეკრებებზე გასართობ აქტივობებს (ჩვენი გართობები:{" "}
         <a
           className="underline text-lingo-green"
-          href="https://www.youtube.com/shorts/wFeKM5Woe84"
+          href="https://shorturl.at/fkZIk"
           target="_blank"
         >
           იხილეთ აქ
@@ -304,7 +303,7 @@ export const positionData: TPositionData = {
         ცოცხალ შეკრებებზე გასართობ აქტივობებს (ჩვენი გართობები:{" "}
         <a
           className="underline text-lingo-green"
-          href="https://www.youtube.com/shorts/wFeKM5Woe84"
+          href="https://shorturl.at/fkZIk"
           target="_blank"
         >
           იხილეთ აქ
@@ -346,7 +345,7 @@ export const positionData: TPositionData = {
         ცოცხალ შეკრებებზე გასართობ აქტივობებს (ჩვენი გართობები:{" "}
         <a
           className="underline text-lingo-green"
-          href="https://www.youtube.com/shorts/wFeKM5Woe84"
+          href="https://shorturl.at/fkZIk"
           target="_blank"
         >
           იხილეთ აქ
@@ -403,7 +402,7 @@ export const positionData: TPositionData = {
   //       ცოცხალ შეკრებებზე გასართობ აქტივობებს (ჩვენი გართობები:{" "}
   //       <a
   //         className="underline text-lingo-green"
-  //         href="https://www.youtube.com/shorts/wFeKM5Woe84"
+  //         href="https://shorturl.at/fkZIk"
   //         target="_blank"
   //       >
   //         იხილეთ აქ
