@@ -11,10 +11,10 @@ const prices = {
   "russian-ინდივიდუალური-კვირაში 3-ჯერ": 1280,
   "russian-ჯგუფური-კვირაში 2-ჯერ": 600,
   "russian-ჯგუფური-კვირაში 3-ჯერ": 800,
-  "englishForTeens-ჯგუფური-კვირაში 2-ჯერ": 170,
-  "englishForTeens-ჯგუფური-კვირაში 3-ჯერ": 220,
-  "englishForTeens-ინდივიდუალური-კვირაში 2-ჯერ": 300,
-  "englishForTeens-ინდივიდუალური-კვირაში 3-ჯერ": 400,
+  "englishForTeens-ჯგუფური-კვირაში 2-ჯერ": 680,
+  "englishForTeens-ჯგუფური-კვირაში 3-ჯერ": 880,
+  "englishForTeens-ინდივიდუალური-კვირაში 2-ჯერ": 1200,
+  "englishForTeens-ინდივიდუალური-კვირაში 3-ჯერ": 1600,
 };
 
 function useCalculatePrice(

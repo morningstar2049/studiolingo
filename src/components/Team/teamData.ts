@@ -98,4 +98,19 @@ export const team: Team[] = [
     fill: true,
     objectFit: "contain",
   },
+  {
+    videoUrl:
+      "https://drive.google.com/file/d/15BTLCaFVQrZE7UeqhVopJIuPdKRW1kkl/view",
+    src: "/teacher-17.png",
+    alt: "teacher16",
+    fill: true,
+    objectFit: "contain",
+  },
+  {
+    videoUrl: "",
+    src: "/teacher-18.png",
+    alt: "teacher16",
+    fill: true,
+    objectFit: "contain",
+  },
 ];
