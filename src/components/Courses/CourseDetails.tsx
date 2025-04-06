@@ -207,7 +207,7 @@ const courseDescriptions: {
 export default function CourseDetails(props: CourseDetailsProps) {
   const [selectedItems, setSelectedItems] = useState({
     "გაკვეთილის ტიპი": "",
-    "გაკვეთილის სიხშირე": "",
+    "გაკვეთილის სიხშირე": "კვირაში 2-ჯერ",
   });
 
   const { price } = useCalculatePrice(props.courseTitle, selectedItems);
@@ -251,7 +251,7 @@ export default function CourseDetails(props: CourseDetailsProps) {
       <section>
         <CourseRadioInput
           title="გაკვეთილის სიხშირე"
-          choices={["კვირაში 2-ჯერ", "კვირაში 3-ჯერ"]}
+          choices={["კვირაში 2-ჯერ"]}
           selectedItems={selectedItems}
           setSelectedItems={setSelectedItems}
         />

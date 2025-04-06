@@ -75,14 +75,14 @@ export const team: Team[] = [
     fill: true,
     objectFit: "contain",
   },
-  {
-    videoUrl:
-      "https://drive.google.com/file/d/1xibwT1Xai1VuxZKGjTl7MKZfknSygBXO/view?usp=drive_link",
-    src: "/teacher-11.png",
-    alt: "teacher11",
-    fill: true,
-    objectFit: "contain",
-  },
+  // {
+  //   videoUrl:
+  //     "https://drive.google.com/file/d/1xibwT1Xai1VuxZKGjTl7MKZfknSygBXO/view?usp=drive_link",
+  //   src: "/teacher-11.png",
+  //   alt: "teacher11",
+  //   fill: true,
+  //   objectFit: "contain",
+  // },
   {
     videoUrl:
       "https://drive.google.com/file/d/1mhII_ne7WEhwmfvd9n5uLyFIFRoJTntH/view?usp=drive_link",

@@ -19,7 +19,9 @@ type CourseRadioInputProps = {
 };
 
 export default function CourseRadioInput(props: CourseRadioInputProps) {
-  const [choice, setChoice] = useState("");
+  const [choice, setChoice] = useState(
+    props.title === "გაკვეთილის სიხშირე" ? "კვირაში 2-ჯერ" : ""
+  );
   const courseTypeWidthClass =
     props.title === "კურსის ტიპი" && props.choices.length === 4
       ? "flex flex-wrap h-[85px] w-[80%] sm:h-fit"
