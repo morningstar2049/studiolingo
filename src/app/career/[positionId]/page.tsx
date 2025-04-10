@@ -11,6 +11,7 @@ export async function generateMetadata({
   const id = params.positionId;
   return {
     openGraph: {
+      title: positionData[id].title,
       images: [positionData[id].metaImageUrl],
     },
   };

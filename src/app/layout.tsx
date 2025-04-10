@@ -6,14 +6,24 @@ import Navbar from "@/components/Navbar";
 import { MobileMenuContextProvider } from "@/Context/MobileMenuContext";
 import MobileNavMenu from "@/components/MobileNavMenu";
 import { Analytics } from "@vercel/analytics/react";
+import Head from "next/head";
 
 export const metadata: Metadata = {
-  title: "Studio Lingo",
-  description: "შეაბიჯე ახალ სამყაროში",
+  title: "Studio Lingo - ინგლისური ენის კურსები",
+  description: "ინგლისური ენის კურსები. ისწავლეთ ინგლისური სტუდიო ლინგოში!",
   icons: {
     icon: "/favicon.png",
   },
+  keywords: [
+    "ინგლისურის კურსები",
+    "ინგლისური",
+    "ონლაინ ინგლისურის კურსები",
+    "english classes",
+    "შეაბიჯე ახალ სამყაროში",
+  ],
   openGraph: {
+    title: "სტუდიო ლინგო - ინგლისური ენების სკოლა",
+    description: "ისწავლეთ ინგლისური სტუდიო ლინგოში!",
     images: ["https://i.ibb.co/f8s59ww/page-Thumbnail.png"],
   },
 };
@@ -47,12 +57,16 @@ export default function RootLayout({
 }) {
   return (
     <>
+      <Head>
+        <meta
+          name="description"
+          content="ინგლისური ენის კურსები ონლაინ. ისწავლეთ ინგლისური სტუდიო ლინგოში!"
+          key="desc"
+        />
+      </Head>
       <html lang="en" className={`${firago.variable} font-sans scroll-smooth`}>
         <body>
           {/* <Analytics /> */}
-          <div id="fb-root" />
-
-          <div id="fb-customer-chat" className="fb-customerchat" />
           <MobileMenuContextProvider>
             <div className="sticky top-[-2px] z-10">
               <Header />
