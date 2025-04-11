@@ -243,7 +243,7 @@ export default function CourseDetails(props: CourseDetailsProps) {
       <section>
         <CourseRadioInput
           title="გაკვეთილის ტიპი"
-          choices={["ინდივიდუალური", "ჯგუფური"]}
+          choices={["ორ მოსწავლიანი", "ჯგუფური"]}
           selectedItems={selectedItems}
           setSelectedItems={setSelectedItems}
         />
