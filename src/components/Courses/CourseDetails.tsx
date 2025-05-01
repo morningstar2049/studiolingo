@@ -217,11 +217,14 @@ export default function CourseDetails(props: CourseDetailsProps) {
       {courseDescriptions[props.courseTitle]}
       {props.courseTitle !== "englishForTeens" && (
         <strong className="text-lingo-green">
-          სწავლის მინიმალური პერიოდი - 4 თვე
+          სწავლის მინიმალური პერიოდი - 3 თვე
         </strong>
       )}
       <strong className="text-lingo-black">
-        გაკვეთილის ხანგრძლივობა - 1 სთ 30 წთ
+        გაკვეთილის ხანგრძლივობა -{" "}
+        {selectedItems["გაკვეთილის ტიპი"] === "ინდივიდუალური"
+          ? "1 სთ"
+          : "1 სთ 30 წთ"}
       </strong>
       {props.courseTitle === "englishForTeens" && (
         <strong className="text-lingo-black">ჯგუფში 3 ან 4 მოსწავლე</strong>
@@ -243,7 +246,7 @@ export default function CourseDetails(props: CourseDetailsProps) {
       <section>
         <CourseRadioInput
           title="გაკვეთილის ტიპი"
-          choices={["ორ მოსწავლიანი", "ჯგუფური"]}
+          choices={["ინდივიდუალური", "ჯგუფური"]}
           selectedItems={selectedItems}
           setSelectedItems={setSelectedItems}
         />
@@ -259,7 +262,7 @@ export default function CourseDetails(props: CourseDetailsProps) {
       <p>
         <strong>
           {price
-            ? price + " ლარი " + `(4 თვის)`
+            ? price + " ლარი " + `(3 თვის)`
             : "ფასის სანახავად მონიშნეთ სასურველი ვარიანტები მოცემული კატეგორიებიდან"}
         </strong>
       </p>
@@ -268,11 +271,11 @@ export default function CourseDetails(props: CourseDetailsProps) {
         <ul className="px-5 list-decimal">
           {props.courseTitle !== "englishForTeens" ? (
             <>
-              <li>4 თვის წინასწარ ერთიანად</li>
+              <li>3 თვის წინასწარ ერთიანად</li>
             </>
           ) : (
             <>
-              <li>4 თვის წინასწარ ერთიანად</li>
+              <li>3 თვის წინასწარ ერთიანად</li>
             </>
           )}
         </ul>
