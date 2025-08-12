@@ -61,30 +61,6 @@ export const team: Team[] = [
   },
   {
     videoUrl:
-      "https://drive.google.com/file/d/1WnQh_fHj4pv2UBvw2ZGqJSjD3vC1yLVB/view?usp=drive_link",
-    src: "/teacher-9.png",
-    alt: "teacher9",
-    fill: true,
-    objectFit: "contain",
-  },
-  {
-    videoUrl:
-      "https://drive.google.com/file/d/1nIga8V1fz2qmqee6r1cX4LkiAL2aqjCG/view?usp=sharing",
-    src: "/teacher-10.png",
-    alt: "teacher10",
-    fill: true,
-    objectFit: "contain",
-  },
-  // {
-  //   videoUrl:
-  //     "https://drive.google.com/file/d/1xibwT1Xai1VuxZKGjTl7MKZfknSygBXO/view?usp=drive_link",
-  //   src: "/teacher-11.png",
-  //   alt: "teacher11",
-  //   fill: true,
-  //   objectFit: "contain",
-  // },
-  {
-    videoUrl:
       "https://drive.google.com/file/d/1mhII_ne7WEhwmfvd9n5uLyFIFRoJTntH/view?usp=drive_link",
     src: "/teacher-15.png",
     alt: "teacher15",
@@ -102,13 +78,6 @@ export const team: Team[] = [
     videoUrl:
       "https://drive.google.com/file/d/15BTLCaFVQrZE7UeqhVopJIuPdKRW1kkl/view",
     src: "/teacher-17.png",
-    alt: "teacher16",
-    fill: true,
-    objectFit: "contain",
-  },
-  {
-    videoUrl: "",
-    src: "/teacher-18.png",
     alt: "teacher16",
     fill: true,
     objectFit: "contain",
