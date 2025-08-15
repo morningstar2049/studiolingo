@@ -217,7 +217,7 @@ export default function CourseDetails(props: CourseDetailsProps) {
       {courseDescriptions[props.courseTitle]}
       {props.courseTitle !== "englishForTeens" && (
         <strong className="text-lingo-green">
-          სწავლის მინიმალური პერიოდი - 3 თვე
+          სწავლის მინიმალური პერიოდი - 4 თვე
         </strong>
       )}
       <strong className="text-lingo-black">
@@ -262,7 +262,7 @@ export default function CourseDetails(props: CourseDetailsProps) {
       <p>
         <strong>
           {price
-            ? price + " ლარი " + `(3 თვის)`
+            ? price + " ლარი " + `(4 თვის)`
             : "ფასის სანახავად მონიშნეთ სასურველი ვარიანტები მოცემული კატეგორიებიდან"}
         </strong>
       </p>
@@ -271,11 +271,11 @@ export default function CourseDetails(props: CourseDetailsProps) {
         <ul className="px-5 list-decimal">
           {props.courseTitle !== "englishForTeens" ? (
             <>
-              <li>3 თვის წინასწარ ერთიანად</li>
+              <li>4 თვის წინასწარ ერთიანად</li>
             </>
           ) : (
             <>
-              <li>3 თვის წინასწარ ერთიანად</li>
+              <li>4 თვის წინასწარ ერთიანად</li>
             </>
           )}
         </ul>
