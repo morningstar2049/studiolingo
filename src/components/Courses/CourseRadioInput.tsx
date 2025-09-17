@@ -9,36 +9,51 @@ type CourseRadioInputProps = {
   selectedItems: {
     "გაკვეთილის ტიპი": string;
     "გაკვეთილის სიხშირე": string;
+    "კურსის ფორმატი": string;
   };
   setSelectedItems: Dispatch<
-    SetStateAction<{
-      "გაკვეთილის ტიპი": string;
-      "გაკვეთილის სიხშირე": string;
-    }>
+    SetStateAction<CourseRadioInputProps["selectedItems"]>
   >;
 };
 
-export default function CourseRadioInput(props: CourseRadioInputProps) {
-  const [choice, setChoice] = useState(
-    props.title === "გაკვეთილის სიხშირე" ? "კვირაში 2-ჯერ" : ""
-  );
+export default function CourseRadioInput({
+  choices,
+  selectedItems,
+  setSelectedItems,
+  title,
+}: CourseRadioInputProps) {
+  // const [choice, setChoice] = useState(
+  //   title === "გაკვეთილის სიხშირე" ? "კვირაში 2-ჯერ" : ""
+  // );
   const courseTypeWidthClass =
-    props.title === "კურსის ტიპი" && props.choices.length === 4
+    title === "კურსის ტიპი" && choices.length === 4
       ? "flex flex-wrap h-[85px] w-[80%] sm:h-fit"
       : "w-fit";
   return (
     <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-      <p>{props.title} :</p>
+      <p>{title} :</p>
       <RadioGroup
         className={`sm:w-fit ${courseTypeWidthClass}`}
         orientation="horizontal"
         aria-labelledby="segmented-controls-example"
         name="choice"
-        value={choice}
+        value={selectedItems[title as keyof typeof selectedItems]}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           const val = event.target.value;
-          setChoice(val);
-          props.setSelectedItems((prev) => ({ ...prev, [props.title]: val }));
+
+          if (title === "კურსის ფორმატი" && val === "ოფისში") {
+            setSelectedItems((prev) => ({
+              ...prev,
+              "გაკვეთილის ტიპი": "ჯგუფური",
+            }));
+          }
+          if (title === "კურსის ფორმატი" && val === "ონლაინ") {
+            setSelectedItems((prev) => ({
+              ...prev,
+              "გაკვეთილის ტიპი": "",
+            }));
+          }
+          setSelectedItems((prev) => ({ ...prev, [title]: val }));
         }}
         sx={{
           minHeight: 48,
@@ -49,7 +64,7 @@ export default function CourseRadioInput(props: CourseRadioInputProps) {
           "--Radio-actionRadius": "8px",
         }}
       >
-        {props.choices.map((item) => (
+        {choices.map((item) => (
           <Radio
             key={item}
             value={item}
@@ -61,8 +76,10 @@ export default function CourseRadioInput(props: CourseRadioInputProps) {
               px: 2,
               py: 1,
               alignItems: "center",
-              color: () => (choice === item ? "white" : "black"),
-              // fontWeight: () => (choice === item ? "bold" : "400"),
+              color: () =>
+                selectedItems[title as keyof typeof selectedItems] === item
+                  ? "white"
+                  : "black",
             }}
             slotProps={{
               action: ({ checked }) => ({

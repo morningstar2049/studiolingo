@@ -9,8 +9,6 @@ function Courses() {
         <IlikoMessage />
         <CoursesAccordion />
       </div>
-
-      <YoutubeVideo src="https://www.youtube.com/embed/cFNGpLMF5nQ" />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 import { AiOutlineMail, AiOutlinePhone } from "react-icons/ai";
+import { CiLocationOn } from "react-icons/ci";
 import ImageWrapper from "../ImageWrapper";
 import { useState } from "react";
 import Modal from "../Modal";
@@ -15,12 +16,6 @@ function Footer() {
         className="bg-lingo-black mt-20 grid grid-flow-row md:grid-flow-col place-items-center text-[#fff] text-base md:text-lg py-5 h-[300px] lg:h-[240px]"
       >
         <div className="flex flex-col items-center gap-5">
-          {/* <p
-            className="font-bold cursor-pointer"
-            onClick={() => setIsTermsModalOpen(true)}
-          >
-            წესები და პირობები
-          </p> */}
           <p
             className="font-bold cursor-pointer"
             onClick={() => setIsConfidentialityModalOpen(true)}
@@ -43,6 +38,16 @@ function Footer() {
           <div className="flex gap-2">
             <AiOutlineMail className="text-[20px] md:text-[22px]" />
             <p className="text-[#fff]">info@studiolingo.ge</p>
+          </div>
+          <div className="flex gap-2">
+            <CiLocationOn className="text-[20px] md:text-[22px]" />
+            <a
+              href="https://www.google.com/maps/dir//studiolingo"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <p className="text-[#fff]">ბ. კვერნაძის 13</p>
+            </a>
           </div>
         </div>
         <p>© Studio Lingo - ყველა უფლება დაცულია</p>

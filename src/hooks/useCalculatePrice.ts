@@ -1,7 +1,8 @@
 const prices = {
-  "english-ინდივიდუალური-კვირაში 2-ჯერ": 1600,
+  "english-ონლაინ-ინდივიდუალური-კვირაში 2-ჯერ": 1600,
   // "english-ინდივიდუალური-კვირაში 3-ჯერ": 1600,
-  "english-ჯგუფური-კვირაში 2-ჯერ": 980,
+  "english-ონლაინ-ჯგუფური-კვირაში 2-ჯერ": 980,
+  "english-ოფისში-ჯგუფური-კვირაში 2-ჯერ": 840,
   // "english-ჯგუფური-კვირაში 3-ჯერ": 840,
   // "german-ინდივიდუალური-კვირაში 2-ჯერ": 1080,
   // "german-ინდივიდუალური-კვირაში 3-ჯერ": 1560,
@@ -11,9 +12,10 @@ const prices = {
   // "russian-ინდივიდუალური-კვირაში 3-ჯერ": 1280,
   // "russian-ჯგუფური-კვირაში 2-ჯერ": 600,
   // "russian-ჯგუფური-კვირაში 3-ჯერ": 800,
-  "englishForTeens-ჯგუფური-კვირაში 2-ჯერ": 980,
+  "englishForTeens-ონლაინ-ჯგუფური-კვირაში 2-ჯერ": 980,
+  "englishForTeens-ოფისში-ჯგუფური-კვირაში 2-ჯერ": 840,
   // "englishForTeens-ჯგუფური-კვირაში 3-ჯერ": 880,
-  "englishForTeens-ინდივიდუალური-კვირაში 2-ჯერ": 1600,
+  "englishForTeens-ონლაინ-ინდივიდუალური-კვირაში 2-ჯერ": 1600,
   // "englishForTeens-ინდივიდუალური-კვირაში 3-ჯერ": 1600,
 };
 
@@ -22,16 +24,20 @@ function useCalculatePrice(
   selectedItems: {
     "გაკვეთილის ტიპი": string;
     "გაკვეთილის სიხშირე": string;
+    "კურსის ფორმატი": string;
   }
 ) {
   const lang = courseTitle;
+  const format = selectedItems["კურსის ფორმატი"];
   const type = selectedItems["გაკვეთილის ტიპი"];
   const frequency = selectedItems["გაკვეთილის სიხშირე"];
 
   return {
     price:
       prices[
-        [lang, type, frequency].filter(Boolean).join("-") as keyof typeof prices
+        [lang, format, type, frequency]
+          .filter(Boolean)
+          .join("-") as keyof typeof prices
       ] || 0,
   };
 }

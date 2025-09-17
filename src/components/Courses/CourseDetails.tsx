@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useCalculatePrice from "@/hooks/useCalculatePrice";
 import CourseRadioInput from "./CourseRadioInput";
 import Button from "../Button";
@@ -208,9 +208,28 @@ export default function CourseDetails(props: CourseDetailsProps) {
   const [selectedItems, setSelectedItems] = useState({
     "გაკვეთილის ტიპი": "",
     "გაკვეთილის სიხშირე": "კვირაში 2-ჯერ",
+    "კურსის ფორმატი": "",
   });
 
+  const initialLessonTypeChoices = useMemo(
+    () => ["ინდივიდუალური", "ჯგუფური"],
+    []
+  );
+
+  const [lessonTypeChoices, setLessonTypeChoices] = useState(
+    initialLessonTypeChoices
+  );
+
   const { price } = useCalculatePrice(props.courseTitle, selectedItems);
+
+  useEffect(() => {
+    if (selectedItems["კურსის ფორმატი"] === "ოფისში") {
+      setLessonTypeChoices(["ჯგუფური"]);
+    }
+    if (selectedItems["კურსის ფორმატი"] === "ონლაინ") {
+      setLessonTypeChoices(initialLessonTypeChoices);
+    }
+  }, [selectedItems, initialLessonTypeChoices]);
 
   return (
     <div className="flex flex-col gap-5">
@@ -229,24 +248,18 @@ export default function CourseDetails(props: CourseDetailsProps) {
       {props.courseTitle === "englishForTeens" && (
         <strong className="text-lingo-black">ჯგუფში 3 ან 4 მოსწავლე</strong>
       )}
-      {props.courseTitle === "english" && (
-        <section>
-          <CourseRadioInput
-            title="კურსის ტიპი"
-            choices={
-              props.courseTitle === "english"
-                ? ["ზოგადი", "სასაუბრო", "ბიზნესი", "IELTS"]
-                : ["ზოგადი", "სასაუბრო", "ბიზნესი"]
-            }
-            selectedItems={selectedItems}
-            setSelectedItems={setSelectedItems}
-          />
-        </section>
-      )}
+      <section>
+        <CourseRadioInput
+          title="კურსის ფორმატი"
+          choices={["ოფისში", "ონლაინ"]}
+          selectedItems={selectedItems}
+          setSelectedItems={setSelectedItems}
+        />
+      </section>
       <section>
         <CourseRadioInput
           title="გაკვეთილის ტიპი"
-          choices={["ინდივიდუალური", "ჯგუფური"]}
+          choices={lessonTypeChoices}
           selectedItems={selectedItems}
           setSelectedItems={setSelectedItems}
         />
@@ -262,16 +275,23 @@ export default function CourseDetails(props: CourseDetailsProps) {
       <p>
         <strong>
           {price
-            ? price + " ლარი " + `(4 თვის)`
+            ? "ფასი : " +
+              price +
+              " ლარი " +
+              `${
+                selectedItems["კურსის ფორმატი"] === "ოფისში"
+                  ? "(3 თვის)"
+                  : "(4 თვის)"
+              }`
             : "ფასის სანახავად მონიშნეთ სასურველი ვარიანტები მოცემული კატეგორიებიდან"}
         </strong>
       </p>
       <section className="flex flex-col gap-2">
         <h1 className="font-bold text-lingo-green">გადახდის მეთოდები :</h1>
         <ul className="px-5 list-decimal">
-          {props.courseTitle !== "englishForTeens" ? (
+          {selectedItems["კურსის ფორმატი"] === "ოფისში" ? (
             <>
-              <li>4 თვის წინასწარ ერთიანად</li>
+              <li>3 თვის წინასწარ ერთიანად</li>
             </>
           ) : (
             <>
