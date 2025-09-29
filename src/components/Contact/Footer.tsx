@@ -9,6 +9,7 @@ function Footer() {
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const [isConfidentialityModalOpen, setIsConfidentialityModalOpen] =
     useState(false);
+  const [isReturnPolicyModalOpen, setIsReturnPolicyModalOpen] = useState(false);
   return (
     <>
       <footer
@@ -21,6 +22,12 @@ function Footer() {
             onClick={() => setIsConfidentialityModalOpen(true)}
           >
             კონფიდენციალურობის პოლიტიკა
+          </p>
+          <p
+            className="font-bold cursor-pointer"
+            onClick={() => setIsReturnPolicyModalOpen(true)}
+          >
+            დაბრუნების პოლიტიკა
           </p>
         </div>
         <ImageWrapper
@@ -178,6 +185,48 @@ function Footer() {
         დაცვის პოლიტიკა. ინფორმაციის დაცვის პოლიტიკაში განხორციელებული
         ნებისმიერი ცვლილება დაუყოვნებლივ გამოქვეყნდება ინფორმაციის დაცვის
         გვერდზე
+      </Modal>
+      <Modal
+        open={isReturnPolicyModalOpen}
+        setOpen={setIsReturnPolicyModalOpen}
+        title="დაბრუნების პოლიტიკა"
+      >
+        <p className="font-bold underline">კურსების შეძენა ხდება ორი გზით:</p>
+        <p>
+          <span className="font-bold underline">1. ერთიანად გადახდით</span> -
+          კურსის დაწყებამდე მოსწავლესთან გასაუბრებისა და გრაფიკის შეთანხმების
+          შემდეგ მოსწავლე იხდის კურსის მთლიან საფასურს ერთიანად.
+        </p>
+        <p>
+          <span className="font-bold underline">2. ნაწილ-ნაწილ გადახდით</span> -
+          კურსის დაწყებამდე მოსწავლესთან გასაუბრებისა და გრაფიკის შეთანხმების
+          შემდეგ მოსწავლე იხდის ბანკის ნაწილ-ნაწილ გადახდით, რომლითაც შეუძლია
+          კურსის საფასურის გადახდა 4 ნაწილად ყოველ თვე.
+        </p>
+        <br />
+        <p className="font-bold underline">
+          კურსის თანხის დაბრუნება ხდება 3 გზით:
+        </p>
+        <p className="font-bold">
+          1. გრაფიკის შეთანხმდებამდე გადახდის შემთხვევაში, თუკი ჩვენი სკოლა
+          მოსწავლეს ვერ სთავაზობს მოსწავლისთვის მისაღებ გრაფიკს.
+        </p>
+        <p className="font-bold">
+          2. ჯგუფური გაკვეთილების შემთხვევაში, თუკი თანხის გადახდიდან 2 კვირის
+          განმავლობაში ჯგუფი ვერ შედგება და მოსწავლეს არ სურს 2 კვირაზე მეტი
+          ლოდინი. მოსწავლის მოთხოვნისამებრ კომპანია მოსწავლეს უბრუნებს გადახდილ
+          თანხას.
+        </p>
+        <p className="font-bold">
+          3. ნაწილ-ნაწილ გადახდის შემთხვევაში გადახდის შეთანხმების გაფორმებიდან
+          14 კალენდარული დღის განმავლობაში საქართველოს კანონმდებლობის
+          შესაბამისად.
+        </p>
+        <br />
+        სხვა შემთხვევებში გადახდილი თანხა დაბრუნებას არ ექვემდებარება.
+        ნებისმიერი უკმაყოფილების შემთხვევაში სკოლის ადმინისტრაცია და ხარისხის
+        შეფასების ჯგუფი მოსწავლესთან გაივლის კონსულტაციას და შესთავაზებს ყველა
+        შესაძლო ალტერნატივას.
       </Modal>
     </>
   );
