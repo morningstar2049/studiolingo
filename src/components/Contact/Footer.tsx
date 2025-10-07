@@ -40,11 +40,15 @@ function Footer() {
         <div className="flex flex-col justify-center h-full gap-4">
           <div className="flex gap-2">
             <AiOutlinePhone className="text-[20px] md:text-[22px]" />
-            <p className="text-[#fff]">+995 32 2 114 623</p>
+            <p className="text-[#fff]">
+              <a href="tel:+995322114623">+995 32 2 114 623</a>
+            </p>
           </div>
           <div className="flex gap-2">
             <AiOutlineMail className="text-[20px] md:text-[22px]" />
-            <p className="text-[#fff]">info@studiolingo.ge</p>
+            <p className="text-[#fff]">
+              <a href="mailto:info@studiolingo.ge">info@studiolingo.ge</a>
+            </p>
           </div>
           <div className="flex gap-2">
             <CiLocationOn className="text-[20px] md:text-[22px]" />
