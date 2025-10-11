@@ -6,9 +6,9 @@ import { vacancies } from "../components/VacanciesList";
 export async function generateMetadata({
   params,
 }: {
-  params: { positionId: TPositionKey };
+  params: Promise<{ positionId: TPositionKey }>;
 }): Promise<Metadata> {
-  const id = params.positionId;
+  const { positionId: id } = await params;
   return {
     openGraph: {
       title: positionData[id].title,
