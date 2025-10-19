@@ -7,6 +7,7 @@ import { MobileMenuContextProvider } from "@/Context/MobileMenuContext";
 import MobileNavMenu from "@/components/MobileNavMenu";
 import { Analytics } from "@vercel/analytics/react";
 import Head from "next/head";
+import { ClerkProvider } from "@clerk/nextjs";
 
 export const metadata: Metadata = {
   title: "Studio Lingo - ინგლისური ენის კურსები",
@@ -56,7 +57,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <ClerkProvider>
       <Head>
         <meta
           name="description"
@@ -77,6 +78,6 @@ export default function RootLayout({
           </MobileMenuContextProvider>
         </body>
       </html>
-    </>
+    </ClerkProvider>
   );
 }

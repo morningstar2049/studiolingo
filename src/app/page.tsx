@@ -1,6 +1,6 @@
 import MainContent from "@/components/MainContent";
 
-export default function Home() {
+export default async function Home() {
   return (
     <main>
       <MainContent />

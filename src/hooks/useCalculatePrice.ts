@@ -1,6 +1,6 @@
 const prices = {
   "english-ონლაინ-ინდივიდუალური-კვირაში 2-ჯერ": 1600,
-  // "english-ინდივიდუალური-კვირაში 3-ჯერ": 1600,
+  "english-ონლაინ-ინდივიდუალური-კვირაში 3-ჯერ": 2400,
   "english-ონლაინ-ჯგუფური-კვირაში 2-ჯერ": 980,
   "english-ოფისში-ჯგუფური-კვირაში 2-ჯერ": 840,
   // "english-ჯგუფური-კვირაში 3-ჯერ": 840,
@@ -31,6 +31,13 @@ function useCalculatePrice(
   const format = selectedItems["კურსის ფორმატი"];
   const type = selectedItems["გაკვეთილის ტიპი"];
   const frequency = selectedItems["გაკვეთილის სიხშირე"];
+
+  console.log(
+    [lang, format, type, frequency]
+      .filter(Boolean)
+      .join("-") as keyof typeof prices,
+    "calculated price"
+  );
 
   return {
     price:

@@ -30,6 +30,7 @@ function Navbar() {
     { name: "მასალები", href: "/materials" },
     { name: "ენის ტესტი", href: "/language-test" },
     { name: "კონტაქტი", href: "#contact" },
+    { name: "კურსის შეძენა", href: "/buy-course" },
   ];
 
   if (pathname !== "/") return null;
