@@ -8,6 +8,7 @@ import MobileNavMenu from "@/components/MobileNavMenu";
 import { Analytics } from "@vercel/analytics/react";
 import Head from "next/head";
 import { ClerkProvider } from "@clerk/nextjs";
+import { localization } from "./localization";
 
 export const metadata: Metadata = {
   title: "Studio Lingo - ინგლისური ენის კურსები",
@@ -57,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider localization={localization}>
       <Head>
         <meta
           name="description"
