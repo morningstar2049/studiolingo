@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import Script from "next/script";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import LoginIcon from "@mui/icons-material/Login";
 
 declare const window: Window &
@@ -23,15 +23,21 @@ declare const window: Window &
 function Page() {
   const { isSignedIn, isLoaded } = useAuth();
 
+  const [courseAudienceVal, setCourseAudienceVal] = useState<
+    "ბავშვისთვის" | "მოზარდისთვის" | "ზრდასრულისთვის" | string
+  >("");
   const [courseFormatVal, setCourseFormatVal] = useState("");
   const [courseTypeVal, setCourseTypeVal] = useState("");
   const [courseFreqVal, setCourseFreqVal] = useState("");
 
-  const { price } = useCalculatePrice("english", {
-    "გაკვეთილის ტიპი": courseTypeVal,
-    "გაკვეთილის სიხშირე": courseFreqVal,
-    "კურსის ფორმატი": courseFormatVal,
-  });
+  const { price } = useCalculatePrice(
+    courseAudienceVal === "ბავშვისთვის" ? "englishForKids" : "english",
+    {
+      "გაკვეთილის ტიპი": courseTypeVal,
+      "გაკვეთილის სიხშირე": courseFreqVal,
+      "კურსის ფორმატი": courseFormatVal,
+    },
+  );
 
   async function handleBogInstallment() {
     window?.BOG.Calculator.open({
@@ -49,9 +55,12 @@ function Page() {
           method: "POST",
           body: JSON.stringify({
             ...selected,
-            product_id: [courseFormatVal, courseTypeVal, courseFreqVal].join(
-              "-"
-            ),
+            product_id: [
+              courseAudienceVal,
+              courseFormatVal,
+              courseTypeVal,
+              courseFreqVal,
+            ].join("-"),
           }),
         })
           .then((response) => response.json())
@@ -71,16 +80,28 @@ function Page() {
     });
   }
 
-  useEffect(() => {
-    if (courseFormatVal === "ოფისში") {
+  const handleAudienceChange = (val: string) => {
+    setCourseAudienceVal(val);
+
+    if (val === "ბავშვისთვის") {
+      setCourseFormatVal("ოფისში");
       setCourseTypeVal("ჯგუფური");
       setCourseFreqVal("კვირაში 2-ჯერ");
-    } else if (courseFormatVal === "ონლაინ") {
-      if (courseTypeVal === "ჯგუფური") {
-        setCourseFreqVal("კვირაში 2-ჯერ");
-      }
     }
-  }, [courseFormatVal, courseTypeVal]);
+  };
+
+  const handleFormatChange = (val: string) => {
+    setCourseFormatVal(val);
+
+    if (val === "ოფისში") {
+      setCourseTypeVal("ჯგუფური");
+      setCourseFreqVal("კვირაში 2-ჯერ");
+    }
+
+    if (val === "ონლაინ" && courseTypeVal === "ჯგუფური") {
+      setCourseFreqVal("კვირაში 2-ჯერ");
+    }
+  };
 
   if (!isLoaded) {
     return (
@@ -159,8 +180,33 @@ function Page() {
           <TextField
             fullWidth
             select
+            value={courseAudienceVal}
+            onChange={(e) => handleAudienceChange(e.target.value)}
+            label="ვისთვის არის კურსი?"
+            size="medium"
+            InputLabelProps={{ shrink: true }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "#1DBF73" },
+                "&:hover fieldset": { borderColor: "#1DBF73" },
+                "&.Mui-focused fieldset": { borderColor: "#1DBF73" },
+              },
+              "& .MuiInputLabel-root": { color: "#293142" },
+              "& .MuiInputLabel-root.Mui-focused": { color: "#1DBF73" },
+            }}
+          >
+            <MenuItem value="ბავშვისთვის">ბავშვისთვის (7-12 წელი)</MenuItem>
+            <MenuItem value="მოზარდისთვის">მოზარდისთვის (12-16 წელი)</MenuItem>
+            <MenuItem value="ზრდასრულისთვის">
+              ზრდასრულისთვის (16+ წელი)
+            </MenuItem>
+          </TextField>
+          <TextField
+            disabled={courseAudienceVal === "ბავშვისთვის"}
+            fullWidth
+            select
             value={courseFormatVal}
-            onChange={(e) => setCourseFormatVal(e.target.value)}
+            onChange={(e) => handleFormatChange(e.target.value)}
             label="კურსის ფორმატი"
             size="medium"
             InputLabelProps={{ shrink: true }}

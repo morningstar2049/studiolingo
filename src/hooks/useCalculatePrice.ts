@@ -14,6 +14,7 @@ const prices = {
   // "russian-ჯგუფური-კვირაში 3-ჯერ": 800,
   "englishForTeens-ონლაინ-ჯგუფური-კვირაში 2-ჯერ": 980,
   "englishForTeens-ოფისში-ჯგუფური-კვირაში 2-ჯერ": 840,
+  "englishForKids-ოფისში-ჯგუფური-კვირაში 2-ჯერ": 600,
   // "englishForTeens-ჯგუფური-კვირაში 3-ჯერ": 880,
   "englishForTeens-ონლაინ-ინდივიდუალური-კვირაში 2-ჯერ": 1600,
   // "englishForTeens-ინდივიდუალური-კვირაში 3-ჯერ": 1600,
@@ -25,7 +26,7 @@ function useCalculatePrice(
     "გაკვეთილის ტიპი": string;
     "გაკვეთილის სიხშირე": string;
     "კურსის ფორმატი": string;
-  }
+  },
 ) {
   const lang = courseTitle;
   const format = selectedItems["კურსის ფორმატი"];
@@ -36,7 +37,7 @@ function useCalculatePrice(
     [lang, format, type, frequency]
       .filter(Boolean)
       .join("-") as keyof typeof prices,
-    "calculated price"
+    "calculated price",
   );
 
   return {
