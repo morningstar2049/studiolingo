@@ -16,13 +16,13 @@ let intervalId: NodeJS.Timer | undefined;
 const incorrectAnswersCounter: TIncorrectAnswersCounter = [];
 
 const levelsMap: Record<TLevel, string> = {
-  "სრულიად დამწყები": "სრულიად დამწყები",
-  A1: "საწყისი",
-  A2: "საბაზისო",
-  B1: "საშუალო",
-  "B1+": "საშუალოზე მაღალი",
-  B2: "მოწინავე",
-  C1: "მაღალი",
+  "სრულიად დამწყები": "Beginner",
+  A1: "Elementary -",
+  A2: "Elementary",
+  B1: "Intermediate",
+  "B1+": "Intermediate",
+  B2: "Intermediate +",
+  C1: "Advanced",
 };
 
 const levelsArr = Object.keys(levelsMap) as TLevel[];
@@ -32,7 +32,7 @@ function LevelTest({ levelTest }: TLevelTest) {
   const [questionNumber, setQuestionNumber] = useState(0);
   const currentQuestion = levelTest[questionNumber] || {};
   const [remainingTime, setRemainingTime] = useState(
-    currentQuestion.audioFile ? audioQuestionTimer : questionTimer
+    currentQuestion.audioFile ? audioQuestionTimer : questionTimer,
   );
   const [testResult, setTestResult] = useState<TLevel>();
   const [isLoading, setIsLoading] = useState(false);
@@ -49,7 +49,7 @@ function LevelTest({ levelTest }: TLevelTest) {
       if (currentQuestion.audioFile === null) {
         if (answer !== currentQuestion.choices[currentQuestion.answer]) {
           const sameLevelQuestionIndex = incorrectAnswersCounter.findIndex(
-            (el) => el.level === currentQuestion.level
+            (el) => el.level === currentQuestion.level,
           );
           if (sameLevelQuestionIndex >= 0) {
             incorrectAnswersCounter[sameLevelQuestionIndex].count += 1;
@@ -65,7 +65,7 @@ function LevelTest({ levelTest }: TLevelTest) {
           answer.trim().toLowerCase() !== currentQuestion.answer.toLowerCase()
         ) {
           const sameLevelQuestionIndex = incorrectAnswersCounter.findIndex(
-            (el) => el.level === currentQuestion.level
+            (el) => el.level === currentQuestion.level,
           );
           if (sameLevelQuestionIndex >= 0) {
             incorrectAnswersCounter[sameLevelQuestionIndex].count += 1;
@@ -104,10 +104,10 @@ function LevelTest({ levelTest }: TLevelTest) {
       setRemainingTime(
         levelTest[questionNumber + 1]?.audioFile
           ? audioQuestionTimer
-          : questionTimer
+          : questionTimer,
       );
     },
-    [levelTest, questionNumber]
+    [levelTest, questionNumber],
   );
 
   useEffect(() => {
@@ -147,14 +147,14 @@ function LevelTest({ levelTest }: TLevelTest) {
     <div>
       {isTestFinished ? (
         <div className="text-xl text-lingo-black text-center">
-          {testResult === "C1" ? (
-            <>
-              თქვენი ინგლისურის მიახლოებითი დონეა{" "}
-              <strong className="text-lingo-green text-xl">
-                {testResult} ({levelsMap[testResult as TLevel]})
-              </strong>
-            </>
-          ) : (
+          {/* {testResult === "C1" ? ( */}
+          <>
+            თქვენი ინგლისურის მიახლოებითი დონეა{" "}
+            <strong className="text-lingo-green text-xl">
+              {levelsMap[testResult as TLevel]}
+            </strong>
+          </>
+          {/* ) : (
             <>
               თქვენი ინგლისურის მიახლოებითი დონეა{" "}
               <strong className="text-lingo-green text-2xl">
@@ -175,7 +175,7 @@ function LevelTest({ levelTest }: TLevelTest) {
               }
               ) დონის სწავლა.
             </>
-          )}
+          )} */}
         </div>
       ) : (
         <>
