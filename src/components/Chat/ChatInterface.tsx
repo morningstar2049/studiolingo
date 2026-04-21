@@ -141,25 +141,40 @@ export default function ChatInterface() {
   // Text-to-Speech
   // ─────────────────────────────────────────
 
+  // Strip emojis and special symbols so TTS doesn't read them aloud
+  const stripEmojisForSpeech = (text: string): string =>
+    text
+      .replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, "")
+      .replace(/[\u2600-\u27BF]/g, "")
+      .replace(/[\uFE00-\uFE0F]/g, "")
+      .replace(/\u200D/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+
   const speakMessage = useCallback((text: string, messageId: string) => {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
 
     window.speechSynthesis.cancel();
     setPlayingMessageId(messageId);
 
-    const utterance = new SpeechSynthesisUtterance(text);
+    const cleanText = stripEmojisForSpeech(text);
+    const utterance = new SpeechSynthesisUtterance(cleanText);
     utterance.lang = "en-US";
-    utterance.rate = 0.9;
+    utterance.rate = 1.0;
     utterance.pitch = 1.0;
 
     const voices = window.speechSynthesis.getVoices();
     const preferred =
       voices.find(
-        (v) => v.lang === "en-US" && v.name.toLowerCase().includes("google"),
+        (v) =>
+          v.lang === "en-US" &&
+          v.name.toLowerCase().includes("google us english"),
       ) ||
       voices.find(
-        (v) => v.lang === "en-US" && v.name.toLowerCase().includes("samantha"),
+        (v) => v.lang === "en-US" && v.name.toLowerCase().includes("google"),
       ) ||
+      voices.find((v) => v.name.toLowerCase() === "samantha") ||
+      voices.find((v) => v.name.toLowerCase() === "alex") ||
       voices.find((v) => v.lang === "en-US") ||
       voices.find((v) => v.lang.startsWith("en"));
     if (preferred) utterance.voice = preferred;
@@ -602,7 +617,10 @@ export default function ChatInterface() {
             {message.role === "user" && (
               <div className="flex flex-col items-end gap-1.5 max-w-[88%] sm:max-w-[72%]">
                 <div className="bg-[#2f9e4d] rounded-2xl rounded-br-sm px-4 py-3 shadow-sm">
-                  <p className="text-white text-sm leading-relaxed whitespace-pre-wrap">
+                  <p
+                    className="text-sm leading-relaxed whitespace-pre-wrap"
+                    style={{ color: "white" }}
+                  >
                     {message.content}
                   </p>
                 </div>
@@ -708,7 +726,7 @@ export default function ChatInterface() {
               isRecording ? "🎤 Listening..." : "Type your message..."
             }
             disabled={isLoading}
-            className="flex-1 px-4 py-2.5 border-2 border-gray-200 rounded-full text-[#293142] placeholder-gray-400 focus:outline-none focus:border-[#2f9e4d] transition-colors text-sm disabled:opacity-50 bg-gray-50"
+            className="flex-1 px-4 py-2.5 border-2 border-gray-200 rounded-full text-[#293142] placeholder-gray-400 focus:outline-none focus:border-[#2f9e4d] transition-colors text-[16px] disabled:opacity-50 bg-gray-50"
           />
 
           {/* Send button */}

@@ -106,7 +106,7 @@ export default function SessionSetup({ onStart, isLoading }: SessionSetupProps) 
             onKeyDown={(e) => e.key === 'Enter' && !isLoading && handleStart()}
             placeholder="e.g. Travel, Work, Food, Technology..."
             disabled={isLoading}
-            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-[#293142] placeholder-gray-400 focus:outline-none focus:border-[#2f9e4d] transition-colors disabled:opacity-50"
+            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-[#293142] placeholder-gray-400 focus:outline-none focus:border-[#2f9e4d] transition-colors disabled:opacity-50 text-[16px]"
           />
           <p className="text-xs text-gray-400 mt-2">
             💡 Type a specific topic, or just write{' '}
