@@ -197,8 +197,8 @@ const pickBestVoice = (
 
 const stripEmojis = (text: string) =>
   text
-    .replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, "")
-    .replace(/[\uFE00-\uFE0F]/g, "")
+    .replace(/\p{Extended_Pictographic}/gu, "")
+    .replace(/[\u{FE00}-\u{FE0F}]/gu, "")
     .replace(/\u200D/g, "")
     .replace(/\s+/g, " ")
     .trim();
@@ -223,6 +223,8 @@ export default function ChatInterface() {
   const isRecordingRef = useRef(false);
   const accumulatedRef = useRef("");
   const inputRef = useRef<HTMLInputElement>(null);
+  // Holds the currently-playing OpenAI Audio element so we can stop it
+  const currentAudioRef = useRef<HTMLAudioElement | null>(null);
 
   // Mount flag for portal (must be client-side)
   useEffect(() => {
@@ -255,18 +257,13 @@ export default function ChatInterface() {
 
   // ── TTS ────────────────────────────────
 
-  const speakMessage = useCallback(
-    (text: string, msgId: string, level?: Level) => {
+  // Browser fallback: used when OpenAI TTS is unavailable
+  const speakWithBrowser = useCallback(
+    (clean: string, msgId: string, level?: Level) => {
       if (typeof window === "undefined" || !("speechSynthesis" in window))
         return;
       window.speechSynthesis.cancel();
       setPlayingId(msgId);
-
-      const clean = stripEmojis(text);
-      if (!clean) {
-        setPlayingId(null);
-        return;
-      }
 
       const ua = navigator.userAgent;
       const isIOS = /iPad|iPhone|iPod/.test(ua);
@@ -274,7 +271,6 @@ export default function ChatInterface() {
       const utterance = new SpeechSynthesisUtterance(clean);
       utterance.lang = "en-US";
       utterance.rate = getSpeechRate(level || session?.level || "B1");
-      // iOS Web TTS sounds slightly more natural at pitch 1.05
       utterance.pitch = isIOS ? 1.05 : 1.0;
       utterance.volume = 1.0;
 
@@ -289,7 +285,66 @@ export default function ChatInterface() {
     [session],
   );
 
+  // Primary TTS: OpenAI "nova" voice (human-like, works on all platforms).
+  // Falls back to the browser's built-in voice if the API call fails.
+  const speakMessage = useCallback(
+    async (text: string, msgId: string, level?: Level) => {
+      if (typeof window === "undefined") return;
+
+      const clean = stripEmojis(text);
+      if (!clean) return;
+
+      // Stop anything currently playing
+      if (currentAudioRef.current) {
+        currentAudioRef.current.pause();
+        currentAudioRef.current = null;
+      }
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+      setPlayingId(msgId);
+
+      try {
+        const res = await fetch("/api/tts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            text: clean,
+            level: level || session?.level || "B1",
+          }),
+        });
+        if (!res.ok) throw new Error(`TTS API ${res.status}`);
+
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+        currentAudioRef.current = audio;
+
+        audio.onended = () => {
+          URL.revokeObjectURL(url);
+          currentAudioRef.current = null;
+          setPlayingId(null);
+        };
+        audio.onerror = () => {
+          URL.revokeObjectURL(url);
+          currentAudioRef.current = null;
+          setPlayingId(null);
+        };
+        await audio.play();
+      } catch (err) {
+        // API key not set yet, rate limit, or any other error → silent fallback
+        console.warn("OpenAI TTS unavailable, using browser voice:", err);
+        speakWithBrowser(clean, msgId, level);
+      }
+    },
+    [session, speakWithBrowser],
+  );
+
   const stopSpeaking = useCallback(() => {
+    // Stop OpenAI audio
+    if (currentAudioRef.current) {
+      currentAudioRef.current.pause();
+      currentAudioRef.current = null;
+    }
+    // Stop browser TTS
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
