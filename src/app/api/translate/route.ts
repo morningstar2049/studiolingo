@@ -1,10 +1,49 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
 
-// Give Vercel's serverless function up to 30s so the translation never times out
+// 30 seconds is plenty for Opus on a short sentence; prevents Vercel timeout
 export const maxDuration = 30;
 
 const client = new Anthropic();
+
+// Returns true if the text contains characters outside Georgian + Latin + common punctuation.
+// Korean, Chinese, Japanese, Cyrillic etc. all fail this check.
+function hasNonGeorgianScript(text: string): boolean {
+  // Allowed: Georgian Mkhedruli (U+10D0–10FF), Asomtavruli (U+10A0–10CF),
+  //          ASCII (Latin/punctuation/digits/spaces), and common Unicode punctuation.
+  const allowed = /^[\u10D0-\u10FF\u10A0-\u10CF\x00-\x7F\s]+$/;
+  return !allowed.test(text);
+}
+
+const SYSTEM_PROMPT = `You are a Georgian (ქართული) language expert working for Studio Lingo, an English school in Tbilisi, Georgia. Your ONLY task is to translate English text into Georgian.
+
+ABSOLUTE REQUIREMENTS — failure to follow ANY of these makes the output useless:
+1. Output MUST use ONLY the Georgian Mkhedruli alphabet: ა ბ გ დ ე ვ ზ თ ი კ ლ მ ნ ო პ ჟ რ ს ტ უ ფ ქ ღ ყ შ ჩ ც ძ წ ჭ ხ ჯ ჰ
+2. NEVER output Korean, Japanese, Chinese, Cyrillic, Arabic, or any other non-Georgian script.
+3. Latin letters are allowed ONLY for proper nouns that have no Georgian equivalent (e.g. iPhone, Netflix).
+4. Output ONLY the Georgian translation — no English, no labels, no explanations, no quotation marks.
+5. Grammar and idiom must be natural Georgian — not word-for-word.`;
+
+async function translateToGeorgian(
+  text: string,
+  model: string,
+): Promise<string> {
+  const response = await client.messages.create({
+    model,
+    max_tokens: 600,
+    system: SYSTEM_PROMPT,
+    messages: [
+      {
+        role: "user",
+        content: `Translate this English text into Georgian (Mkhedruli script only):\n\n${text}`,
+      },
+    ],
+  });
+
+  const content = response.content[0];
+  if (content.type !== "text") throw new Error("Unexpected response type");
+  return content.text.trim();
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,51 +53,39 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing text" }, { status: 400 });
     }
 
-    const response = await client.messages.create({
-      // Haiku is fast (<3s, no Vercel timeout). With few-shot examples it reliably
-      // produces clean Georgian Mkhedruli and never mixes in other scripts.
-      model: "claude-haiku-4-5",
-      max_tokens: 600,
-      messages: [
-        {
-          role: "user",
-          content: `You are a professional Georgian (ქართული) translator for Studio Lingo, an English school in Tbilisi. Translate the English text below into natural, fluent, grammatically perfect Georgian.
+    // First attempt with Opus — most reliable Georgian output
+    let translation = await translateToGeorgian(text, "claude-opus-4-6");
 
-ABSOLUTE RULES — violate any and the translation is useless:
-- Use ONLY the Georgian Mkhedruli script: ა ბ გ დ ე ვ ზ თ ი კ ლ მ ნ ო პ ჟ რ ს ტ უ ფ ქ ღ ყ შ ჩ ც ძ წ ჭ ხ ჯ ჰ
-- NEVER include Korean, Japanese, Chinese, Cyrillic, Arabic, or any other non-Georgian script.
-- NEVER include Latin letters unless they are untranslatable proper nouns (e.g., "iPhone", "Netflix").
-- Return ONLY the Georgian translation — no English, no explanations, no quotes, no "Translation:" prefix.
-- Preserve the tone: casual English stays casual Georgian, formal stays formal.
+    // Safety net: if non-Georgian scripts leaked in, retry with an even more explicit prompt
+    if (hasNonGeorgianScript(translation)) {
+      console.warn(
+        "Translation contained non-Georgian characters, retrying…",
+        translation,
+      );
+      const retry = await client.messages.create({
+        model: "claude-opus-4-6",
+        max_tokens: 600,
+        messages: [
+          {
+            role: "user",
+            content: `CRITICAL: Translate the following English text into GEORGIAN (ქართული) using ONLY the Georgian Mkhedruli alphabet.
+DO NOT use Korean, Japanese, Chinese, or any other writing system.
+DO NOT use Cyrillic.
+ONLY Georgian script: ა ბ გ დ ე ვ ზ თ ი კ ლ მ ნ ო პ ჟ რ ს ტ უ ფ ქ ღ ყ შ ჩ ც ძ წ ჭ ხ ჯ ჰ
 
-Here are examples of correct translations:
+Return ONLY the Georgian translation, nothing else.
 
-English: "Hello! How are you today?"
-Georgian: გამარჯობა! როგორ ხარ დღეს?
+Text: ${text}`,
+          },
+        ],
+      });
+      const retryContent = retry.content[0];
+      if (retryContent.type === "text") {
+        translation = retryContent.text.trim();
+      }
+    }
 
-English: "I love traveling to new countries and trying different foods."
-Georgian: მიყვარს ახალ ქვეყნებში მოგზაურობა და სხვადასხვა საჭმლის გასინჯვა.
-
-English: "What's your favorite hobby? Mine is reading books."
-Georgian: რა არის შენი საყვარელი ჰობი? ჩემი საყვარელი ჰობია წიგნების კითხვა.
-
-English: "Nice to meet you! I'm Alex, your English practice partner."
-Georgian: სასიამოვნოა შენი გაცნობა! მე ვარ ალექსი, შენი ინგლისურის სავარჯიშო პარტნიორი.
-
-English: "Can you tell me about your weekend?"
-Georgian: შეგიძლია მიამბო შენი შაბათ-კვირის შესახებ?
-
-Now translate this text into Georgian (Mkhedruli only, no other scripts):
-
-${text}`,
-        },
-      ],
-    });
-
-    const content = response.content[0];
-    if (content.type !== "text") throw new Error("Unexpected response type");
-
-    return NextResponse.json({ translation: content.text.trim() });
+    return NextResponse.json({ translation });
   } catch (error) {
     const errMsg = error instanceof Error ? error.message : "Unknown error";
     console.error("Translate API error:", errMsg, error);

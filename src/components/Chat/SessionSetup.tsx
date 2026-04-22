@@ -19,6 +19,18 @@ const LEVELS: { value: Level; label: string; desc: string }[] = [
   { value: "C2", label: "C2", desc: "Proficient" },
 ];
 
+const C = {
+  green: "#2f9e4d",
+  greenDark: "#267a3d",
+  blue: "#293142",
+  white: "#ffffff",
+  textPrimary: "#293142",
+  textMuted: "#6b7280",
+  border: "rgba(41,49,66,0.1)",
+} as const;
+
+const W: React.CSSProperties = { color: C.white };
+
 export default function SessionSetup({
   onStart,
   isLoading,
@@ -40,35 +52,50 @@ export default function SessionSetup({
     onStart(selectedLevel, topic.trim());
   };
 
-  const whiteText = { color: "#ffffff" } as const;
-
+  // Rendered by ChatInterface via createPortal — already positioned in document.body
   return (
-    // fixed inset-0 so this fills the whole viewport and covers the studiolingo.ge
-    // main-site navigation (logo + hamburger) that would otherwise sit above the chat.
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto"
       style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 2147483647,
         height: "100dvh",
-        background: "linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 16,
+        overflowY: "auto",
+        background: "linear-gradient(180deg,#f9fafb 0%,#f3f4f6 100%)",
+        fontFamily:
+          '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif',
       }}
     >
       <div
-        className="w-full max-w-md p-8 my-auto"
         style={{
-          backgroundColor: "#ffffff",
-          borderRadius: "24px",
+          width: "100%",
+          maxWidth: 440,
+          margin: "auto",
+          background: C.white,
+          borderRadius: 24,
+          padding: 32,
           boxShadow:
             "0 20px 60px rgba(41,49,66,0.08), 0 4px 20px rgba(41,49,66,0.04), 0 0 0 1px rgba(41,49,66,0.03)",
         }}
       >
         {/* Logo */}
-        <div className="flex justify-center mb-5">
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginBottom: 20,
+          }}
+        >
           <Image
             src="/images/lingo-main.png"
             alt="Studio Lingo"
             width={150}
             height={46}
-            className="object-contain"
+            style={{ objectFit: "contain" }}
             priority
             onError={(e) => {
               (e.target as HTMLImageElement).style.display = "none";
@@ -78,60 +105,87 @@ export default function SessionSetup({
 
         {/* Title */}
         <h1
-          className="text-[22px] font-bold text-center mb-1"
-          style={{ color: "#293142", letterSpacing: "-0.02em" }}
+          style={{
+            color: C.textPrimary,
+            fontSize: 22,
+            fontWeight: 700,
+            textAlign: "center",
+            margin: "0 0 4px",
+            letterSpacing: "-0.02em",
+          }}
         >
           English Practice Chat
         </h1>
         <p
-          className="text-center text-[14px] mb-8"
-          style={{ color: "#6b7280" }}
+          style={{
+            color: C.textMuted,
+            fontSize: 14,
+            textAlign: "center",
+            margin: "0 0 28px",
+          }}
         >
           Chat with an AI native English speaker
         </p>
 
-        {/* Level Selection */}
-        <div className="mb-6">
+        {/* Level grid */}
+        <div style={{ marginBottom: 20 }}>
           <label
-            className="block text-[13px] font-semibold mb-3"
-            style={{ color: "#293142", letterSpacing: "-0.01em" }}
+            style={{
+              display: "block",
+              color: C.textPrimary,
+              fontSize: 13,
+              fontWeight: 600,
+              marginBottom: 10,
+              letterSpacing: "-0.01em",
+            }}
           >
             What is your English level?
           </label>
-          <div className="grid grid-cols-3 gap-2">
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3,1fr)",
+              gap: 8,
+            }}
+          >
             {LEVELS.map((lvl) => {
-              const isSelected = selectedLevel === lvl.value;
+              const sel = selectedLevel === lvl.value;
               return (
                 <button
                   key={lvl.value}
                   onClick={() => setSelectedLevel(lvl.value)}
                   disabled={isLoading}
-                  className="py-3 px-2 text-center transition-all duration-200 active:scale-95 disabled:cursor-not-allowed"
                   style={{
-                    borderRadius: "14px",
-                    border: "1.5px solid",
-                    borderColor: isSelected ? "#2f9e4d" : "rgba(41,49,66,0.08)",
-                    background: isSelected
-                      ? "linear-gradient(135deg, #2f9e4d 0%, #267a3d 100%)"
-                      : "#ffffff",
-                    boxShadow: isSelected
-                      ? "0 4px 14px rgba(47,158,77,0.3)"
+                    cursor: isLoading ? "not-allowed" : "pointer",
+                    border: `1.5px solid ${sel ? C.green : C.border}`,
+                    borderRadius: 14,
+                    padding: "10px 8px",
+                    textAlign: "center",
+                    background: sel
+                      ? `linear-gradient(135deg,${C.green},${C.greenDark})`
+                      : C.white,
+                    boxShadow: sel
+                      ? "0 4px 12px rgba(47,158,77,0.28)"
                       : "0 1px 2px rgba(41,49,66,0.03)",
+                    transition: "all 0.18s",
                   }}
                 >
                   <div
-                    className="font-bold text-[15px]"
-                    style={isSelected ? whiteText : { color: "#293142" }}
+                    style={{
+                      fontWeight: 700,
+                      fontSize: 15,
+                      ...(sel ? W : { color: C.textPrimary }),
+                    }}
                   >
                     {lvl.label}
                   </div>
                   <div
-                    className="text-[10.5px] mt-0.5 font-medium"
-                    style={
-                      isSelected
-                        ? { color: "rgba(255,255,255,0.85)" }
-                        : { color: "#9ca3af" }
-                    }
+                    style={{
+                      fontSize: 10.5,
+                      marginTop: 2,
+                      fontWeight: 500,
+                      color: sel ? "rgba(255,255,255,0.82)" : C.textMuted,
+                    }}
                   >
                     {lvl.desc}
                   </div>
@@ -141,11 +195,17 @@ export default function SessionSetup({
           </div>
         </div>
 
-        {/* Topic Input */}
-        <div className="mb-5">
+        {/* Topic input */}
+        <div style={{ marginBottom: 20 }}>
           <label
-            className="block text-[13px] font-semibold mb-2"
-            style={{ color: "#293142", letterSpacing: "-0.01em" }}
+            style={{
+              display: "block",
+              color: C.textPrimary,
+              fontSize: 13,
+              fontWeight: 600,
+              marginBottom: 8,
+              letterSpacing: "-0.01em",
+            }}
           >
             What would you like to practice?
           </label>
@@ -156,27 +216,32 @@ export default function SessionSetup({
             onKeyDown={(e) => e.key === "Enter" && !isLoading && handleStart()}
             placeholder="e.g. Travel, Work, Food, Technology..."
             disabled={isLoading}
-            className="w-full px-4 py-3 transition-all disabled:opacity-50 text-[16px]"
             style={{
-              borderRadius: "14px",
-              border: "1.5px solid rgba(41,49,66,0.1)",
-              backgroundColor: "#ffffff",
-              color: "#293142",
+              width: "100%",
+              boxSizing: "border-box",
+              padding: "12px 16px",
+              fontSize: 16,
+              border: `1.5px solid ${C.border}`,
+              borderRadius: 14,
+              background: C.white,
+              color: C.textPrimary,
               outline: "none",
+              opacity: isLoading ? 0.5 : 1,
+              transition: "border-color 0.15s, box-shadow 0.15s",
             }}
             onFocus={(e) => {
-              e.currentTarget.style.borderColor = "#2f9e4d";
+              e.currentTarget.style.borderColor = C.green;
               e.currentTarget.style.boxShadow =
                 "0 0 0 4px rgba(47,158,77,0.12)";
             }}
             onBlur={(e) => {
-              e.currentTarget.style.borderColor = "rgba(41,49,66,0.1)";
+              e.currentTarget.style.borderColor = C.border;
               e.currentTarget.style.boxShadow = "none";
             }}
           />
-          <p className="text-[11.5px] mt-2" style={{ color: "#9ca3af" }}>
-            💡 Type a specific topic, or just write{" "}
-            <span className="font-semibold" style={{ color: "#2f9e4d" }}>
+          <p style={{ color: C.textMuted, fontSize: 11.5, margin: "6px 0 0" }}>
+            💡 Type a specific topic, or write{" "}
+            <span style={{ fontWeight: 600, color: C.green }}>
               &quot;general&quot;
             </span>{" "}
             for a variety of topics
@@ -186,42 +251,63 @@ export default function SessionSetup({
         {/* Error */}
         {error && (
           <p
-            className="text-[13px] mb-4 text-center font-medium animate-in fade-in slide-in-from-top-1 duration-200"
-            style={{ color: "#ef4444" }}
+            style={{
+              color: "#ef4444",
+              fontSize: 13,
+              fontWeight: 500,
+              textAlign: "center",
+              margin: "0 0 12px",
+            }}
           >
             {error}
           </p>
         )}
 
-        {/* Start Button */}
+        {/* Start button */}
         <button
           onClick={handleStart}
           disabled={isLoading}
-          className="w-full py-4 font-bold text-[15px] transition-all duration-200 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           style={{
-            ...whiteText,
-            borderRadius: "14px",
-            background: "linear-gradient(135deg, #2f9e4d 0%, #267a3d 100%)",
+            ...W,
+            width: "100%",
+            padding: "14px 0",
+            fontSize: 15,
+            fontWeight: 700,
+            border: "none",
+            borderRadius: 14,
+            cursor: isLoading ? "not-allowed" : "pointer",
+            background: `linear-gradient(135deg,${C.green},${C.greenDark})`,
             boxShadow: "0 4px 16px rgba(47,158,77,0.35)",
+            opacity: isLoading ? 0.6 : 1,
+            transition: "opacity 0.15s",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
             letterSpacing: "-0.01em",
           }}
         >
           {isLoading ? (
             <>
               <div
-                className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin"
                 style={{
-                  borderColor: "#ffffff",
+                  width: 18,
+                  height: 18,
+                  borderRadius: "50%",
+                  border: `2px solid ${C.white}`,
                   borderTopColor: "transparent",
+                  animation: "spin 0.8s linear infinite",
                 }}
               />
-              <span style={whiteText}>Starting your session...</span>
+              <span style={W}>Starting your session...</span>
             </>
           ) : (
-            <span style={whiteText}>Start Chatting →</span>
+            <span style={W}>Start Chatting →</span>
           )}
         </button>
       </div>
+
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }

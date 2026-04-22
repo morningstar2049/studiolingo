@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect, useCallback } from 'react';
-import Image from 'next/image';
-import SessionSetup, { type Level } from './SessionSetup';
+import { useState, useRef, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
+import Image from "next/image";
+import SessionSetup, { type Level } from "./SessionSetup";
 
 // ─────────────────────────────────────────
 // Types
@@ -10,304 +11,294 @@ import SessionSetup, { type Level } from './SessionSetup';
 
 type Message = {
   id: string;
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
   hidden?: boolean;
-  // Assistant message extras
   translation?: string;
   isTranslating?: boolean;
   showTranslation?: boolean;
-  // User message extras
   correction?: string;
   isCheckingGrammar?: boolean;
   showCorrection?: boolean;
 };
 
-type Session = {
-  level: Level;
-  topic: string;
-};
+type Session = { level: Level; topic: string };
 
 const generateId = () => Math.random().toString(36).substring(2, 9);
 
 // ─────────────────────────────────────────
-// Icons (inline SVG to avoid extra deps)
+// Brand colour tokens (green / dark-blue / white only)
+// ─────────────────────────────────────────
+
+const C = {
+  green: "#2f9e4d",
+  greenDark: "#267a3d",
+  greenLight: "#f0fdf4", // very pale green for info boxes
+  blue: "#293142", // "dark blue" brand colour
+  blueDark: "#1f2635",
+  white: "#ffffff",
+  textPrimary: "#293142",
+  textMuted: "#6b7280",
+  border: "rgba(41,49,66,0.1)",
+} as const;
+
+const W: React.CSSProperties = { color: C.white };
+
+// ─────────────────────────────────────────
+// Icons
 // ─────────────────────────────────────────
 
 const IconVolume = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
     <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
   </svg>
 );
-
-const IconStop = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+const IconPause = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
     <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
   </svg>
 );
-
 const IconMic = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
     <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
   </svg>
 );
-
-const IconStopSquare = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+const IconMicStop = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
     <path d="M6 6h12v12H6z" />
   </svg>
 );
-
 const IconSend = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
     <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
   </svg>
 );
-
 const IconRefresh = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="15"
+    height="15"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
     <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
   </svg>
 );
-
 const IconSpeakerOn = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="15"
+    height="15"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
     <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
   </svg>
 );
-
 const IconSpeakerOff = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="15"
+    height="15"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
     <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zM19 12c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
   </svg>
 );
 
 // ─────────────────────────────────────────
-// Helpers: voice selection + rate by level
+// TTS helpers
 // ─────────────────────────────────────────
 
 const getSpeechRate = (level: Level): number => {
-  // Slower for beginners so they can follow each word
-  if (level === 'A1') return 0.78;
-  if (level === 'A2') return 0.85;
-  if (level === 'B1') return 0.93;
-  return 1.0; // B2, C1, C2
+  if (level === "A1") return 0.78;
+  if (level === "A2") return 0.85;
+  if (level === "B1") return 0.93;
+  return 1.0;
 };
 
-const pickBestVoice = (voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | undefined => {
-  if (typeof navigator === 'undefined') return voices[0];
-  const ua = navigator.userAgent;
+const pickBestVoice = (
+  voices: SpeechSynthesisVoice[],
+): SpeechSynthesisVoice | undefined => {
+  const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
   const isIOS = /iPad|iPhone|iPod/.test(ua);
   const isAndroid = /Android/.test(ua);
 
-  const find = (predicate: (v: SpeechSynthesisVoice) => boolean) => voices.find(predicate);
-  const nameIs = (name: string) => (v: SpeechSynthesisVoice) =>
-    v.name.toLowerCase() === name.toLowerCase();
-  const nameIncludes = (s: string) => (v: SpeechSynthesisVoice) =>
-    v.name.toLowerCase().includes(s.toLowerCase());
+  const byExactName = (n: string) => voices.find((v) => v.name === n);
+  const byPartialName = (s: string) =>
+    voices.find((v) => v.name.toLowerCase().includes(s));
+  const byLang = (l: string) => voices.find((v) => v.lang === l);
 
   if (isIOS) {
-    // iOS has high-quality "Enhanced" and "Premium" voices when downloaded
     return (
-      find((v) => nameIncludes('samantha')(v) && nameIncludes('enhanced')(v)) ||
-      find((v) => nameIncludes('samantha')(v) && nameIncludes('premium')(v)) ||
-      find(nameIs('Samantha')) ||
-      find((v) => nameIncludes('ava')(v) && nameIncludes('enhanced')(v)) ||
-      find(nameIs('Ava')) ||
-      find(nameIs('Allison')) ||
-      find(nameIs('Nicky')) ||
-      find(nameIs('Karen')) ||
-      find(nameIs('Daniel')) ||
-      find((v) => v.lang === 'en-US') ||
-      find((v) => v.lang.startsWith('en'))
+      byPartialName("samantha") ||
+      byExactName("Ava") ||
+      byExactName("Nicky") ||
+      byExactName("Allison") ||
+      byExactName("Karen") ||
+      byExactName("Daniel") ||
+      byLang("en-US") ||
+      voices.find((v) => v.lang.startsWith("en"))
     );
   }
-
   if (isAndroid) {
     return (
-      find(nameIncludes('google us english')) ||
-      find(nameIncludes('google uk english female')) ||
-      find(nameIncludes('google uk english')) ||
-      find((v) => v.lang === 'en-US' && nameIncludes('google')(v)) ||
-      find((v) => v.lang === 'en-US') ||
-      find((v) => v.lang.startsWith('en'))
+      byPartialName("google us english") ||
+      byPartialName("google uk english female") ||
+      byPartialName("google uk english") ||
+      voices.find(
+        (v) => v.lang === "en-US" && v.name.toLowerCase().includes("google"),
+      ) ||
+      byLang("en-US") ||
+      voices.find((v) => v.lang.startsWith("en"))
     );
   }
-
   // Desktop
   return (
-    find((v) => v.lang === 'en-US' && nameIncludes('google us english')(v)) ||
-    find((v) => v.lang === 'en-US' && nameIncludes('google')(v)) ||
-    find(nameIs('Samantha')) ||
-    find(nameIs('Alex')) ||
-    find((v) => v.lang === 'en-US') ||
-    find((v) => v.lang.startsWith('en'))
+    byPartialName("google us english") ||
+    byPartialName("google") ||
+    byExactName("Samantha") ||
+    byExactName("Alex") ||
+    byLang("en-US") ||
+    voices.find((v) => v.lang.startsWith("en"))
   );
 };
 
-// Strip emojis and special symbols so TTS doesn't read them aloud
-const stripEmojisForSpeech = (text: string): string =>
+const stripEmojis = (text: string) =>
   text
-    .replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '')
-    .replace(/[\uFE00-\uFE0F]/g, '')
-    .replace(/\u200D/g, '')
-    .replace(/\s+/g, ' ')
+    .replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, "")
+    .replace(/[\uFE00-\uFE0F]/g, "")
+    .replace(/\u200D/g, "")
+    .replace(/\s+/g, " ")
     .trim();
 
 // ─────────────────────────────────────────
-// Main Component
+// Main component
 // ─────────────────────────────────────────
 
 export default function ChatInterface() {
+  const [mounted, setMounted] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
-  const [playingMessageId, setPlayingMessageId] = useState<string | null>(null);
-  // Speaking mode: when ON, every bot reply auto-plays out loud
+  const [playingId, setPlayingId] = useState<string | null>(null);
   const [speakerMode, setSpeakerMode] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const isRecordingRef = useRef(false);
-  const accumulatedTranscriptRef = useRef('');
+  const accumulatedRef = useRef("");
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Auto-scroll to latest message
+  // Mount flag for portal (must be client-side)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    setMounted(true);
+  }, []);
+
+  // Auto-scroll
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Pre-load TTS voices on mount (iOS often needs this triggered once)
+  // Pre-load voices (Chrome fires voiceschanged async)
   useEffect(() => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.getVoices();
-      // Chrome fires voiceschanged after async voice loading
-      const handleVoicesChanged = () => window.speechSynthesis.getVoices();
-      window.speechSynthesis.addEventListener?.('voiceschanged', handleVoicesChanged);
-      return () => {
-        window.speechSynthesis.removeEventListener?.('voiceschanged', handleVoicesChanged);
-      };
-    }
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    window.speechSynthesis.getVoices();
+    const onVoicesChanged = () => window.speechSynthesis.getVoices();
+    window.speechSynthesis.addEventListener?.("voiceschanged", onVoicesChanged);
+    return () =>
+      window.speechSynthesis.removeEventListener?.(
+        "voiceschanged",
+        onVoicesChanged,
+      );
   }, []);
 
-  // Helper: update one message's fields
   const updateMessage = useCallback((id: string, updates: Partial<Message>) => {
-    setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, ...updates } : m)));
+    setMessages((prev) =>
+      prev.map((m) => (m.id === id ? { ...m, ...updates } : m)),
+    );
   }, []);
 
-  // ─────────────────────────────────────────
-  // Text-to-Speech
-  // ─────────────────────────────────────────
+  // ── TTS ────────────────────────────────
 
   const speakMessage = useCallback(
-    (text: string, messageId: string, level?: Level) => {
-      if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-
+    (text: string, msgId: string, level?: Level) => {
+      if (typeof window === "undefined" || !("speechSynthesis" in window))
+        return;
       window.speechSynthesis.cancel();
-      setPlayingMessageId(messageId);
+      setPlayingId(msgId);
 
-      const cleanText = stripEmojisForSpeech(text);
-      if (!cleanText) {
-        setPlayingMessageId(null);
+      const clean = stripEmojis(text);
+      if (!clean) {
+        setPlayingId(null);
         return;
       }
 
-      const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.lang = 'en-US';
-      utterance.rate = getSpeechRate(level || session?.level || 'B1');
-      utterance.pitch = 1.0;
+      const ua = navigator.userAgent;
+      const isIOS = /iPad|iPhone|iPod/.test(ua);
+
+      const utterance = new SpeechSynthesisUtterance(clean);
+      utterance.lang = "en-US";
+      utterance.rate = getSpeechRate(level || session?.level || "B1");
+      // iOS Web TTS sounds slightly more natural at pitch 1.05
+      utterance.pitch = isIOS ? 1.05 : 1.0;
       utterance.volume = 1.0;
 
       const voices = window.speechSynthesis.getVoices();
-      const preferred = pickBestVoice(voices);
-      if (preferred) utterance.voice = preferred;
+      const best = pickBestVoice(voices);
+      if (best) utterance.voice = best;
 
-      utterance.onend = () => setPlayingMessageId(null);
-      utterance.onerror = () => setPlayingMessageId(null);
-
+      utterance.onend = () => setPlayingId(null);
+      utterance.onerror = () => setPlayingId(null);
       window.speechSynthesis.speak(utterance);
     },
-    [session]
+    [session],
   );
 
   const stopSpeaking = useCallback(() => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
-    setPlayingMessageId(null);
+    setPlayingId(null);
   }, []);
 
-  // ─────────────────────────────────────────
-  // Session Start
-  // ─────────────────────────────────────────
-
-  const handleStartSession = useCallback(
-    async (level: Level, topic: string) => {
-      setIsStarting(true);
-      const newSession: Session = { level, topic };
-
-      try {
-        const res = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            messages: [{ role: 'user', content: 'Hello!' }],
-            level,
-            topic,
-            isFirstMessage: true,
-          }),
-        });
-
-        if (!res.ok) throw new Error('API error');
-        const data = await res.json();
-
-        const hiddenHello: Message = {
-          id: generateId(),
-          role: 'user',
-          content: 'Hello!',
-          hidden: true,
-        };
-        const welcomeMsg: Message = {
-          id: generateId(),
-          role: 'assistant',
-          content: data.message,
-        };
-
-        setSession(newSession);
-        setMessages([hiddenHello, welcomeMsg]);
-        // Only auto-speak if speaker mode is on
-        if (speakerMode) {
-          setTimeout(() => speakMessage(data.message, welcomeMsg.id, level), 250);
-        }
-      } catch {
-        const topicLabel =
-          topic.toLowerCase() === 'general' ? 'all sorts of interesting things' : topic;
-        const fallbackMsg: Message = {
-          id: generateId(),
-          role: 'assistant',
-          content: `Hi there! 👋 I'm Alex, your English practice partner! I'm really excited to chat with you today. We're going to talk about ${topicLabel}! To kick things off — what do you already know about this topic?`,
-        };
-        setSession(newSession);
-        setMessages([
-          { id: generateId(), role: 'user', content: 'Hello!', hidden: true },
-          fallbackMsg,
-        ]);
-        if (speakerMode) {
-          setTimeout(() => speakMessage(fallbackMsg.content, fallbackMsg.id, level), 250);
-        }
-      } finally {
-        setIsStarting(false);
-      }
-    },
-    [speakMessage, speakerMode]
-  );
-
-  // ─────────────────────────────────────────
-  // Voice Input — continuous recording
-  // ─────────────────────────────────────────
+  // ── Voice input ────────────────────────
+  // Continuous recording with NO auto-restart.
+  // Auto-restart was causing Android to repeat words (it re-emits all previous results).
 
   const stopRecording = useCallback(() => {
     isRecordingRef.current = false;
@@ -320,68 +311,64 @@ export default function ChatInterface() {
   }, []);
 
   const startRecording = useCallback(() => {
-    const SpeechAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechAPI =
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
     if (!SpeechAPI) {
-      alert('Voice input is not supported in your browser. Please use Chrome or Safari.');
+      alert(
+        "Voice input is not supported in your browser. Please use Chrome or Safari.",
+      );
       return;
     }
 
-    // Seed the accumulator with whatever is already typed
-    accumulatedTranscriptRef.current = input ? input + ' ' : '';
+    // Seed accumulator with whatever is already typed
+    accumulatedRef.current = input ? input + " " : "";
 
-    const recognition = new SpeechAPI();
-    recognitionRef.current = recognition;
-    recognition.lang = 'en-US';
-    // Continuous + interim → records through pauses and shows live transcript
-    recognition.continuous = true;
-    recognition.interimResults = true;
+    const rec = new SpeechAPI();
+    recognitionRef.current = rec;
+    rec.lang = "en-US";
+    rec.continuous = true; // keeps recording through pauses
+    rec.interimResults = true; // shows words live as you speak
 
-    recognition.onstart = () => {
+    rec.onstart = () => {
       isRecordingRef.current = true;
       setIsRecording(true);
     };
 
-    recognition.onresult = (event: any) => {
-      let interim = '';
+    rec.onresult = (event: any) => {
+      let interim = "";
       for (let i = event.resultIndex; i < event.results.length; i++) {
-        const result = event.results[i];
-        const transcript: string = result[0].transcript;
-        if (result.isFinal) {
-          accumulatedTranscriptRef.current += transcript + ' ';
+        const res = event.results[i];
+        if (res.isFinal) {
+          accumulatedRef.current += res[0].transcript;
+          // Add a space only if the transcript doesn't already end with one
+          if (!accumulatedRef.current.endsWith(" "))
+            accumulatedRef.current += " ";
         } else {
-          interim += transcript;
+          interim += res[0].transcript;
         }
       }
-      setInput(accumulatedTranscriptRef.current + interim);
+      setInput(accumulatedRef.current + interim);
     };
 
-    recognition.onend = () => {
-      // Some browsers stop automatically after ~60s or during long silence.
-      // If the user hasn't explicitly stopped, restart so recording stays continuous.
-      if (isRecordingRef.current) {
-        try {
-          recognition.start();
-        } catch {
-          isRecordingRef.current = false;
-          setIsRecording(false);
-        }
-      } else {
-        setIsRecording(false);
-      }
+    // NO auto-restart — restart causes Chrome/Android to re-emit all previous
+    // results, which produces the "my my my my..." word repetition bug.
+    rec.onend = () => {
+      isRecordingRef.current = false;
+      setIsRecording(false);
     };
 
-    recognition.onerror = (event: any) => {
-      // Silent gaps are fine; keep going
-      if (event.error === 'no-speech' || event.error === 'aborted') return;
-      console.error('Speech recognition error:', event.error);
+    rec.onerror = (event: any) => {
+      if (event.error === "no-speech" || event.error === "aborted") return;
+      console.error("Speech recognition error:", event.error);
       isRecordingRef.current = false;
       setIsRecording(false);
     };
 
     try {
-      recognition.start();
+      rec.start();
     } catch (err) {
-      console.error('Failed to start recognition:', err);
+      console.error("Failed to start recognition:", err);
       isRecordingRef.current = false;
       setIsRecording(false);
     }
@@ -390,490 +377,762 @@ export default function ChatInterface() {
   const handleVoiceInput = useCallback(() => {
     if (isRecording) {
       stopRecording();
+      // Tapping the mic to stop does NOT auto-send — user can review and edit
     } else {
       startRecording();
     }
   }, [isRecording, startRecording, stopRecording]);
 
-  // ─────────────────────────────────────────
-  // Send Message
-  // ─────────────────────────────────────────
+  // ── Session start ──────────────────────
+
+  const handleStartSession = useCallback(
+    async (level: Level, topic: string) => {
+      setIsStarting(true);
+      const newSession: Session = { level, topic };
+
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            messages: [{ role: "user", content: "Hello!" }],
+            level,
+            topic,
+            isFirstMessage: true,
+          }),
+        });
+        if (!res.ok) throw new Error("API error");
+        const data = await res.json();
+
+        const hiddenHello: Message = {
+          id: generateId(),
+          role: "user",
+          content: "Hello!",
+          hidden: true,
+        };
+        const welcome: Message = {
+          id: generateId(),
+          role: "assistant",
+          content: data.message,
+        };
+        setSession(newSession);
+        setMessages([hiddenHello, welcome]);
+        if (speakerMode)
+          setTimeout(() => speakMessage(data.message, welcome.id, level), 250);
+      } catch {
+        const topicLabel =
+          topic.toLowerCase() === "general"
+            ? "all sorts of interesting things"
+            : topic;
+        const fallback: Message = {
+          id: generateId(),
+          role: "assistant",
+          content: `Hi there! 👋 I'm Alex, your English practice partner! So excited to chat with you about ${topicLabel}! What do you already know about this topic?`,
+        };
+        setSession(newSession);
+        setMessages([
+          { id: generateId(), role: "user", content: "Hello!", hidden: true },
+          fallback,
+        ]);
+        if (speakerMode)
+          setTimeout(
+            () => speakMessage(fallback.content, fallback.id, level),
+            250,
+          );
+      } finally {
+        setIsStarting(false);
+      }
+    },
+    [speakMessage, speakerMode],
+  );
+
+  // ── Send message ───────────────────────
 
   const sendMessage = useCallback(
-    async (userText: string, currentMessages: Message[], sessionData: Session) => {
+    async (
+      userText: string,
+      currentMessages: Message[],
+      sessionData: Session,
+    ) => {
       if (!userText.trim() || isLoading) return;
 
       const userMsg: Message = {
         id: generateId(),
-        role: 'user',
+        role: "user",
         content: userText.trim(),
       };
-
       const newMessages = [...currentMessages, userMsg];
       setMessages(newMessages);
-      setInput('');
-      accumulatedTranscriptRef.current = '';
+      setInput("");
+      accumulatedRef.current = "";
       setIsLoading(true);
 
       try {
-        const apiMessages = newMessages.map((m) => ({
-          role: m.role as 'user' | 'assistant',
-          content: m.content,
-        }));
-
-        const res = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            messages: apiMessages,
+            messages: newMessages.map((m) => ({
+              role: m.role,
+              content: m.content,
+            })),
             level: sessionData.level,
             topic: sessionData.topic,
             isFirstMessage: false,
           }),
         });
-
-        if (!res.ok) throw new Error('API error');
+        if (!res.ok) throw new Error("API error");
         const data = await res.json();
 
         const botMsg: Message = {
           id: generateId(),
-          role: 'assistant',
+          role: "assistant",
           content: data.message,
         };
-
         setMessages((prev) => [...prev, botMsg]);
-        // Only auto-play if speaker mode is ON
-        if (speakerMode) {
-          setTimeout(() => speakMessage(data.message, botMsg.id, sessionData.level), 100);
-        }
+        if (speakerMode)
+          setTimeout(
+            () => speakMessage(data.message, botMsg.id, sessionData.level),
+            100,
+          );
       } catch {
-        const errMsg: Message = {
-          id: generateId(),
-          role: 'assistant',
-          content: "I'm sorry, I had a connection issue. Could you try sending your message again?",
-        };
-        setMessages((prev) => [...prev, errMsg]);
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: generateId(),
+            role: "assistant",
+            content:
+              "I'm sorry, I had a connection issue. Could you try again?",
+          },
+        ]);
       } finally {
         setIsLoading(false);
       }
     },
-    [isLoading, speakMessage, speakerMode]
+    [isLoading, speakMessage, speakerMode],
   );
 
   const handleSend = useCallback(() => {
     if (!session || !input.trim() || isLoading) return;
-    // If recording, stop first so we capture anything still pending
+    // If the mic is still active, stop it and send in one action (voice → send)
     if (isRecordingRef.current) stopRecording();
     sendMessage(input, messages, session);
   }, [session, input, isLoading, messages, sendMessage, stopRecording]);
 
-  // ─────────────────────────────────────────
-  // Translation
-  // ─────────────────────────────────────────
+  // ── Translation ────────────────────────
 
   const handleTranslate = useCallback(
-    async (messageId: string, text: string) => {
-      const msg = messages.find((m) => m.id === messageId);
+    async (msgId: string, text: string) => {
+      const msg = messages.find((m) => m.id === msgId);
       if (!msg) return;
-
       if (msg.showTranslation) {
-        updateMessage(messageId, { showTranslation: false });
+        updateMessage(msgId, { showTranslation: false });
         return;
       }
       if (msg.translation) {
-        updateMessage(messageId, { showTranslation: true });
+        updateMessage(msgId, { showTranslation: true });
         return;
       }
 
-      updateMessage(messageId, { isTranslating: true, showTranslation: true });
-
+      updateMessage(msgId, { isTranslating: true, showTranslation: true });
       try {
-        const res = await fetch('/api/translate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const res = await fetch("/api/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ text }),
         });
         const data = await res.json();
-        if (!res.ok) {
-          console.error('Translate response error:', data);
-          throw new Error(data.error || 'API error');
-        }
-        updateMessage(messageId, {
-          translation: data.translation || 'Translation failed.',
+        if (!res.ok) throw new Error(data.error || "API error");
+        updateMessage(msgId, {
+          translation: data.translation,
           isTranslating: false,
         });
       } catch (err) {
-        console.error('Translate fetch error:', err);
-        updateMessage(messageId, {
-          translation: 'Translation failed. Please try again.',
+        console.error("Translate error:", err);
+        updateMessage(msgId, {
+          translation: "Translation failed. Please try again.",
           isTranslating: false,
         });
       }
     },
-    [messages, updateMessage]
+    [messages, updateMessage],
   );
 
-  // ─────────────────────────────────────────
-  // Grammar Check
-  // ─────────────────────────────────────────
+  // ── Grammar ────────────────────────────
 
-  const handleGrammarCheck = useCallback(
-    async (messageId: string, text: string) => {
-      const msg = messages.find((m) => m.id === messageId);
+  const handleGrammar = useCallback(
+    async (msgId: string, text: string) => {
+      const msg = messages.find((m) => m.id === msgId);
       if (!msg) return;
-
       if (msg.showCorrection) {
-        updateMessage(messageId, { showCorrection: false });
+        updateMessage(msgId, { showCorrection: false });
         return;
       }
       if (msg.correction) {
-        updateMessage(messageId, { showCorrection: true });
+        updateMessage(msgId, { showCorrection: true });
         return;
       }
 
-      updateMessage(messageId, { isCheckingGrammar: true, showCorrection: true });
-
+      updateMessage(msgId, { isCheckingGrammar: true, showCorrection: true });
       try {
-        const res = await fetch('/api/grammar', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const res = await fetch("/api/grammar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ text }),
         });
         const data = await res.json();
-        updateMessage(messageId, {
-          correction: data.corrected || 'Grammar check failed.',
+        updateMessage(msgId, {
+          correction: data.corrected || "Grammar check failed.",
           isCheckingGrammar: false,
         });
       } catch {
-        updateMessage(messageId, {
-          correction: 'Grammar check failed. Please try again.',
+        updateMessage(msgId, {
+          correction: "Grammar check failed. Please try again.",
           isCheckingGrammar: false,
         });
       }
     },
-    [messages, updateMessage]
+    [messages, updateMessage],
   );
 
-  // ─────────────────────────────────────────
-  // Speaker mode toggle
-  // ─────────────────────────────────────────
-
-  const toggleSpeakerMode = useCallback(() => {
-    setSpeakerMode((prev) => {
-      const next = !prev;
-      if (!next) {
-        // Turning off: stop anything currently speaking
-        stopSpeaking();
-      }
-      return next;
-    });
-  }, [stopSpeaking]);
-
-  // ─────────────────────────────────────────
-  // New Session
-  // ─────────────────────────────────────────
+  // ── New session ────────────────────────
 
   const handleNewSession = useCallback(() => {
     stopSpeaking();
     stopRecording();
-    accumulatedTranscriptRef.current = '';
+    accumulatedRef.current = "";
     setSession(null);
     setMessages([]);
-    setInput('');
+    setInput("");
     setIsLoading(false);
   }, [stopSpeaking, stopRecording]);
 
-  // ─────────────────────────────────────────
-  // Render: Setup Screen
-  // ─────────────────────────────────────────
+  // ── Don't render on server ─────────────
+  if (!mounted) return null;
 
+  // ── Setup screen (also via portal) ────
   if (!session) {
-    return <SessionSetup onStart={handleStartSession} isLoading={isStarting} />;
+    return createPortal(
+      <SessionSetup onStart={handleStartSession} isLoading={isStarting} />,
+      document.body,
+    );
   }
 
   // ─────────────────────────────────────────
-  // Render: Chat UI
+  // Chat UI
+  // createPortal renders directly into document.body, completely bypassing the
+  // studiolingo.ge parent layout (and any CSS transforms that would break
+  // position:fixed). This eliminates the Studio Lingo logo / header overlap.
   // ─────────────────────────────────────────
 
   const visibleMessages = messages.filter((m) => !m.hidden);
   const topicDisplay =
-    session.topic.toLowerCase() === 'general'
-      ? 'General'
-      : `${session.topic.charAt(0).toUpperCase() + session.topic.slice(1)}`;
-  const topicIcon = session.topic.toLowerCase() === 'general' ? '🌍' : '💬';
+    session.topic.toLowerCase() === "general"
+      ? "General"
+      : session.topic.charAt(0).toUpperCase() + session.topic.slice(1);
 
-  // White style object to beat parent site's global CSS color rules
-  const whiteText = { color: '#ffffff' } as const;
-
-  return (
-    // fixed inset-0 makes the chat take over the FULL viewport, overriding
-    // the studiolingo.ge site layout (logo/hamburger nav) completely.
-    // h-[100dvh] handles mobile browser URL-bar collapse so the input never
-    // sits below the fold.
+  return createPortal(
     <div
-      className="fixed inset-0 z-[9999] flex flex-col bg-gradient-to-b from-gray-50 to-white overflow-hidden"
-      style={{ height: '100dvh' }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 2147483647,
+        height: "100dvh",
+        display: "flex",
+        flexDirection: "column",
+        background: "linear-gradient(180deg,#f9fafb 0%,#ffffff 100%)",
+        fontFamily:
+          '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif',
+      }}
     >
-
-      {/* ── Header (frosted glass, iOS-inspired) ── */}
+      {/* ── Header ── */}
       <div
-        className="px-4 py-3.5 flex items-center justify-between flex-shrink-0 border-b"
         style={{
-          background: 'linear-gradient(180deg, #293142 0%, #1f2635 100%)',
-          borderBottomColor: 'rgba(255,255,255,0.08)',
-          boxShadow: '0 1px 24px rgba(41,49,66,0.12)',
+          flexShrink: 0,
+          background: `linear-gradient(180deg, ${C.blue} 0%, ${C.blueDark} 100%)`,
+          borderBottom: "none",
+          boxShadow: "0 1px 20px rgba(41,49,66,0.15)",
+          padding: "12px 16px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 8,
         }}
       >
-        <div className="flex items-center gap-3 min-w-0">
+        {/* Left: logo + level + topic */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            minWidth: 0,
+          }}
+        >
           <Image
             src="/images/lingo-white.png"
             alt="Studio Lingo"
-            width={104}
+            width={100}
             height={30}
-            className="object-contain flex-shrink-0"
+            style={{ objectFit: "contain", flexShrink: 0 }}
             onError={(e) => {
-              (e.target as HTMLImageElement).style.display = 'none';
+              (e.target as HTMLImageElement).style.display = "none";
             }}
           />
-          <div className="h-5 w-px flex-shrink-0" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }} />
-          <div className="flex items-center gap-2 min-w-0">
+          <div
+            style={{
+              width: 1,
+              height: 20,
+              background: "rgba(255,255,255,0.2)",
+              flexShrink: 0,
+            }}
+          />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              minWidth: 0,
+            }}
+          >
             <span
-              className="text-[11px] font-bold px-2.5 py-1 rounded-full flex-shrink-0 tracking-wide"
               style={{
-                ...whiteText,
-                backgroundColor: '#2f9e4d',
-                boxShadow: '0 1px 4px rgba(47,158,77,0.4)',
+                ...W,
+                background: C.green,
+                fontSize: 11,
+                fontWeight: 700,
+                padding: "3px 10px",
+                borderRadius: 20,
+                flexShrink: 0,
+                letterSpacing: "0.03em",
+                boxShadow: "0 1px 6px rgba(47,158,77,0.4)",
               }}
             >
               {session.level}
             </span>
-            <span className="text-sm truncate font-medium" style={{ color: 'rgba(255,255,255,0.85)' }}>
-              <span className="mr-1">{topicIcon}</span>
-              <span style={whiteText}>{topicDisplay}</span>
+            <span
+              style={{
+                color: "rgba(255,255,255,0.9)",
+                fontSize: 14,
+                fontWeight: 500,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {session.topic.toLowerCase() === "general" ? "🌍" : "💬"}{" "}
+              {topicDisplay}
             </span>
           </div>
         </div>
 
-        {/* Right cluster: speaker toggle + new session */}
-        <div className="flex items-center gap-1.5 flex-shrink-0 ml-2">
-          {/* Speaker mode toggle */}
+        {/* Right: speaker toggle + new session */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            flexShrink: 0,
+          }}
+        >
           <button
-            onClick={toggleSpeakerMode}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
+            onClick={() =>
+              setSpeakerMode((prev) => {
+                if (prev) stopSpeaking();
+                return !prev;
+              })
+            }
+            title={speakerMode ? "Speaking mode ON" : "Speaking mode OFF"}
             style={{
-              ...whiteText,
-              backgroundColor: speakerMode ? '#2f9e4d' : 'rgba(255,255,255,0.1)',
-              boxShadow: speakerMode ? '0 2px 8px rgba(47,158,77,0.45)' : 'none',
+              ...W,
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              cursor: "pointer",
+              background: speakerMode ? C.green : "rgba(255,255,255,0.12)",
+              border: "none",
+              borderRadius: 20,
+              padding: "6px 12px",
+              fontSize: 12,
+              fontWeight: 600,
+              boxShadow: speakerMode
+                ? "0 2px 8px rgba(47,158,77,0.45)"
+                : "none",
+              transition: "all 0.2s",
             }}
-            title={speakerMode ? 'Speaking mode ON — bot replies play automatically' : 'Speaking mode OFF — tap to auto-play replies'}
-            aria-label="Toggle speaking mode"
           >
-            <span style={whiteText}>
+            <span style={W}>
               {speakerMode ? <IconSpeakerOn /> : <IconSpeakerOff />}
             </span>
-            <span className="hidden sm:inline" style={whiteText}>
-              {speakerMode ? 'Speaking' : 'Muted'}
+            <span style={{ ...W, display: "none" }} className="sm-show">
+              {speakerMode ? "Speaking" : "Muted"}
             </span>
           </button>
-
-          {/* New session */}
           <button
             onClick={handleNewSession}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium transition-all"
+            title="New session"
             style={{
-              ...whiteText,
-              backgroundColor: 'rgba(255,255,255,0.1)',
+              ...W,
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+              cursor: "pointer",
+              background: "rgba(255,255,255,0.12)",
+              border: "none",
+              borderRadius: 20,
+              padding: "6px 12px",
+              fontSize: 12,
+              fontWeight: 600,
             }}
-            title="Start a new session"
           >
-            <span style={whiteText}><IconRefresh /></span>
-            <span className="hidden sm:inline" style={whiteText}>New</span>
+            <span style={W}>
+              <IconRefresh />
+            </span>
+            <span style={W}>New</span>
           </button>
         </div>
       </div>
 
       {/* ── Messages ── */}
-      <div className="flex-1 overflow-y-auto px-4 py-5 space-y-4">
+      <div
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          padding: "20px 16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 16,
+        }}
+      >
         {visibleMessages.map((message) => (
           <div
             key={message.id}
-            className={`flex animate-in fade-in slide-in-from-bottom-2 duration-300 ${
-              message.role === 'user' ? 'justify-end' : 'justify-start'
-            }`}
+            style={{
+              display: "flex",
+              justifyContent:
+                message.role === "user" ? "flex-end" : "flex-start",
+            }}
           >
-            {/* ── Bot Message ── */}
-            {message.role === 'assistant' && (
-              <div className="flex items-end gap-2 max-w-[88%] sm:max-w-[72%]">
+            {/* Bot message */}
+            {message.role === "assistant" && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "flex-end",
+                  gap: 8,
+                  maxWidth: "min(88%, 520px)",
+                }}
+              >
+                {/* AI avatar */}
                 <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mb-8"
                   style={{
-                    background: 'linear-gradient(135deg, #2f9e4d 0%, #267a3d 100%)',
-                    boxShadow: '0 2px 8px rgba(47,158,77,0.3)',
+                    width: 32,
+                    height: 32,
+                    borderRadius: "50%",
+                    flexShrink: 0,
+                    background: `linear-gradient(135deg,${C.green},${C.greenDark})`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: 30,
+                    boxShadow: "0 2px 8px rgba(47,158,77,0.3)",
                   }}
                 >
-                  <span className="text-[10px] font-bold tracking-wide" style={whiteText}>AI</span>
+                  <span style={{ ...W, fontSize: 10, fontWeight: 700 }}>
+                    AI
+                  </span>
                 </div>
-                <div className="flex flex-col gap-2">
+
+                <div
+                  style={{ display: "flex", flexDirection: "column", gap: 6 }}
+                >
+                  {/* Bubble */}
                   <div
-                    className="bg-white px-4 py-3"
                     style={{
-                      borderRadius: '22px 22px 22px 6px',
-                      boxShadow: '0 2px 14px rgba(41,49,66,0.07), 0 0 0 1px rgba(41,49,66,0.04)',
+                      background: C.white,
+                      padding: "12px 16px",
+                      borderRadius: "20px 20px 20px 5px",
+                      boxShadow:
+                        "0 2px 12px rgba(41,49,66,0.07), 0 0 0 1px rgba(41,49,66,0.05)",
                     }}
                   >
                     <p
-                      className="text-[15px] leading-[1.45] whitespace-pre-wrap"
-                      style={{ color: '#293142', letterSpacing: '-0.01em' }}
+                      style={{
+                        color: C.textPrimary,
+                        fontSize: 15,
+                        lineHeight: 1.5,
+                        margin: 0,
+                        whiteSpace: "pre-wrap",
+                        letterSpacing: "-0.01em",
+                      }}
                     >
                       {message.content}
                     </p>
                   </div>
 
+                  {/* Translation box — green-tinted, brand colours only */}
                   {message.showTranslation && (
                     <div
-                      className="px-3.5 py-2.5 animate-in fade-in slide-in-from-top-1 duration-200"
                       style={{
-                        borderRadius: '16px',
-                        backgroundColor: '#eff6ff',
-                        border: '1px solid #dbeafe',
+                        background: C.greenLight,
+                        borderRadius: 14,
+                        padding: "10px 14px",
+                        borderLeft: `3px solid ${C.green}`,
                       }}
                     >
                       {message.isTranslating ? (
-                        <div className="flex items-center gap-2">
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 8,
+                          }}
+                        >
                           <div
-                            className="w-3 h-3 border-2 border-t-transparent rounded-full animate-spin"
-                            style={{ borderColor: '#60a5fa', borderTopColor: 'transparent' }}
+                            style={{
+                              width: 12,
+                              height: 12,
+                              borderRadius: "50%",
+                              border: `2px solid ${C.green}`,
+                              borderTopColor: "transparent",
+                              animation: "spin 0.8s linear infinite",
+                            }}
                           />
-                          <p className="text-xs" style={{ color: '#3b82f6' }}>Translating...</p>
+                          <span style={{ color: C.green, fontSize: 12 }}>
+                            Translating...
+                          </span>
                         </div>
                       ) : (
-                        <p className="text-[14px] leading-relaxed" style={{ color: '#1e3a8a' }}>
+                        <p
+                          style={{
+                            color: C.blue,
+                            fontSize: 14,
+                            lineHeight: 1.5,
+                            margin: 0,
+                          }}
+                        >
                           {message.translation}
                         </p>
                       )}
                     </div>
                   )}
 
-                  <div className="flex items-center gap-1.5">
-                    {/* Listen button */}
+                  {/* Action buttons */}
+                  <div style={{ display: "flex", gap: 6 }}>
+                    {/* Listen */}
                     <button
                       onClick={() =>
-                        playingMessageId === message.id
+                        playingId === message.id
                           ? stopSpeaking()
                           : speakMessage(message.content, message.id)
                       }
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all"
-                      style={
-                        playingMessageId === message.id
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 5,
+                        cursor: "pointer",
+                        border: "none",
+                        borderRadius: 20,
+                        padding: "5px 12px",
+                        fontSize: 11,
+                        fontWeight: 600,
+                        ...(playingId === message.id
                           ? {
-                              ...whiteText,
-                              backgroundColor: '#2f9e4d',
-                              boxShadow: '0 2px 6px rgba(47,158,77,0.35)',
+                              ...W,
+                              background: C.green,
+                              boxShadow: "0 2px 6px rgba(47,158,77,0.3)",
                             }
-                          : { color: '#6b7280', backgroundColor: '#f3f4f6' }
-                      }
-                      title={playingMessageId === message.id ? 'Stop audio' : 'Listen to this message'}
+                          : { color: C.textMuted, background: "#f3f4f6" }),
+                        transition: "all 0.15s",
+                      }}
                     >
-                      <span style={playingMessageId === message.id ? whiteText : { color: '#6b7280' }}>
-                        {playingMessageId === message.id ? <IconStop /> : <IconVolume />}
+                      <span
+                        style={
+                          playingId === message.id ? W : { color: C.textMuted }
+                        }
+                      >
+                        {playingId === message.id ? (
+                          <IconPause />
+                        ) : (
+                          <IconVolume />
+                        )}
                       </span>
-                      <span style={playingMessageId === message.id ? whiteText : { color: '#6b7280' }}>
-                        {playingMessageId === message.id ? 'Stop' : 'Listen'}
+                      <span
+                        style={
+                          playingId === message.id ? W : { color: C.textMuted }
+                        }
+                      >
+                        {playingId === message.id ? "Stop" : "Listen"}
                       </span>
                     </button>
 
-                    {/* Translate button */}
+                    {/* Translate (dark-blue when active) */}
                     <button
-                      onClick={() => handleTranslate(message.id, message.content)}
-                      className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all"
-                      style={
-                        message.showTranslation
-                          ? {
-                              ...whiteText,
-                              backgroundColor: '#3b82f6',
-                              boxShadow: '0 2px 6px rgba(59,130,246,0.35)',
-                            }
-                          : { color: '#6b7280', backgroundColor: '#f3f4f6' }
+                      onClick={() =>
+                        handleTranslate(message.id, message.content)
                       }
-                      title="Translate to Georgian"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "pointer",
+                        border: "none",
+                        borderRadius: 20,
+                        padding: "5px 12px",
+                        fontSize: 11,
+                        fontWeight: 600,
+                        ...(message.showTranslation
+                          ? {
+                              ...W,
+                              background: C.blue,
+                              boxShadow: "0 2px 6px rgba(41,49,66,0.25)",
+                            }
+                          : { color: C.textMuted, background: "#f3f4f6" }),
+                        transition: "all 0.15s",
+                      }}
                     >
-                      <span style={message.showTranslation ? whiteText : { color: '#6b7280' }}>ქარ</span>
+                      <span
+                        style={
+                          message.showTranslation ? W : { color: C.textMuted }
+                        }
+                      >
+                        ქარ
+                      </span>
                     </button>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* ── User Message ── */}
-            {message.role === 'user' && (
-              <div className="flex flex-col items-end gap-2 max-w-[88%] sm:max-w-[72%]">
+            {/* User message */}
+            {message.role === "user" && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-end",
+                  gap: 6,
+                  maxWidth: "min(88%, 520px)",
+                }}
+              >
                 <div
-                  className="px-4 py-3"
                   style={{
-                    borderRadius: '22px 22px 6px 22px',
-                    background: 'linear-gradient(135deg, #2f9e4d 0%, #267a3d 100%)',
-                    boxShadow: '0 2px 14px rgba(47,158,77,0.25)',
+                    padding: "12px 16px",
+                    borderRadius: "20px 20px 5px 20px",
+                    background: `linear-gradient(135deg,${C.green},${C.greenDark})`,
+                    boxShadow: "0 2px 12px rgba(47,158,77,0.25)",
                   }}
                 >
                   <p
-                    className="text-[15px] leading-[1.45] whitespace-pre-wrap"
-                    style={{ ...whiteText, letterSpacing: '-0.01em' }}
+                    style={{
+                      ...W,
+                      fontSize: 15,
+                      lineHeight: 1.5,
+                      margin: 0,
+                      whiteSpace: "pre-wrap",
+                      letterSpacing: "-0.01em",
+                    }}
                   >
                     {message.content}
                   </p>
                 </div>
 
+                {/* Grammar correction box — brand colours only */}
                 {message.showCorrection && (
                   <div
-                    className="px-3.5 py-2.5 w-full animate-in fade-in slide-in-from-top-1 duration-200"
                     style={{
-                      borderRadius: '16px',
-                      backgroundColor: '#fffbeb',
-                      border: '1px solid #fde68a',
+                      background: C.white,
+                      borderRadius: 14,
+                      padding: "10px 14px",
+                      width: "100%",
+                      borderLeft: `3px solid ${C.blue}`,
+                      boxShadow: "0 1px 8px rgba(41,49,66,0.06)",
                     }}
                   >
                     {message.isCheckingGrammar ? (
-                      <div className="flex items-center gap-2">
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 8,
+                        }}
+                      >
                         <div
-                          className="w-3 h-3 border-2 border-t-transparent rounded-full animate-spin"
-                          style={{ borderColor: '#fbbf24', borderTopColor: 'transparent' }}
+                          style={{
+                            width: 12,
+                            height: 12,
+                            borderRadius: "50%",
+                            border: `2px solid ${C.blue}`,
+                            borderTopColor: "transparent",
+                            animation: "spin 0.8s linear infinite",
+                          }}
                         />
-                        <p className="text-xs" style={{ color: '#b45309' }}>Checking grammar...</p>
+                        <span style={{ color: C.textMuted, fontSize: 12 }}>
+                          Checking grammar...
+                        </span>
                       </div>
                     ) : (
-                      <div>
-                        <p className="text-xs font-semibold mb-1" style={{ color: '#b45309' }}>
+                      <>
+                        <p
+                          style={{
+                            color: C.textMuted,
+                            fontSize: 11,
+                            fontWeight: 600,
+                            margin: "0 0 4px",
+                          }}
+                        >
                           💡 More natural English:
                         </p>
-                        <p className="text-[14px] leading-relaxed" style={{ color: '#78350f' }}>
+                        <p
+                          style={{
+                            color: C.textPrimary,
+                            fontSize: 14,
+                            lineHeight: 1.5,
+                            margin: 0,
+                          }}
+                        >
                           {message.correction}
                         </p>
-                      </div>
+                      </>
                     )}
                   </div>
                 )}
 
+                {/* Grammar button (green when active) */}
                 <button
-                  onClick={() => handleGrammarCheck(message.id, message.content)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all"
-                  style={
-                    message.showCorrection
+                  onClick={() => handleGrammar(message.id, message.content)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 5,
+                    cursor: "pointer",
+                    border: "none",
+                    borderRadius: 20,
+                    padding: "5px 12px",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    ...(message.showCorrection
                       ? {
-                          ...whiteText,
-                          backgroundColor: '#f59e0b',
-                          boxShadow: '0 2px 6px rgba(245,158,11,0.35)',
+                          ...W,
+                          background: C.blue,
+                          boxShadow: "0 2px 6px rgba(41,49,66,0.25)",
                         }
-                      : { color: '#6b7280', backgroundColor: '#f3f4f6' }
-                  }
-                  title="Check my grammar"
+                      : { color: C.textMuted, background: "#f3f4f6" }),
+                    transition: "all 0.15s",
+                  }}
                 >
                   <span
-                    className="font-bold text-sm leading-none"
-                    style={message.showCorrection ? whiteText : { color: '#6b7280' }}
+                    style={
+                      message.showCorrection
+                        ? W
+                        : { color: C.textMuted, fontWeight: 700, fontSize: 13 }
+                    }
                   >
                     ℹ
                   </span>
-                  <span style={message.showCorrection ? whiteText : { color: '#6b7280' }}>Grammar</span>
+                  <span
+                    style={message.showCorrection ? W : { color: C.textMuted }}
+                  >
+                    Grammar
+                  </span>
                 </button>
               </div>
             )}
@@ -882,77 +1141,107 @@ export default function ChatInterface() {
 
         {/* Typing indicator */}
         {isLoading && (
-          <div className="flex justify-start animate-in fade-in duration-200">
-            <div className="flex items-end gap-2">
+          <div style={{ display: "flex", justifyContent: "flex-start" }}>
+            <div style={{ display: "flex", alignItems: "flex-end", gap: 8 }}>
               <div
-                className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
                 style={{
-                  background: 'linear-gradient(135deg, #2f9e4d 0%, #267a3d 100%)',
-                  boxShadow: '0 2px 8px rgba(47,158,77,0.3)',
+                  width: 32,
+                  height: 32,
+                  borderRadius: "50%",
+                  flexShrink: 0,
+                  background: `linear-gradient(135deg,${C.green},${C.greenDark})`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0 2px 8px rgba(47,158,77,0.3)",
                 }}
               >
-                <span className="text-[10px] font-bold" style={whiteText}>AI</span>
+                <span style={{ ...W, fontSize: 10, fontWeight: 700 }}>AI</span>
               </div>
               <div
-                className="bg-white px-4 py-3"
                 style={{
-                  borderRadius: '22px 22px 22px 6px',
-                  boxShadow: '0 2px 14px rgba(41,49,66,0.07), 0 0 0 1px rgba(41,49,66,0.04)',
+                  background: C.white,
+                  padding: "12px 16px",
+                  borderRadius: "20px 20px 20px 5px",
+                  boxShadow: "0 2px 12px rgba(41,49,66,0.07)",
                 }}
               >
-                <div className="flex gap-1.5 items-center h-4">
-                  <div
-                    className="w-2 h-2 rounded-full animate-bounce"
-                    style={{ backgroundColor: '#9ca3af', animationDelay: '0ms' }}
-                  />
-                  <div
-                    className="w-2 h-2 rounded-full animate-bounce"
-                    style={{ backgroundColor: '#9ca3af', animationDelay: '150ms' }}
-                  />
-                  <div
-                    className="w-2 h-2 rounded-full animate-bounce"
-                    style={{ backgroundColor: '#9ca3af', animationDelay: '300ms' }}
-                  />
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 5,
+                    alignItems: "center",
+                    height: 16,
+                  }}
+                >
+                  {[0, 150, 300].map((delay) => (
+                    <div
+                      key={delay}
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        background: "#d1d5db",
+                        animation: `bounce 1.2s ${delay}ms ease-in-out infinite`,
+                      }}
+                    />
+                  ))}
                 </div>
               </div>
             </div>
           </div>
         )}
-
         <div ref={messagesEndRef} />
       </div>
 
-      {/* ── Input Area ── */}
+      {/* ── Input bar ── */}
       <div
-        className="px-4 py-3 flex-shrink-0"
         style={{
-          background: 'rgba(255,255,255,0.92)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          borderTop: '1px solid rgba(41,49,66,0.08)',
-          boxShadow: '0 -4px 20px rgba(41,49,66,0.05)',
-          paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom))',
+          flexShrink: 0,
+          background: "rgba(255,255,255,0.95)",
+          borderTop: `1px solid ${C.border}`,
+          padding: "10px 16px",
+          paddingBottom: "calc(10px + env(safe-area-inset-bottom))",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          boxShadow: "0 -4px 20px rgba(41,49,66,0.05)",
         }}
       >
-        <div className="flex items-center gap-2 max-w-3xl mx-auto">
-          {/* Voice button */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            maxWidth: 680,
+            margin: "0 auto",
+          }}
+        >
+          {/* Mic — tap to start, tap to stop (does NOT auto-send on stop) */}
           <button
             onClick={handleVoiceInput}
-            className="flex-shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-all active:scale-95"
-            style={
-              isRecording
+            title={isRecording ? "Stop recording" : "Record voice message"}
+            style={{
+              flexShrink: 0,
+              width: 44,
+              height: 44,
+              borderRadius: "50%",
+              border: "none",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "all 0.2s",
+              ...(isRecording
                 ? {
-                    ...whiteText,
-                    backgroundColor: '#ef4444',
-                    boxShadow: '0 4px 16px rgba(239,68,68,0.4), 0 0 0 4px rgba(239,68,68,0.15)',
-                    animation: 'pulse 1.5s ease-in-out infinite',
+                    background: "#ef4444",
+                    color: C.white,
+                    boxShadow: "0 0 0 4px rgba(239,68,68,0.2)",
                   }
-                : { color: '#6b7280', backgroundColor: '#f3f4f6' }
-            }
-            title={isRecording ? 'Stop recording' : 'Voice input — speak in English'}
+                : { background: "#f3f4f6", color: C.textMuted }),
+            }}
           >
-            <span style={isRecording ? whiteText : { color: '#6b7280' }}>
-              {isRecording ? <IconStopSquare /> : <IconMic />}
+            <span style={isRecording ? W : { color: C.textMuted }}>
+              {isRecording ? <IconMicStop /> : <IconMic />}
             </span>
           </button>
 
@@ -963,59 +1252,92 @@ export default function ChatInterface() {
             value={input}
             onChange={(e) => {
               setInput(e.target.value);
-              // If user edits manually while not recording, keep accumulator in sync
-              if (!isRecordingRef.current) {
-                accumulatedTranscriptRef.current = e.target.value;
-              }
+              if (!isRecordingRef.current)
+                accumulatedRef.current = e.target.value;
             }}
-            onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
-            placeholder={isRecording ? 'Listening... tap mic to stop' : 'Type your message...'}
+            onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
+            placeholder={
+              isRecording
+                ? "Listening... tap Send to stop & send"
+                : "Type your message..."
+            }
             disabled={isLoading}
-            className="flex-1 px-4 py-2.5 rounded-full transition-all text-[16px] disabled:opacity-50"
             style={{
-              border: '1px solid rgba(41,49,66,0.12)',
-              backgroundColor: '#ffffff',
-              color: '#293142',
-              boxShadow: 'inset 0 1px 2px rgba(41,49,66,0.04)',
-              outline: 'none',
+              flex: 1,
+              height: 44,
+              padding: "0 16px",
+              fontSize: 16,
+              border: `1.5px solid ${C.border}`,
+              borderRadius: 22,
+              background: C.white,
+              color: C.textPrimary,
+              outline: "none",
+              transition: "border-color 0.15s, box-shadow 0.15s",
+              opacity: isLoading ? 0.5 : 1,
             }}
             onFocus={(e) => {
-              e.currentTarget.style.borderColor = '#2f9e4d';
-              e.currentTarget.style.boxShadow =
-                'inset 0 1px 2px rgba(41,49,66,0.04), 0 0 0 3px rgba(47,158,77,0.12)';
+              e.currentTarget.style.borderColor = C.green;
+              e.currentTarget.style.boxShadow = `0 0 0 3px rgba(47,158,77,0.12)`;
             }}
             onBlur={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(41,49,66,0.12)';
-              e.currentTarget.style.boxShadow = 'inset 0 1px 2px rgba(41,49,66,0.04)';
+              e.currentTarget.style.borderColor = C.border;
+              e.currentTarget.style.boxShadow = "none";
             }}
           />
 
-          {/* Send button */}
+          {/* Send — if recording: stops mic AND sends in one tap */}
           <button
             onClick={handleSend}
             disabled={!input.trim() || isLoading}
-            className="flex-shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+            title={isRecording ? "Stop recording and send" : "Send message"}
             style={{
-              ...whiteText,
-              background: 'linear-gradient(135deg, #2f9e4d 0%, #267a3d 100%)',
-              boxShadow: '0 3px 12px rgba(47,158,77,0.35)',
+              flexShrink: 0,
+              width: 44,
+              height: 44,
+              borderRadius: "50%",
+              border: "none",
+              cursor: !input.trim() || isLoading ? "not-allowed" : "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: `linear-gradient(135deg,${C.green},${C.greenDark})`,
+              boxShadow: "0 3px 10px rgba(47,158,77,0.35)",
+              opacity: !input.trim() || isLoading ? 0.4 : 1,
+              transition: "opacity 0.15s",
             }}
-            title="Send message"
           >
-            <span style={whiteText}><IconSend /></span>
+            <span style={W}>
+              <IconSend />
+            </span>
           </button>
         </div>
 
         {isRecording && (
           <p
-            className="text-center text-xs mt-2 font-medium"
-            style={{ color: '#ef4444', animation: 'pulse 1.5s ease-in-out infinite' }}
+            style={{
+              textAlign: "center",
+              color: "#ef4444",
+              fontSize: 11,
+              fontWeight: 500,
+              marginTop: 6,
+              marginBottom: 0,
+            }}
           >
-            🎤 Recording continuously... tap mic to stop, or Send to send
+            🎤 Recording — tap Send to stop &amp; send, or tap the mic to stop
+            &amp; review
           </p>
         )}
       </div>
 
-    </div>
+      {/* Keyframe animations injected once */}
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes bounce {
+          0%,80%,100% { transform: translateY(0); }
+          40% { transform: translateY(-6px); }
+        }
+      `}</style>
+    </div>,
+    document.body,
   );
 }
