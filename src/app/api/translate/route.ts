@@ -53,13 +53,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing text" }, { status: 400 });
     }
 
-    // First attempt with Haiku — much faster than Opus for simple translation
-    let translation = await translateToGeorgian(text, "claude-3-5-haiku-20241022");
+    // Translate with Opus — the only model confirmed available in this account
+    let translation = await translateToGeorgian(text, "claude-opus-4-6");
 
-    // Safety net: if non-Georgian scripts leaked in, retry with Opus (most reliable)
+    // Safety net: if non-Georgian scripts leaked in, retry with a more explicit prompt
     if (hasNonGeorgianScript(translation)) {
       console.warn(
-        "Translation contained non-Georgian characters, retrying with Opus…",
+        "Translation contained non-Georgian characters, retrying…",
         translation,
       );
       const retry = await client.messages.create({
