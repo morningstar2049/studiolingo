@@ -183,6 +183,8 @@ export default function ChatInterface() {
   // v9: keep the AudioContext alive in a ref so iOS doesn't GC it and revert the
   // audio session back to earpiece/quiet mode between plays
   const audioCtxRef = useRef<AudioContext | null>(null);
+  // v10: tracks an AudioBufferSourceNode used for iOS auto-play (Web Audio path)
+  const currentAudioSourceRef = useRef<AudioBufferSourceNode | null>(null);
 
   // Mount flag for portal (must be client-side)
   useEffect(() => { setMounted(true); }, []);
@@ -409,6 +411,11 @@ export default function ChatInterface() {
           currentAudioRef.current.pause();
           currentAudioRef.current = null;
         }
+        if (currentAudioSourceRef.current) {
+          currentAudioSourceRef.current.onended = null;
+          try { currentAudioSourceRef.current.stop(); } catch { /* already ended */ }
+          currentAudioSourceRef.current = null;
+        }
         if (currentUtteranceRef.current) {
           currentUtteranceRef.current.onend = null;
           currentUtteranceRef.current.onerror = null;
@@ -418,30 +425,62 @@ export default function ChatInterface() {
           window.speechSynthesis.cancel();
         }
 
-        // v10: await resume() so context is RUNNING before play(), then route
-        // through createMediaElementSource for iOS loudspeaker output.
-        if (audioCtxRef.current && audioCtxRef.current.state !== 'running') {
-          try { await audioCtxRef.current.resume(); } catch { /* ignore */ }
-        }
-        setPlayingId(msgId);
-        const audio = new Audio(url);
-        audio.volume = 1.0;
-        if (audioCtxRef.current?.state === 'running') {
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+        if (isIOS && audioCtxRef.current) {
+          // v10 iOS path: audio.play() in async context is blocked by iOS even
+          // after AudioContext unlock. Use AudioContext.decodeAudioData +
+          // AudioBufferSourceNode.start() instead — Web Audio API start() is
+          // unlocked when the AudioContext was created in a user gesture, with
+          // no async restriction. This is the only fully reliable iOS solution.
           try {
-            const src = audioCtxRef.current.createMediaElementSource(audio);
-            src.connect(audioCtxRef.current.destination);
-          } catch { /* non-critical */ }
-        }
-        currentAudioRef.current = audio;
-        audio.onended = () => { currentAudioRef.current = null; setPlayingId(null); };
-        audio.onerror = () => { currentAudioRef.current = null; setPlayingId(null); };
-        try {
-          await audio.play();
-        } catch {
-          // Autoplay blocked → fall back to browser TTS
-          currentAudioRef.current = null;
-          setPlayingId(null);
-          speakWithBrowser(clean, msgId, level);
+            if (audioCtxRef.current.state !== 'running') {
+              await audioCtxRef.current.resume();
+            }
+            if (isRecordingRef.current) return; // user started mic during resume
+            const arrayBuffer = await fetch(url).then(r => r.arrayBuffer());
+            if (isRecordingRef.current) return; // user started mic during fetch
+            const audioBuffer = await audioCtxRef.current.decodeAudioData(arrayBuffer);
+            if (isRecordingRef.current) return; // user started mic during decode
+            const source = audioCtxRef.current.createBufferSource();
+            source.buffer = audioBuffer;
+            source.connect(audioCtxRef.current.destination);
+            currentAudioSourceRef.current = source;
+            setPlayingId(msgId);
+            source.onended = () => {
+              if (currentAudioSourceRef.current === source) currentAudioSourceRef.current = null;
+              setPlayingId(null);
+            };
+            source.start(0);
+          } catch {
+            currentAudioSourceRef.current = null;
+            setPlayingId(null);
+            if (!isRecordingRef.current) speakWithBrowser(clean, msgId, level);
+          }
+        } else {
+          // Non-iOS: audio.play() works in async context after AudioContext unlock
+          if (audioCtxRef.current && audioCtxRef.current.state !== 'running') {
+            try { await audioCtxRef.current.resume(); } catch { /* ignore */ }
+          }
+          setPlayingId(msgId);
+          const audio = new Audio(url);
+          audio.volume = 1.0;
+          if (audioCtxRef.current?.state === 'running') {
+            try {
+              const src = audioCtxRef.current.createMediaElementSource(audio);
+              src.connect(audioCtxRef.current.destination);
+            } catch { /* non-critical */ }
+          }
+          currentAudioRef.current = audio;
+          audio.onended = () => { currentAudioRef.current = null; setPlayingId(null); };
+          audio.onerror = () => { currentAudioRef.current = null; setPlayingId(null); };
+          try {
+            await audio.play();
+          } catch {
+            currentAudioRef.current = null;
+            setPlayingId(null);
+            speakWithBrowser(clean, msgId, level);
+          }
         }
       }
     } catch (err) {
@@ -463,6 +502,12 @@ export default function ChatInterface() {
       audio.onerror = null;
       audio.pause();
       currentAudioRef.current = null;
+    }
+    // ── iOS Web Audio path (AudioBufferSourceNode) ────────────────────────────
+    if (currentAudioSourceRef.current) {
+      currentAudioSourceRef.current.onended = null;
+      try { currentAudioSourceRef.current.stop(); } catch { /* already ended */ }
+      currentAudioSourceRef.current = null;
     }
     // ── Web Speech API utterance ──────────────────────────────────────────────
     if (currentUtteranceRef.current) {
@@ -518,6 +563,12 @@ export default function ChatInterface() {
       currentAudioRef.current.onerror = null;
       currentAudioRef.current.pause();
       currentAudioRef.current = null;
+    }
+    // v10: also stop iOS Web Audio path if active
+    if (currentAudioSourceRef.current) {
+      currentAudioSourceRef.current.onended = null;
+      try { currentAudioSourceRef.current.stop(); } catch { /* already ended */ }
+      currentAudioSourceRef.current = null;
     }
     if (currentUtteranceRef.current) {
       currentUtteranceRef.current.onend = null;
