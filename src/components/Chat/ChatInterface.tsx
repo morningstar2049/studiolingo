@@ -20,6 +20,9 @@ type Message = {
   correction?: string;
   isCheckingGrammar?: boolean;
   showCorrection?: boolean;
+  // v5: pre-fetched OpenAI TTS blob URL for instant Listen playback
+  audioUrl?: string;
+  isPreloadingAudio?: boolean;
 };
 
 type Session = { level: Level; topic: string };
@@ -221,10 +224,13 @@ export default function ChatInterface() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const isRecordingRef = useRef(false);
+  // v5: on iOS we accumulate final text across fresh sub-sessions
   const accumulatedRef = useRef("");
   const inputRef = useRef<HTMLInputElement>(null);
-  // Holds the currently-playing OpenAI Audio element so we can stop it
+  // Holds the currently-playing Audio element so we can stop it
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
+  // Holds the active Web Speech utterance so we can silence its handlers before cancel()
+  const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   // Mount flag for portal (must be client-side)
   useEffect(() => {
@@ -255,9 +261,10 @@ export default function ChatInterface() {
     );
   }, []);
 
-  // ── TTS ────────────────────────────────
+  // ── Browser TTS ────────────────────────────────────────────────────────────
+  // Fallback for speaking-mode auto-play when OpenAI TTS is unavailable,
+  // and as a fallback if audio.play() is blocked by the browser autoplay policy.
 
-  // Browser fallback: used when OpenAI TTS is unavailable
   const speakWithBrowser = useCallback(
     (clean: string, msgId: string, level?: Level) => {
       if (typeof window === "undefined" || !("speechSynthesis" in window))
@@ -278,30 +285,76 @@ export default function ChatInterface() {
       const best = pickBestVoice(voices);
       if (best) utterance.voice = best;
 
-      utterance.onend = () => setPlayingId(null);
-      utterance.onerror = () => setPlayingId(null);
+      // Store in ref so stopSpeaking can silence these handlers before cancel()
+      // (some browsers fire onend/onerror when cancel() is called, which could
+      // cause a ghost setPlayingId call that interferes with stop behaviour)
+      currentUtteranceRef.current = utterance;
+      utterance.onend = () => {
+        currentUtteranceRef.current = null;
+        setPlayingId(null);
+      };
+      utterance.onerror = () => {
+        currentUtteranceRef.current = null;
+        setPlayingId(null);
+      };
       window.speechSynthesis.speak(utterance);
     },
     [session],
   );
 
-  // Primary TTS: OpenAI "nova" voice (human-like, works on all platforms).
-  // Falls back to the browser's built-in voice if the API call fails.
+  // ── OpenAI TTS (Listen button) ─────────────────────────────────────────────
+  // v5: accepts a pre-fetched blob URL for instant playback.
+  // If no URL is provided (pre-fetch failed or hasn't started), falls back to
+  // a live fetch and then to browser TTS.
+
   const speakMessage = useCallback(
-    async (text: string, msgId: string, level?: Level) => {
+    async (text: string, msgId: string, level?: Level, audioUrl?: string) => {
       if (typeof window === "undefined") return;
 
       const clean = stripEmojis(text);
       if (!clean) return;
 
-      // Stop anything currently playing
+      // Stop anything currently playing (silence handlers first to prevent callbacks)
       if (currentAudioRef.current) {
+        currentAudioRef.current.onended = null;
+        currentAudioRef.current.onerror = null;
         currentAudioRef.current.pause();
         currentAudioRef.current = null;
+      }
+      if (currentUtteranceRef.current) {
+        currentUtteranceRef.current.onend = null;
+        currentUtteranceRef.current.onerror = null;
+        currentUtteranceRef.current = null;
       }
       if ("speechSynthesis" in window) window.speechSynthesis.cancel();
       setPlayingId(msgId);
 
+      // ── Fast path: pre-fetched blob URL ──────────────────────────────────────
+      if (audioUrl) {
+        const audio = new Audio(audioUrl);
+        currentAudioRef.current = audio;
+        // Don't revoke the blob URL on end — keep it for replaying
+        audio.onended = () => {
+          currentAudioRef.current = null;
+          setPlayingId(null);
+        };
+        audio.onerror = () => {
+          currentAudioRef.current = null;
+          setPlayingId(null);
+        };
+        try {
+          await audio.play();
+        } catch (err) {
+          console.warn(
+            "Pre-fetched audio play failed, using browser TTS:",
+            err,
+          );
+          speakWithBrowser(clean, msgId, level);
+        }
+        return;
+      }
+
+      // ── Slow path: fetch on-demand (no pre-fetch available) ─────────────────
       try {
         const res = await fetch("/api/tts", {
           method: "POST",
@@ -319,7 +372,7 @@ export default function ChatInterface() {
         currentAudioRef.current = audio;
 
         audio.onended = () => {
-          URL.revokeObjectURL(url);
+          URL.revokeObjectURL(url); // on-demand URLs are safe to revoke after use
           currentAudioRef.current = null;
           setPlayingId(null);
         };
@@ -330,7 +383,6 @@ export default function ChatInterface() {
         };
         await audio.play();
       } catch (err) {
-        // API key not set yet, rate limit, or any other error → silent fallback
         console.warn("OpenAI TTS unavailable, using browser voice:", err);
         speakWithBrowser(clean, msgId, level);
       }
@@ -338,22 +390,119 @@ export default function ChatInterface() {
     [session, speakWithBrowser],
   );
 
+  // ── TTS pre-fetch + speaking-mode auto-play ───────────────────────────────
+  // Always pre-fetches the OpenAI audio blob for instant Listen playback.
+  // When autoPlay=true (speaking mode on), also plays the audio once ready.
+  //
+  // Why fetch-then-play instead of speakWithBrowser for speaking mode?
+  // Audio.play() on an already-loaded blob succeeds even in async context on
+  // any browser where the user has previously interacted with audio — which is
+  // always true by the time the first bot reply arrives (the user clicked Start,
+  // tapped level buttons, etc.). This gives the natural OpenAI voice for both
+  // speaking mode AND the Listen button.
+
+  const preloadAudio = useCallback(
+    async (msgId: string, text: string, level: Level, autoPlay = false) => {
+      const clean = stripEmojis(text);
+      if (!clean) return;
+
+      updateMessage(msgId, { isPreloadingAudio: true });
+      try {
+        const res = await fetch("/api/tts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: clean, level }),
+        });
+        if (!res.ok) throw new Error(`TTS API ${res.status}`);
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        // Store in message state for instant Listen playback
+        updateMessage(msgId, { audioUrl: url, isPreloadingAudio: false });
+
+        // ── Auto-play for speaking mode ─────────────────────────────────────
+        if (autoPlay) {
+          // Don't interrupt if the user started recording, or another audio is
+          // already playing (e.g. user tapped Listen on an earlier message)
+          if (isRecordingRef.current || currentAudioRef.current) return;
+
+          // Stop any browser TTS that may have snuck in while we were fetching
+          if (currentUtteranceRef.current) {
+            currentUtteranceRef.current.onend = null;
+            currentUtteranceRef.current.onerror = null;
+            currentUtteranceRef.current = null;
+          }
+          if (typeof window !== "undefined" && "speechSynthesis" in window) {
+            window.speechSynthesis.cancel();
+          }
+
+          setPlayingId(msgId);
+          const audio = new Audio(url);
+          currentAudioRef.current = audio;
+          audio.onended = () => {
+            currentAudioRef.current = null;
+            setPlayingId(null);
+          };
+          audio.onerror = () => {
+            currentAudioRef.current = null;
+            setPlayingId(null);
+          };
+          try {
+            await audio.play();
+          } catch {
+            // Autoplay blocked by browser policy → fall back to browser TTS
+            currentAudioRef.current = null;
+            setPlayingId(null);
+            speakWithBrowser(clean, msgId, level);
+          }
+        }
+      } catch (err) {
+        // Pre-fetch failed (no API key, rate limit, etc.)
+        console.warn("TTS pre-fetch failed:", err);
+        updateMessage(msgId, { isPreloadingAudio: false });
+        // If speaking mode was waiting for this audio, fall back to browser TTS
+        if (autoPlay && !isRecordingRef.current)
+          speakWithBrowser(clean, msgId, level);
+      }
+    },
+    [updateMessage, speakWithBrowser],
+  );
+
   const stopSpeaking = useCallback(() => {
-    // Stop OpenAI audio
+    // ── OpenAI Audio element ──────────────────────────────────────────────────
     if (currentAudioRef.current) {
-      currentAudioRef.current.pause();
+      const audio = currentAudioRef.current;
+      // Silence handlers BEFORE pausing — prevents ghost callbacks.
+      // On some browsers, pause() near the end of playback can trigger onended.
+      audio.onended = null;
+      audio.onerror = null;
+      audio.pause();
       currentAudioRef.current = null;
     }
-    // Stop browser TTS
+    // ── Web Speech API utterance ──────────────────────────────────────────────
+    if (currentUtteranceRef.current) {
+      // Silence onend/onerror before cancel() so the browser's cancel-fired
+      // onend event doesn't call setPlayingId after we've already stopped.
+      currentUtteranceRef.current.onend = null;
+      currentUtteranceRef.current.onerror = null;
+      currentUtteranceRef.current = null;
+    }
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
     setPlayingId(null);
   }, []);
 
-  // ── Voice input ────────────────────────
-  // Continuous recording with NO auto-restart.
-  // Auto-restart was causing Android to repeat words (it re-emits all previous results).
+  // ── Voice input ────────────────────────────────────────────────────────────
+  // v5: platform-split to fix two bugs:
+  //
+  //  iOS   – continuous:false + fresh SpeechRecognition instances on each restart.
+  //           iOS with continuous:true replays ALL previous session results when
+  //           restarted → "old text bleeds into new recording" bug.
+  //
+  //  Android/Desktop – continuous:true, but rebuilds the full transcript from
+  //           event.results[0..n] on every event (NOT just event.resultIndex..n).
+  //           Android Chrome sends CUMULATIVE final results, so appending only
+  //           the new slice doubles every word → "my my my my" bug.
 
   const stopRecording = useCallback(() => {
     isRecordingRef.current = false;
@@ -376,69 +525,147 @@ export default function ChatInterface() {
       return;
     }
 
-    // Seed accumulator with whatever is already typed
-    accumulatedRef.current = input ? input + " " : "";
+    const ua = navigator.userAgent;
+    const isIOS = /iPad|iPhone|iPod/.test(ua);
 
-    const rec = new SpeechAPI();
-    recognitionRef.current = rec;
-    rec.lang = "en-US";
-    rec.continuous = true; // keeps recording through pauses
-    rec.interimResults = true; // shows words live as you speak
+    // Capture any text already in the input field as a non-recording prefix
+    const prefixText = input.trim() ? input.trim() + " " : "";
+    // Per-session accumulator (used on iOS across sub-sessions)
+    accumulatedRef.current = "";
+    isRecordingRef.current = true;
+    setIsRecording(true);
 
-    rec.onstart = () => {
-      isRecordingRef.current = true;
-      setIsRecording(true);
-    };
+    if (isIOS) {
+      // ── iOS path ────────────────────────────────────────────────────────────
+      // continuous:false stops automatically after a pause. We restart with a
+      // FRESH instance each time so the new session has no memory of old results.
 
-    rec.onresult = (event: any) => {
-      let interim = "";
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const res = event.results[i];
-        if (res.isFinal) {
-          accumulatedRef.current += res[0].transcript;
-          // Add a space only if the transcript doesn't already end with one
-          if (!accumulatedRef.current.endsWith(" "))
-            accumulatedRef.current += " ";
-        } else {
-          interim += res[0].transcript;
+      const createSession = () => {
+        // Track what was finalized in THIS sub-session
+        let subSessionFinalText = "";
+
+        const rec = new SpeechAPI();
+        recognitionRef.current = rec;
+        rec.lang = "en-US";
+        rec.continuous = false; // iOS: stop on silence, restart manually
+        rec.interimResults = true;
+
+        rec.onresult = (event: any) => {
+          let sessionFinal = "";
+          let interim = "";
+          // event.results contains only THIS sub-session's results (fresh instance)
+          for (let i = 0; i < event.results.length; i++) {
+            if (event.results[i].isFinal) {
+              sessionFinal += event.results[i][0].transcript;
+              if (!sessionFinal.endsWith(" ")) sessionFinal += " ";
+            } else {
+              interim += event.results[i][0].transcript;
+            }
+          }
+          subSessionFinalText = sessionFinal;
+          setInput(
+            prefixText + accumulatedRef.current + sessionFinal + interim,
+          );
+        };
+
+        rec.onend = () => {
+          if (isRecordingRef.current) {
+            // Add this sub-session's finals to the cross-session accumulator
+            accumulatedRef.current += subSessionFinalText;
+            if (
+              accumulatedRef.current &&
+              !accumulatedRef.current.endsWith(" ")
+            ) {
+              accumulatedRef.current += " ";
+            }
+            // Restart with a brand-new instance — avoids replaying old results
+            createSession();
+          }
+          // else: stopRecording() was called — do not restart, state already updated
+        };
+
+        rec.onerror = (event: any) => {
+          if (event.error === "no-speech" || event.error === "aborted") {
+            if (isRecordingRef.current) {
+              accumulatedRef.current += subSessionFinalText;
+              createSession(); // keep going on silence
+            }
+            return;
+          }
+          console.error("Speech recognition error:", event.error);
+          isRecordingRef.current = false;
+          setIsRecording(false);
+        };
+
+        try {
+          rec.start();
+        } catch (err) {
+          console.error("Failed to start recognition:", err);
+          isRecordingRef.current = false;
+          setIsRecording(false);
         }
+      };
+
+      createSession();
+    } else {
+      // ── Android / Desktop path ──────────────────────────────────────────────
+      // continuous:true keeps recording through pauses.
+      // IMPORTANT: rebuild from event.results[0..n] every time — do NOT append
+      // from event.resultIndex, because Android sends cumulative final results.
+
+      const rec = new SpeechAPI();
+      recognitionRef.current = rec;
+      rec.lang = "en-US";
+      rec.continuous = true;
+      rec.interimResults = true;
+
+      rec.onresult = (event: any) => {
+        let finalText = "";
+        let interim = "";
+        // Rebuild from ALL results from scratch — prevents Android word doubling
+        for (let i = 0; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+            finalText += event.results[i][0].transcript;
+            if (!finalText.endsWith(" ")) finalText += " ";
+          } else {
+            interim += event.results[i][0].transcript;
+          }
+        }
+        setInput(prefixText + finalText + interim);
+      };
+
+      rec.onend = () => {
+        isRecordingRef.current = false;
+        setIsRecording(false);
+      };
+
+      rec.onerror = (event: any) => {
+        if (event.error === "no-speech" || event.error === "aborted") return;
+        console.error("Speech recognition error:", event.error);
+        isRecordingRef.current = false;
+        setIsRecording(false);
+      };
+
+      try {
+        rec.start();
+      } catch (err) {
+        console.error("Failed to start recognition:", err);
+        isRecordingRef.current = false;
+        setIsRecording(false);
       }
-      setInput(accumulatedRef.current + interim);
-    };
-
-    // NO auto-restart — restart causes Chrome/Android to re-emit all previous
-    // results, which produces the "my my my my..." word repetition bug.
-    rec.onend = () => {
-      isRecordingRef.current = false;
-      setIsRecording(false);
-    };
-
-    rec.onerror = (event: any) => {
-      if (event.error === "no-speech" || event.error === "aborted") return;
-      console.error("Speech recognition error:", event.error);
-      isRecordingRef.current = false;
-      setIsRecording(false);
-    };
-
-    try {
-      rec.start();
-    } catch (err) {
-      console.error("Failed to start recognition:", err);
-      isRecordingRef.current = false;
-      setIsRecording(false);
     }
   }, [input]);
 
   const handleVoiceInput = useCallback(() => {
     if (isRecording) {
       stopRecording();
-      // Tapping the mic to stop does NOT auto-send — user can review and edit
+      // Tapping mic to stop: review & edit before sending
     } else {
       startRecording();
     }
   }, [isRecording, startRecording, stopRecording]);
 
-  // ── Session start ──────────────────────
+  // ── Session start ──────────────────────────────────────────────────────────
 
   const handleStartSession = useCallback(
     async (level: Level, topic: string) => {
@@ -472,8 +699,10 @@ export default function ChatInterface() {
         };
         setSession(newSession);
         setMessages([hiddenHello, welcome]);
-        if (speakerMode)
-          setTimeout(() => speakMessage(data.message, welcome.id, level), 250);
+
+        // Pre-fetch OpenAI audio; autoPlay=true means it also plays when ready
+        // (speaking mode). Falls back to browser TTS only if fetch fails.
+        preloadAudio(welcome.id, data.message, level, speakerMode);
       } catch {
         const topicLabel =
           topic.toLowerCase() === "general"
@@ -489,19 +718,16 @@ export default function ChatInterface() {
           { id: generateId(), role: "user", content: "Hello!", hidden: true },
           fallback,
         ]);
-        if (speakerMode)
-          setTimeout(
-            () => speakMessage(fallback.content, fallback.id, level),
-            250,
-          );
+
+        preloadAudio(fallback.id, fallback.content, level, speakerMode);
       } finally {
         setIsStarting(false);
       }
     },
-    [speakMessage, speakerMode],
+    [speakerMode, preloadAudio],
   );
 
-  // ── Send message ───────────────────────
+  // ── Send message ───────────────────────────────────────────────────────────
 
   const sendMessage = useCallback(
     async (
@@ -545,11 +771,11 @@ export default function ChatInterface() {
           content: data.message,
         };
         setMessages((prev) => [...prev, botMsg]);
-        if (speakerMode)
-          setTimeout(
-            () => speakMessage(data.message, botMsg.id, sessionData.level),
-            100,
-          );
+
+        // Pre-fetch OpenAI audio in background.
+        // autoPlay=speakerMode: plays the OpenAI voice once the blob is ready.
+        // Falls back to browser TTS only if the TTS fetch fails.
+        preloadAudio(botMsg.id, data.message, sessionData.level, speakerMode);
       } catch {
         setMessages((prev) => [
           ...prev,
@@ -564,17 +790,17 @@ export default function ChatInterface() {
         setIsLoading(false);
       }
     },
-    [isLoading, speakMessage, speakerMode],
+    [isLoading, speakerMode, preloadAudio],
   );
 
   const handleSend = useCallback(() => {
     if (!session || !input.trim() || isLoading) return;
-    // If the mic is still active, stop it and send in one action (voice → send)
+    // Tapping Send while recording: stop mic and send in one action
     if (isRecordingRef.current) stopRecording();
     sendMessage(input, messages, session);
   }, [session, input, isLoading, messages, sendMessage, stopRecording]);
 
-  // ── Translation ────────────────────────
+  // ── Translation ────────────────────────────────────────────────────────────
 
   const handleTranslate = useCallback(
     async (msgId: string, text: string) => {
@@ -613,7 +839,7 @@ export default function ChatInterface() {
     [messages, updateMessage],
   );
 
-  // ── Grammar ────────────────────────────
+  // ── Grammar ────────────────────────────────────────────────────────────────
 
   const handleGrammar = useCallback(
     async (msgId: string, text: string) => {
@@ -650,14 +876,20 @@ export default function ChatInterface() {
     [messages, updateMessage],
   );
 
-  // ── New session ────────────────────────
+  // ── New session ────────────────────────────────────────────────────────────
 
   const handleNewSession = useCallback(() => {
     stopSpeaking();
     stopRecording();
     accumulatedRef.current = "";
+    // Revoke pre-fetched blob URLs to avoid memory leaks
+    setMessages((prev) => {
+      prev.forEach((m) => {
+        if (m.audioUrl) URL.revokeObjectURL(m.audioUrl);
+      });
+      return [];
+    });
     setSession(null);
-    setMessages([]);
     setInput("");
     setIsLoading(false);
   }, [stopSpeaking, stopRecording]);
@@ -924,7 +1156,7 @@ export default function ChatInterface() {
                     </p>
                   </div>
 
-                  {/* Translation box — green-tinted, brand colours only */}
+                  {/* Translation box */}
                   {message.showTranslation && (
                     <div
                       style={{
@@ -973,18 +1205,34 @@ export default function ChatInterface() {
 
                   {/* Action buttons */}
                   <div style={{ display: "flex", gap: 6 }}>
-                    {/* Listen */}
+                    {/* Listen — shows spinner while pre-fetching, instant play when ready */}
                     <button
-                      onClick={() =>
-                        playingId === message.id
-                          ? stopSpeaking()
-                          : speakMessage(message.content, message.id)
+                      onClick={() => {
+                        if (playingId === message.id) {
+                          stopSpeaking();
+                        } else if (!message.isPreloadingAudio) {
+                          // Pass the pre-fetched URL (if available) for zero-delay playback
+                          speakMessage(
+                            message.content,
+                            message.id,
+                            session?.level,
+                            message.audioUrl,
+                          );
+                        }
+                        // If still pre-loading: show spinner, wait for it to finish
+                      }}
+                      title={
+                        message.isPreloadingAudio
+                          ? "Preparing audio..."
+                          : playingId === message.id
+                            ? "Stop"
+                            : "Listen"
                       }
                       style={{
                         display: "flex",
                         alignItems: "center",
                         gap: 5,
-                        cursor: "pointer",
+                        cursor: message.isPreloadingAudio ? "wait" : "pointer",
                         border: "none",
                         borderRadius: 20,
                         padding: "5px 12px",
@@ -1000,24 +1248,48 @@ export default function ChatInterface() {
                         transition: "all 0.15s",
                       }}
                     >
-                      <span
-                        style={
-                          playingId === message.id ? W : { color: C.textMuted }
-                        }
-                      >
-                        {playingId === message.id ? (
-                          <IconPause />
-                        ) : (
-                          <IconVolume />
-                        )}
-                      </span>
-                      <span
-                        style={
-                          playingId === message.id ? W : { color: C.textMuted }
-                        }
-                      >
-                        {playingId === message.id ? "Stop" : "Listen"}
-                      </span>
+                      {message.isPreloadingAudio && playingId !== message.id ? (
+                        // Loading spinner while audio is being pre-fetched
+                        <>
+                          <div
+                            style={{
+                              width: 10,
+                              height: 10,
+                              borderRadius: "50%",
+                              border: `1.5px solid ${C.textMuted}`,
+                              borderTopColor: "transparent",
+                              animation: "spin 0.8s linear infinite",
+                              flexShrink: 0,
+                            }}
+                          />
+                          <span style={{ color: C.textMuted }}>Loading...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span
+                            style={
+                              playingId === message.id
+                                ? W
+                                : { color: C.textMuted }
+                            }
+                          >
+                            {playingId === message.id ? (
+                              <IconPause />
+                            ) : (
+                              <IconVolume />
+                            )}
+                          </span>
+                          <span
+                            style={
+                              playingId === message.id
+                                ? W
+                                : { color: C.textMuted }
+                            }
+                          >
+                            {playingId === message.id ? "Stop" : "Listen"}
+                          </span>
+                        </>
+                      )}
                     </button>
 
                     {/* Translate (dark-blue when active) */}
@@ -1090,7 +1362,7 @@ export default function ChatInterface() {
                   </p>
                 </div>
 
-                {/* Grammar correction box — brand colours only */}
+                {/* Grammar correction box */}
                 {message.showCorrection && (
                   <div
                     style={{
@@ -1151,7 +1423,7 @@ export default function ChatInterface() {
                   </div>
                 )}
 
-                {/* Grammar button (green when active) */}
+                {/* Grammar button */}
                 <button
                   onClick={() => handleGrammar(message.id, message.content)}
                   style={{
