@@ -169,7 +169,6 @@ export default function ChatInterface() {
   const [speakerMode, setSpeakerMode] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recognitionRef = useRef<any>(null);
   const isRecordingRef = useRef(false);
   // v5: on iOS we accumulate final text across fresh sub-sessions
@@ -448,7 +447,6 @@ export default function ChatInterface() {
   }, []);
 
   const startRecording = useCallback(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const SpeechAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechAPI) {
       alert('Voice input is not supported in your browser. Please use Chrome or Safari.');
@@ -475,7 +473,6 @@ export default function ChatInterface() {
       rec.continuous = false;    // Stop on silence; we restart via onend
       rec.interimResults = true;
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       rec.onresult = (event: any) => {
         // Build final text with startsWith dedup:
         // If result[i] starts with result[i-1], it is an updated/extended version
@@ -517,7 +514,6 @@ export default function ChatInterface() {
         // else: stopRecording() was called; state already updated, don't restart
       };
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       rec.onerror = (event: any) => {
         if (event.error === 'no-speech' || event.error === 'aborted') {
           if (isRecordingRef.current) {
