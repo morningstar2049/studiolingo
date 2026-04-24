@@ -298,14 +298,21 @@ export default function ChatInterface() {
 
     // ── Fast path: pre-fetched blob URL ──────────────────────────────────────
     if (audioUrl) {
-      // v9: resume the AudioContext before playing — iOS auto-suspends idle
-      // contexts; resuming re-activates the "playback" session so audio routes
-      // to the loudspeaker at full volume instead of the earpiece.
-      if (audioCtxRef.current?.state === 'suspended') {
-        audioCtxRef.current.resume().catch(() => {});
+      // v10: await resume() so the context is RUNNING before audio.play() is
+      // called — iOS blocks play() while the context is still suspended.
+      // Then route the audio element through the context via createMediaElementSource
+      // so iOS sends output to the loudspeaker (playback session) not the earpiece.
+      if (audioCtxRef.current && audioCtxRef.current.state !== 'running') {
+        try { await audioCtxRef.current.resume(); } catch { /* ignore */ }
       }
       const audio = new Audio(audioUrl);
       audio.volume = 1.0;
+      if (audioCtxRef.current?.state === 'running') {
+        try {
+          const src = audioCtxRef.current.createMediaElementSource(audio);
+          src.connect(audioCtxRef.current.destination);
+        } catch { /* non-critical — falls back to normal routing */ }
+      }
       currentAudioRef.current = audio;
       // Don't revoke the blob URL on end — keep it for replaying
       audio.onended = () => { currentAudioRef.current = null; setPlayingId(null); };
@@ -330,11 +337,17 @@ export default function ChatInterface() {
 
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
-      if (audioCtxRef.current?.state === 'suspended') {
-        audioCtxRef.current.resume().catch(() => {});
+      if (audioCtxRef.current && audioCtxRef.current.state !== 'running') {
+        try { await audioCtxRef.current.resume(); } catch { /* ignore */ }
       }
       const audio = new Audio(url);
       audio.volume = 1.0;
+      if (audioCtxRef.current?.state === 'running') {
+        try {
+          const src = audioCtxRef.current.createMediaElementSource(audio);
+          src.connect(audioCtxRef.current.destination);
+        } catch { /* non-critical */ }
+      }
       currentAudioRef.current = audio;
 
       audio.onended = () => {
@@ -405,21 +418,27 @@ export default function ChatInterface() {
           window.speechSynthesis.cancel();
         }
 
-        // v8/v9: iOS AudioContext unlock keeps the audio session in "playback" mode.
-        // resume() wakes the context if iOS auto-suspended it while idle.
-        if (audioCtxRef.current?.state === 'suspended') {
-          audioCtxRef.current.resume().catch(() => {});
+        // v10: await resume() so context is RUNNING before play(), then route
+        // through createMediaElementSource for iOS loudspeaker output.
+        if (audioCtxRef.current && audioCtxRef.current.state !== 'running') {
+          try { await audioCtxRef.current.resume(); } catch { /* ignore */ }
         }
         setPlayingId(msgId);
         const audio = new Audio(url);
         audio.volume = 1.0;
+        if (audioCtxRef.current?.state === 'running') {
+          try {
+            const src = audioCtxRef.current.createMediaElementSource(audio);
+            src.connect(audioCtxRef.current.destination);
+          } catch { /* non-critical */ }
+        }
         currentAudioRef.current = audio;
         audio.onended = () => { currentAudioRef.current = null; setPlayingId(null); };
         audio.onerror = () => { currentAudioRef.current = null; setPlayingId(null); };
         try {
           await audio.play();
         } catch {
-          // Autoplay blocked (unlock hasn't fired yet?) → fall back to browser TTS
+          // Autoplay blocked → fall back to browser TTS
           currentAudioRef.current = null;
           setPlayingId(null);
           speakWithBrowser(clean, msgId, level);
