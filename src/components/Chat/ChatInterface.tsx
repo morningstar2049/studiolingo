@@ -180,6 +180,9 @@ export default function ChatInterface() {
   const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   // v8: iOS AudioContext unlock flag — true once the silent buffer has been played
   const iosAudioUnlockedRef = useRef(false);
+  // v9: keep the AudioContext alive in a ref so iOS doesn't GC it and revert the
+  // audio session back to earpiece/quiet mode between plays
+  const audioCtxRef = useRef<AudioContext | null>(null);
 
   // Mount flag for portal (must be client-side)
   useEffect(() => { setMounted(true); }, []);
@@ -210,6 +213,10 @@ export default function ChatInterface() {
       try {
         const Ctx = (window.AudioContext || (window as any).webkitAudioContext) as typeof AudioContext;
         const ctx = new Ctx();
+        // Store in ref — CRITICAL: keeps the AudioContext from being GC'd so that
+        // iOS holds the "playback" audio session for the full page lifetime.
+        // Without this the session reverts to earpiece/quiet mode after unlock() returns.
+        audioCtxRef.current = ctx;
         const buf = ctx.createBuffer(1, 1, 22050);
         const src = ctx.createBufferSource();
         src.buffer = buf;
@@ -291,8 +298,14 @@ export default function ChatInterface() {
 
     // ── Fast path: pre-fetched blob URL ──────────────────────────────────────
     if (audioUrl) {
+      // v9: resume the AudioContext before playing — iOS auto-suspends idle
+      // contexts; resuming re-activates the "playback" session so audio routes
+      // to the loudspeaker at full volume instead of the earpiece.
+      if (audioCtxRef.current?.state === 'suspended') {
+        audioCtxRef.current.resume().catch(() => {});
+      }
       const audio = new Audio(audioUrl);
-      audio.volume = 1.0; // v8: ensure full volume (iOS can default to earpiece level)
+      audio.volume = 1.0;
       currentAudioRef.current = audio;
       // Don't revoke the blob URL on end — keep it for replaying
       audio.onended = () => { currentAudioRef.current = null; setPlayingId(null); };
@@ -317,8 +330,11 @@ export default function ChatInterface() {
 
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
+      if (audioCtxRef.current?.state === 'suspended') {
+        audioCtxRef.current.resume().catch(() => {});
+      }
       const audio = new Audio(url);
-      audio.volume = 1.0; // v8: ensure full volume
+      audio.volume = 1.0;
       currentAudioRef.current = audio;
 
       audio.onended = () => {
@@ -389,12 +405,14 @@ export default function ChatInterface() {
           window.speechSynthesis.cancel();
         }
 
-        // v8: iOS AudioContext unlock (touchstart/click effect above) switches the
-        // audio session to playback mode so audio.play() works in async context on
-        // iOS too — no more platform-specific branch needed.
+        // v8/v9: iOS AudioContext unlock keeps the audio session in "playback" mode.
+        // resume() wakes the context if iOS auto-suspended it while idle.
+        if (audioCtxRef.current?.state === 'suspended') {
+          audioCtxRef.current.resume().catch(() => {});
+        }
         setPlayingId(msgId);
         const audio = new Audio(url);
-        audio.volume = 1.0; // ensure full volume on all platforms
+        audio.volume = 1.0;
         currentAudioRef.current = audio;
         audio.onended = () => { currentAudioRef.current = null; setPlayingId(null); };
         audio.onerror = () => { currentAudioRef.current = null; setPlayingId(null); };
@@ -517,6 +535,11 @@ export default function ChatInterface() {
       rec.interimResults = true;
 
       rec.onresult = (event: any) => {
+        // Guard: calling stop() causes the recognition to fire a final onresult
+        // with whatever it has accumulated. By this point isRecordingRef is already
+        // false (stopRecording sets it synchronously before calling stop()), so we
+        // drop the result and don't overwrite the input that was just sent.
+        if (!isRecordingRef.current) return;
         const elapsed = Date.now() - recordingStartTime;
         // Build final text with startsWith dedup:
         // If result[i] starts with result[i-1], it is an updated/extended version
