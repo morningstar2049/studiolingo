@@ -178,6 +178,8 @@ export default function ChatInterface() {
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
   // Holds the active Web Speech utterance so we can silence its handlers before cancel()
   const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  // v8: iOS AudioContext unlock flag — true once the silent buffer has been played
+  const iosAudioUnlockedRef = useRef(false);
 
   // Mount flag for portal (must be client-side)
   useEffect(() => { setMounted(true); }, []);
@@ -194,6 +196,34 @@ export default function ChatInterface() {
     const onVoicesChanged = () => window.speechSynthesis.getVoices();
     window.speechSynthesis.addEventListener?.('voiceschanged', onVoicesChanged);
     return () => window.speechSynthesis.removeEventListener?.('voiceschanged', onVoicesChanged);
+  }, []);
+
+  // v8: iOS AudioContext unlock
+  // Playing a silent 1-sample AudioContext buffer inside a user gesture (touchstart
+  // or click) switches the iOS audio session from "call" (earpiece, quiet) to
+  // "playback" (loudspeaker, full volume). Once unlocked for the page session:
+  //   • All subsequent audio.play() calls work even in async contexts (fixes Bug 2)
+  //   • Audio routes through the loudspeaker at full volume (fixes Bug 3)
+  useEffect(() => {
+    const unlock = () => {
+      if (iosAudioUnlockedRef.current) return;
+      try {
+        const Ctx = (window.AudioContext || (window as any).webkitAudioContext) as typeof AudioContext;
+        const ctx = new Ctx();
+        const buf = ctx.createBuffer(1, 1, 22050);
+        const src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.connect(ctx.destination);
+        src.start(0);
+        iosAudioUnlockedRef.current = true;
+      } catch { /* ignore — non-iOS browsers may not need this */ }
+    };
+    document.addEventListener('touchstart', unlock, { once: true, passive: true });
+    document.addEventListener('click', unlock, { once: true });
+    return () => {
+      document.removeEventListener('touchstart', unlock);
+      document.removeEventListener('click', unlock);
+    };
   }, []);
 
   const updateMessage = useCallback((id: string, updates: Partial<Message>) => {
@@ -262,6 +292,7 @@ export default function ChatInterface() {
     // ── Fast path: pre-fetched blob URL ──────────────────────────────────────
     if (audioUrl) {
       const audio = new Audio(audioUrl);
+      audio.volume = 1.0; // v8: ensure full volume (iOS can default to earpiece level)
       currentAudioRef.current = audio;
       // Don't revoke the blob URL on end — keep it for replaying
       audio.onended = () => { currentAudioRef.current = null; setPlayingId(null); };
@@ -287,6 +318,7 @@ export default function ChatInterface() {
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const audio = new Audio(url);
+      audio.volume = 1.0; // v8: ensure full volume
       currentAudioRef.current = audio;
 
       audio.onended = () => {
@@ -357,28 +389,22 @@ export default function ChatInterface() {
           window.speechSynthesis.cancel();
         }
 
-        const ua = typeof navigator !== 'undefined' ? navigator.userAgent : '';
-        const isIOS = /iPad|iPhone|iPod/.test(ua);
-
-        if (isIOS) {
-          // iOS strictly blocks audio.play() in async context (even with a
-          // pre-fetched blob). Web Speech API has no such restriction — use it.
+        // v8: iOS AudioContext unlock (touchstart/click effect above) switches the
+        // audio session to playback mode so audio.play() works in async context on
+        // iOS too — no more platform-specific branch needed.
+        setPlayingId(msgId);
+        const audio = new Audio(url);
+        audio.volume = 1.0; // ensure full volume on all platforms
+        currentAudioRef.current = audio;
+        audio.onended = () => { currentAudioRef.current = null; setPlayingId(null); };
+        audio.onerror = () => { currentAudioRef.current = null; setPlayingId(null); };
+        try {
+          await audio.play();
+        } catch {
+          // Autoplay blocked (unlock hasn't fired yet?) → fall back to browser TTS
+          currentAudioRef.current = null;
+          setPlayingId(null);
           speakWithBrowser(clean, msgId, level);
-        } else {
-          // Android / Desktop: play the OpenAI blob directly for the natural voice
-          setPlayingId(msgId);
-          const audio = new Audio(url);
-          currentAudioRef.current = audio;
-          audio.onended = () => { currentAudioRef.current = null; setPlayingId(null); };
-          audio.onerror = () => { currentAudioRef.current = null; setPlayingId(null); };
-          try {
-            await audio.play();
-          } catch {
-            // Autoplay blocked → fall back to browser TTS
-            currentAudioRef.current = null;
-            setPlayingId(null);
-            speakWithBrowser(clean, msgId, level);
-          }
         }
       }
     } catch (err) {
@@ -416,29 +442,22 @@ export default function ChatInterface() {
   }, []);
 
   // ── Voice input ────────────────────────────────────────────────────────────
-  // v7: UNIFIED approach for ALL platforms — continuous:false + fresh
+  // v8: UNIFIED approach for ALL platforms — continuous:false + fresh
   // SpeechRecognition instances on every sub-session restart.
   //
-  // Why unified instead of the previous iOS/Android split?
-  //   Android continuous:true produced CUMULATIVE final results that stacked up
-  //   even when rebuilding from i=0 (each result[i] already contained the full
-  //   text from result[0..i-1], so looping all of them doubled every word).
-  //
-  //   iOS fresh instances prevented old SESSION results from replaying, but
-  //   iOS's audio buffer still sometimes cached the PREVIOUS session's audio
-  //   and fired it as an immediate final with no preceding interim results.
-  //
-  // Both problems are solved by a single unified approach:
+  // Problems solved:
   //   1. continuous:false  — each sub-session covers one utterance; restarts clean.
   //   2. Fresh SpeechRecognition instances — zero state carryover between restarts.
-  //   3. hasSeenInterim guard — a final result is only accepted if at least one
-  //      interim result preceded it in THIS sub-session. Real speech always
-  //      produces interim results before a final. Cached/replayed audio fires
-  //      as an immediate final with no interim, so it is silently discarded.
-  //   4. startsWith dedup — if result[i].transcript begins with result[i-1].transcript,
-  //      treat it as an updated/extended version of the same segment (replace,
-  //      don't concatenate). Handles Android sending incremental cumulative updates
-  //      within a single event.
+  //   3. TTS stopped inline at recording start — mic can't pick up TTS playback.
+  //   4. 200ms grace period (recordingStartTime) — finals within 200ms of mic start
+  //      are discarded. iOS sometimes fires an immediate final from cached TTS audio
+  //      in the mic buffer; real speech takes >200ms to produce a first word. This
+  //      guard catches the ghost without affecting real transcription. It lives in
+  //      the outer startRecording scope so it is NOT reset per sub-session restart
+  //      (only the first ~200ms after the tap matters).
+  //   5. startsWith dedup — if result[i] starts with result[i-1], treat as an
+  //      updated/extended version of the same segment (Android incremental
+  //      cumulative behaviour) — replace, don't concatenate.
 
   const stopRecording = useCallback(() => {
     isRecordingRef.current = false;
@@ -453,6 +472,34 @@ export default function ChatInterface() {
       return;
     }
 
+    // v8: Stop any TTS playback immediately so the mic doesn't pick it up.
+    // This is the primary fix for "empty recording right after AI message" — the
+    // TTS audio was leaking into the mic buffer and iOS was transcribing it as
+    // cached speech before the user even spoke.
+    if (currentAudioRef.current) {
+      currentAudioRef.current.onended = null;
+      currentAudioRef.current.onerror = null;
+      currentAudioRef.current.pause();
+      currentAudioRef.current = null;
+    }
+    if (currentUtteranceRef.current) {
+      currentUtteranceRef.current.onend = null;
+      currentUtteranceRef.current.onerror = null;
+      currentUtteranceRef.current = null;
+    }
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+    setPlayingId(null);
+
+    // v8: 200ms grace period — discard finals that arrive within 200ms of mic
+    // start. Even after stopping TTS, iOS may have buffered a fraction of audio
+    // in the mic hardware. Real speech always takes >200ms to produce a first
+    // recognizable word, so this window only discards ghost results.
+    // IMPORTANT: recordingStartTime lives in the OUTER scope so it is NOT reset
+    // when createSession() restarts — only the first tap matters.
+    const recordingStartTime = Date.now();
+
     // Text already in the input field is preserved as a prefix
     const prefixText = input.trim() ? input.trim() + ' ' : '';
     // Accumulates committed finals across sub-sessions
@@ -462,10 +509,6 @@ export default function ChatInterface() {
 
     const createSession = () => {
       let subSessionFinalText = '';
-      // Guard: only accept a final result once we've seen at least one interim
-      // result in this sub-session. Cached iOS audio fires as immediate final
-      // with no preceding interim — this discards it silently.
-      let hasSeenInterim = false;
 
       const rec = new SpeechAPI();
       recognitionRef.current = rec;
@@ -474,6 +517,7 @@ export default function ChatInterface() {
       rec.interimResults = true;
 
       rec.onresult = (event: any) => {
+        const elapsed = Date.now() - recordingStartTime;
         // Build final text with startsWith dedup:
         // If result[i] starts with result[i-1], it is an updated/extended version
         // of the same segment (Android incremental-cumulative behaviour) — replace
@@ -483,7 +527,7 @@ export default function ChatInterface() {
 
         for (let i = 0; i < event.results.length; i++) {
           if (event.results[i].isFinal) {
-            if (!hasSeenInterim) continue; // discard immediate finals (iOS audio cache)
+            if (elapsed < 200) continue; // 200ms grace: discard buffered ghost audio
             const t = event.results[i][0].transcript;
             const prev = dedupedFinals.length > 0 ? dedupedFinals[dedupedFinals.length - 1] : '';
             if (prev && t.startsWith(prev.trimEnd())) {
@@ -492,7 +536,6 @@ export default function ChatInterface() {
               dedupedFinals.push(t);
             }
           } else {
-            hasSeenInterim = true;
             interim += event.results[i][0].transcript;
           }
         }
