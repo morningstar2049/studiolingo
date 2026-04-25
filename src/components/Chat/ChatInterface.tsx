@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import Image from 'next/image';
 import SessionSetup, { type Level } from './SessionSetup';
 
 // ─────────────────────────────────────────
@@ -908,14 +907,8 @@ export default function ChatInterface() {
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         gap: 8,
       }}>
-        {/* Left: logo + level + topic */}
+        {/* Left: level + topic */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
-          <Image
-            src="/lingo-logo-white.png" alt="Studio Lingo" width={100} height={30}
-            style={{ objectFit: 'contain', flexShrink: 0 }}
-            onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
-          />
-          <div style={{ width: 1, height: 20, background: 'rgba(255,255,255,0.2)', flexShrink: 0 }} />
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
             <span style={{
               ...W, background: C.green, fontSize: 11, fontWeight: 700,
