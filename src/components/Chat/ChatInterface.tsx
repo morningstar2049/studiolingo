@@ -290,6 +290,13 @@ export default function ChatInterface() {
       currentAudioRef.current.pause();
       currentAudioRef.current = null;
     }
+    // v11: also stop the iOS AudioBufferSourceNode (auto-play path) — without
+    // this, pressing Listen while auto-play is active causes both to play at once.
+    if (currentAudioSourceRef.current) {
+      currentAudioSourceRef.current.onended = null;
+      try { currentAudioSourceRef.current.stop(); } catch { /* already ended */ }
+      currentAudioSourceRef.current = null;
+    }
     if (currentUtteranceRef.current) {
       currentUtteranceRef.current.onend = null;
       currentUtteranceRef.current.onerror = null;
@@ -300,15 +307,18 @@ export default function ChatInterface() {
 
     // ── Fast path: pre-fetched blob URL ──────────────────────────────────────
     if (audioUrl) {
-      // v10: await resume() so the context is RUNNING before audio.play() is
-      // called — iOS blocks play() while the context is still suspended.
-      // Then route the audio element through the context via createMediaElementSource
-      // so iOS sends output to the loudspeaker (playback session) not the earpiece.
+      // v11: do NOT await resume() before audio.play() — any await breaks the
+      // iOS user-gesture chain and causes play() to be silently blocked.
+      // Instead: kick off resume() non-blocking (for loudspeaker routing on the
+      // NEXT play), connect to AudioContext only if it's already running right
+      // now, then call play() synchronously while still inside the gesture.
       if (audioCtxRef.current && audioCtxRef.current.state !== 'running') {
-        try { await audioCtxRef.current.resume(); } catch { /* ignore */ }
+        audioCtxRef.current.resume().catch(() => {}); // non-blocking
       }
       const audio = new Audio(audioUrl);
       audio.volume = 1.0;
+      // Only connect MediaElementSource if context is already running — connecting
+      // to a suspended context would route audio into a silent graph.
       if (audioCtxRef.current?.state === 'running') {
         try {
           const src = audioCtxRef.current.createMediaElementSource(audio);
@@ -319,12 +329,13 @@ export default function ChatInterface() {
       // Don't revoke the blob URL on end — keep it for replaying
       audio.onended = () => { currentAudioRef.current = null; setPlayingId(null); };
       audio.onerror = () => { currentAudioRef.current = null; setPlayingId(null); };
-      try {
-        await audio.play();
-      } catch (err) {
+      // No await — keeps us inside the gesture call stack on iOS
+      audio.play().catch(err => {
         console.warn('Pre-fetched audio play failed, using browser TTS:', err);
+        currentAudioRef.current = null;
+        setPlayingId(null);
         speakWithBrowser(clean, msgId, level);
-      }
+      });
       return;
     }
 
