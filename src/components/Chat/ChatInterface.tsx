@@ -911,7 +911,7 @@ export default function ChatInterface() {
         {/* Left: logo + level + topic */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
           <Image
-            src="/images/lingo-white.png" alt="Studio Lingo" width={100} height={30}
+            src="/lingo-logo-white.png" alt="Studio Lingo" width={100} height={30}
             style={{ objectFit: 'contain', flexShrink: 0 }}
             onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
           />

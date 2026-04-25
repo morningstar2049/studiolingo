@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 
 export type Level = "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
 
@@ -90,17 +89,15 @@ export default function SessionSetup({
             marginBottom: 20,
           }}
         >
-          <Image
-            src="/images/lingo-main.png"
-            alt="Studio Lingo"
-            width={150}
-            height={46}
-            style={{ objectFit: "contain" }}
-            priority
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = "none";
-            }}
-          />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="260 293 272 275" width="56" height="57" aria-label="Studio Lingo">
+            <defs><style>{`.sl1{fill:#2f9e4d}.sl2{fill:#293142}`}</style></defs>
+            <g>
+              <path className="sl2" d="M397.16,296.26c-74.33,0-134.8,60.47-134.8,134.8v134.8h134.8c74.33,0,134.79-60.47,134.79-134.8s-60.47-134.8-134.79-134.8Zm0,248.9h-114.1v-114.1c0-62.91,51.19-114.1,114.1-114.1s114.1,51.19,114.1,114.1-51.18,114.1-114.1,114.1Z"/>
+              <path className="sl1" d="M354.89,377.75c-14.2-.11-14.21,21.95,0,22.06,19.53,.15,38.14,7.7,51.98,21.53s21.38,32.46,21.53,51.98c.11,14.19,22.17,14.22,22.06,0-.19-25.22-10.11-49.7-27.99-67.58-17.88-17.88-42.35-27.8-67.58-27.99Z"/>
+              <path className="sl1" d="M354.89,410.14c-14.2-.17-14.21,21.89,0,22.06,22.72,.27,40.84,18.43,41.12,41.12,.17,14.19,22.23,14.22,22.06,0-.42-34.69-28.49-62.76-63.18-63.18Z"/>
+              <path className="sl1" d="M354.89,444.56c-5.77-.16-11.29,5.18-11.03,11.03,.27,6.11,4.85,10.86,11.03,11.03,.4,.01,.63,0,.77-.02,.04,.01,.06,.02,.1,.03,.22,.06,1.47,.47,1.73,.5,.51,.3,1.01,.63,1.55,.88-1.69-.78-.11-.12,.58,.57,.36,.36,1.11,1.57,1.03,1.4,.19,.32,.38,.64,.55,.97,.06,.21,.17,.62,.26,1.04,.06,.28,.1,.48,.14,.65-.01,.1-.02,.3,0,.68,.16,5.76,4.96,11.3,11.03,11.03,5.84-.26,11.2-4.85,11.03-11.03-.43-15.94-12.82-28.33-28.76-28.76Z"/>
+            </g>
+          </svg>
         </div>
 
         {/* Title */}
@@ -114,7 +111,9 @@ export default function SessionSetup({
             letterSpacing: "-0.02em",
           }}
         >
-          English Practice Chat
+          Studio{" "}
+          <span style={{ color: C.green }}>Lingo</span>{" "}
+          Chat
         </h1>
         <p
           style={{
