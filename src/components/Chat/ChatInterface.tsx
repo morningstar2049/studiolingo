@@ -170,6 +170,11 @@ export default function ChatInterface() {
   const [speakerMode, setSpeakerMode] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  // Tracks the chat-container height so it can shrink above the soft keyboard
+  // on iOS (where 100dvh doesn't account for the keyboard). Initial value is
+  // 100dvh; switched to a pixel height as soon as visualViewport reports.
+  const [chatHeight, setChatHeight] = useState<string>('100dvh');
   const recognitionRef = useRef<any>(null);
   const isRecordingRef = useRef(false);
   // v5: on iOS we accumulate final text across fresh sub-sessions
@@ -195,25 +200,35 @@ export default function ChatInterface() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Mobile keyboard fix — re-anchor to the latest message when the visual
-  // viewport changes (keyboard open/close, orientation change). Without this,
-  // on iOS/Android the most recent bot reply scrolls above the visible area
-  // when the user focuses the input and the keyboard pushes the chat up.
+  // Mobile keyboard fix.
+  //
+  // Two things go wrong when the soft keyboard opens:
+  //   1. iOS Safari: `100dvh` does NOT shrink for the keyboard, so the chat
+  //      stays full-height and the input + last messages hide under the keyboard.
+  //   2. Both platforms: even when the chat shrinks (Android), the messages
+  //      list's scrollTop isn't updated, so the latest bot reply scrolls above
+  //      the visible area.
+  //
+  // Fix is intentionally surgical:
+  //   - Clamp the chat root to `visualViewport.height` whenever it changes —
+  //     this physically shrinks the chat above the keyboard on iOS, and is a
+  //     no-op on Android (where 100dvh already shrank to the same value).
+  //   - Re-anchor the messages list by setting the container's scrollTop to
+  //     its scrollHeight. We use scrollTop on a single element (NOT
+  //     scrollIntoView) so the page body / header are guaranteed not to move.
   useEffect(() => {
     if (typeof window === 'undefined' || !window.visualViewport) return;
     const vv = window.visualViewport;
-    const scrollToLatest = () => {
-      // Defer slightly so layout settles after the keyboard animation.
+    const onResize = () => {
+      setChatHeight(`${vv.height}px`);
+      // Defer so the new height has applied before we re-anchor scroll.
       requestAnimationFrame(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        const el = messagesContainerRef.current;
+        if (el) el.scrollTop = el.scrollHeight;
       });
     };
-    vv.addEventListener('resize', scrollToLatest);
-    vv.addEventListener('scroll', scrollToLatest);
-    return () => {
-      vv.removeEventListener('resize', scrollToLatest);
-      vv.removeEventListener('scroll', scrollToLatest);
-    };
+    vv.addEventListener('resize', onResize);
+    return () => { vv.removeEventListener('resize', onResize); };
   }, []);
 
   // Pre-load voices (Chrome fires voiceschanged async)
@@ -928,7 +943,7 @@ export default function ChatInterface() {
     <div
       style={{
         position: 'fixed', inset: 0, zIndex: 2147483647,
-        height: '100dvh', display: 'flex', flexDirection: 'column',
+        height: chatHeight, display: 'flex', flexDirection: 'column',
         background: 'linear-gradient(180deg,#f9fafb 0%,#ffffff 100%)',
         fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif',
       }}
@@ -992,7 +1007,7 @@ export default function ChatInterface() {
       </div>
 
       {/* ── Messages ── */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div ref={messagesContainerRef} style={{ flex: 1, overflowY: 'auto', padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
         {visibleMessages.map(message => (
           <div key={message.id} style={{ display: 'flex', justifyContent: message.role === 'user' ? 'flex-end' : 'flex-start' }}>
 
@@ -1263,12 +1278,6 @@ export default function ChatInterface() {
             onFocus={e => {
               e.currentTarget.style.borderColor = C.green;
               e.currentTarget.style.boxShadow = `0 0 0 3px rgba(47,158,77,0.12)`;
-              // Mobile: keep the latest message in view once the keyboard finishes
-              // animating in (the visualViewport listener also handles this, but
-              // re-scrolling here covers browsers that don't fire viewport events).
-              setTimeout(() => {
-                messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-              }, 300);
             }}
             onBlur={e => {
               e.currentTarget.style.borderColor = C.border;
