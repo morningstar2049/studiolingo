@@ -40,11 +40,10 @@ export async function POST(req: NextRequest) {
     const ip = getClientIp(req);
     const { allowed, retryAfterSec } = checkRateLimit(ip);
     if (!allowed) {
-      const hours = Math.ceil(retryAfterSec / 3600);
       return NextResponse.json(
         {
           error: 'rate_limit',
-          message: `You've reached today's limit of ${RATE_LIMIT} messages. Please come back in about ${hours} hour${hours === 1 ? '' : 's'}.`,
+          message: `თქვენ მიაღწიეთ დღევანდელ ${RATE_LIMIT} მესიჯის ლიმიტს. შეგიძლიათ დაბრუნდეთ 24 საათის შემდეგ 💚`,
           retryAfterSec,
         },
         { status: 429, headers: { 'Retry-After': String(retryAfterSec) } }

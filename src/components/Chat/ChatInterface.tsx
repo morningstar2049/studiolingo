@@ -22,6 +22,8 @@ type Message = {
   // v5: pre-fetched OpenAI TTS blob URL for instant Listen playback
   audioUrl?: string;
   isPreloadingAudio?: boolean;
+  // Rate-limit notice rendered as a Georgian red message, no action buttons
+  isLimitReached?: boolean;
 };
 
 type Session = { level: Level; topic: string };
@@ -192,6 +194,27 @@ export default function ChatInterface() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Mobile keyboard fix — re-anchor to the latest message when the visual
+  // viewport changes (keyboard open/close, orientation change). Without this,
+  // on iOS/Android the most recent bot reply scrolls above the visible area
+  // when the user focuses the input and the keyboard pushes the chat up.
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.visualViewport) return;
+    const vv = window.visualViewport;
+    const scrollToLatest = () => {
+      // Defer slightly so layout settles after the keyboard animation.
+      requestAnimationFrame(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      });
+    };
+    vv.addEventListener('resize', scrollToLatest);
+    vv.addEventListener('scroll', scrollToLatest);
+    return () => {
+      vv.removeEventListener('resize', scrollToLatest);
+      vv.removeEventListener('scroll', scrollToLatest);
+    };
+  }, []);
 
   // Pre-load voices (Chrome fires voiceschanged async)
   useEffect(() => {
@@ -731,7 +754,7 @@ export default function ChatInterface() {
       const data = await res.json();
       if (res.status === 429) {
         const hiddenHello: Message = { id: generateId(), role: 'user', content: 'Hello!', hidden: true };
-        const limitMsg: Message = { id: generateId(), role: 'assistant', content: data.message };
+        const limitMsg: Message = { id: generateId(), role: 'assistant', content: data.message, isLimitReached: true };
         setSession(newSession);
         setMessages([hiddenHello, limitMsg]);
         return;
@@ -787,7 +810,7 @@ export default function ChatInterface() {
       const data = await res.json();
       if (res.status === 429) {
         setMessages(prev => [...prev, {
-          id: generateId(), role: 'assistant', content: data.message,
+          id: generateId(), role: 'assistant', content: data.message, isLimitReached: true,
         }]);
         return;
       }
@@ -993,7 +1016,12 @@ export default function ChatInterface() {
                     borderRadius: '20px 20px 20px 5px',
                     boxShadow: '0 2px 12px rgba(41,49,66,0.07), 0 0 0 1px rgba(41,49,66,0.05)',
                   }}>
-                    <p style={{ color: C.textPrimary, fontSize: 15, lineHeight: 1.5, margin: 0, whiteSpace: 'pre-wrap', letterSpacing: '-0.01em' }}>
+                    <p style={{
+                      color: message.isLimitReached ? '#dc2626' : C.textPrimary,
+                      fontWeight: message.isLimitReached ? 600 : 400,
+                      fontSize: 15, lineHeight: 1.5, margin: 0,
+                      whiteSpace: 'pre-wrap', letterSpacing: '-0.01em',
+                    }}>
                       {message.content}
                     </p>
                   </div>
@@ -1021,7 +1049,8 @@ export default function ChatInterface() {
                     </div>
                   )}
 
-                  {/* Action buttons */}
+                  {/* Action buttons (suppressed for rate-limit notices) */}
+                  {!message.isLimitReached && (
                   <div style={{ display: 'flex', gap: 6 }}>
 
                     {/* Listen — shows spinner while pre-fetching, instant play when ready */}
@@ -1083,6 +1112,7 @@ export default function ChatInterface() {
                       <span style={message.showTranslation ? W : { color: C.textMuted }}>ქარ</span>
                     </button>
                   </div>
+                  )}
                 </div>
               </div>
             )}
@@ -1233,6 +1263,12 @@ export default function ChatInterface() {
             onFocus={e => {
               e.currentTarget.style.borderColor = C.green;
               e.currentTarget.style.boxShadow = `0 0 0 3px rgba(47,158,77,0.12)`;
+              // Mobile: keep the latest message in view once the keyboard finishes
+              // animating in (the visualViewport listener also handles this, but
+              // re-scrolling here covers browsers that don't fire viewport events).
+              setTimeout(() => {
+                messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+              }, 300);
             }}
             onBlur={e => {
               e.currentTarget.style.borderColor = C.border;
