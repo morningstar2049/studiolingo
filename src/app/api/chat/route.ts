@@ -3,53 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const client = new Anthropic();
 
-// ── Per-IP rate limit: 15 messages / 24h ─────────────────────────────────────
-// In-memory store. Resets on serverless cold start — fine for a single-region
-// school-scale deployment. For multi-instance persistence, swap to Vercel KV.
-const RATE_LIMIT = 15;
-const WINDOW_MS = 24 * 60 * 60 * 1000;
-const ipHistory = new Map<string, number[]>();
-
-function getClientIp(req: NextRequest): string {
-  const fwd = req.headers.get('x-forwarded-for');
-  if (fwd) return fwd.split(',')[0].trim();
-  const real = req.headers.get('x-real-ip');
-  if (real) return real.trim();
-  return 'unknown';
-}
-
-function checkRateLimit(ip: string): { allowed: boolean; retryAfterSec: number } {
-  const now = Date.now();
-  const cutoff = now - WINDOW_MS;
-  const history = (ipHistory.get(ip) || []).filter(t => t > cutoff);
-
-  if (history.length >= RATE_LIMIT) {
-    const oldest = history[0];
-    const retryAfterSec = Math.max(1, Math.ceil((oldest + WINDOW_MS - now) / 1000));
-    ipHistory.set(ip, history);
-    return { allowed: false, retryAfterSec };
-  }
-
-  history.push(now);
-  ipHistory.set(ip, history);
-  return { allowed: true, retryAfterSec: 0 };
-}
-
 export async function POST(req: NextRequest) {
   try {
-    const ip = getClientIp(req);
-    const { allowed, retryAfterSec } = checkRateLimit(ip);
-    if (!allowed) {
-      return NextResponse.json(
-        {
-          error: 'rate_limit',
-          message: `თქვენ მიაღწიეთ დღევანდელ ${RATE_LIMIT} მესიჯის ლიმიტს. შეგიძლიათ დაბრუნდეთ 24 საათის შემდეგ 💚`,
-          retryAfterSec,
-        },
-        { status: 429, headers: { 'Retry-After': String(retryAfterSec) } }
-      );
-    }
-
     const { messages, level, topic, isFirstMessage } = await req.json();
 
     const levelDescriptions: Record<string, string> = {
