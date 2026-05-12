@@ -1366,10 +1366,7 @@ export default function ChatInterface() {
             ref={inputRef}
             contentEditable={!isLoading}
             suppressContentEditableWarning
-            role="textbox"
-            aria-multiline="false"
             aria-label="Type your message"
-            aria-disabled={isLoading}
             data-chat-placeholder={isRecording ? 'Listening... tap Send to stop & send' : 'Type your message...'}
             onInput={e => {
               const el = e.currentTarget as HTMLDivElement;
