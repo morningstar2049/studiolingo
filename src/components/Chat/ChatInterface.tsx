@@ -175,6 +175,11 @@ export default function ChatInterface() {
   // on iOS (where 100dvh doesn't account for the keyboard). Initial value is
   // 100dvh; switched to a pixel height as soon as visualViewport reports.
   const [chatHeight, setChatHeight] = useState<string>('100dvh');
+  // Counter-transform for iOS's keyboard-driven shift of position:fixed
+  // elements. When iOS opens the keyboard it offsets the visual viewport
+  // (vv.offsetTop > 0) and drags the chat's top edge off-screen with it.
+  // Translating the chat by +offsetTop puts it back where it belongs.
+  const [chatTransform, setChatTransform] = useState<string>('none');
   const recognitionRef = useRef<any>(null);
   const isRecordingRef = useRef(false);
   // v5: on iOS we accumulate final text across fresh sub-sessions
@@ -269,14 +274,29 @@ export default function ChatInterface() {
     const vv = window.visualViewport;
     const onResize = () => {
       setChatHeight(`${vv.height}px`);
+      // Counter iOS's keyboard-driven shift of position:fixed elements.
+      // vv.offsetTop is non-zero on iOS when the visual viewport gets
+      // shifted relative to the layout viewport during keyboard focus
+      // scroll-into-view. Translating by that amount cancels the shift.
+      setChatTransform(vv.offsetTop ? `translateY(${vv.offsetTop}px)` : 'none');
       // Defer so the new height has applied before we re-anchor scroll.
       requestAnimationFrame(() => {
         const el = messagesContainerRef.current;
         if (el) el.scrollTop = el.scrollHeight;
       });
     };
+    // visualViewport.scroll fires when iOS shifts the visual viewport
+    // (separately from the resize that fires when the keyboard sizing
+    // changes). We need both to keep the counter-translate in lockstep.
+    const onScroll = () => {
+      setChatTransform(vv.offsetTop ? `translateY(${vv.offsetTop}px)` : 'none');
+    };
     vv.addEventListener('resize', onResize);
-    return () => { vv.removeEventListener('resize', onResize); };
+    vv.addEventListener('scroll', onScroll);
+    return () => {
+      vv.removeEventListener('resize', onResize);
+      vv.removeEventListener('scroll', onScroll);
+    };
   }, []);
 
   // Pre-load voices (Chrome fires voiceschanged async)
@@ -997,7 +1017,10 @@ export default function ChatInterface() {
         // the chat starts at the screen top and grows downward, so it sits
         // exactly above the keyboard once chatHeight tracks visualViewport.
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 2147483647,
-        height: chatHeight, display: 'flex', flexDirection: 'column',
+        height: chatHeight,
+        // Counter-transform iOS keyboard fixed-element shift (see useEffect).
+        transform: chatTransform,
+        display: 'flex', flexDirection: 'column',
         background: 'linear-gradient(180deg,#f9fafb 0%,#ffffff 100%)',
         fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif',
       }}
