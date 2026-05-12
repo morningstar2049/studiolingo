@@ -195,6 +195,54 @@ export default function ChatInterface() {
   // Mount flag for portal (must be client-side)
   useEffect(() => { setMounted(true); }, []);
 
+  // Lock document scroll while the chat is mounted.
+  //
+  // Why: on iOS Safari, when the input gains focus and the keyboard slides
+  // up, Safari automatically scrolls the *document* to bring the focused
+  // input into view. Because of a long-standing iOS bug, `position: fixed`
+  // elements scroll along with the document instead of staying pinned to the
+  // viewport — so the chat's top edge moves off-screen and only its bottom
+  // (the input bar) remains visible at the top of the viewport.
+  //
+  // The canonical iOS scroll-lock fix is to pin the body itself with
+  // position:fixed (overflow:hidden alone doesn't stop iOS from scrolling
+  // for input focus). We save the current scrollY first and restore it on
+  // unmount so navigation back to the previous page returns to the same
+  // place. The chat covers the underlying page, so users never see the
+  // pinned body.
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const body = document.body;
+    const html = document.documentElement;
+    const scrollY = window.scrollY;
+    const prev = {
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+      overflow: body.style.overflow,
+      htmlOverflow: html.style.overflow,
+    };
+    body.style.position = 'fixed';
+    body.style.top = `-${scrollY}px`;
+    body.style.left = '0';
+    body.style.right = '0';
+    body.style.width = '100%';
+    body.style.overflow = 'hidden';
+    html.style.overflow = 'hidden';
+    return () => {
+      body.style.position = prev.position;
+      body.style.top = prev.top;
+      body.style.left = prev.left;
+      body.style.right = prev.right;
+      body.style.width = prev.width;
+      body.style.overflow = prev.overflow;
+      html.style.overflow = prev.htmlOverflow;
+      window.scrollTo(0, scrollY);
+    };
+  }, []);
+
   // Auto-scroll
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
