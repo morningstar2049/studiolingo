@@ -1333,10 +1333,22 @@ export default function ChatInterface() {
             </span>
           </button>
 
-          {/* Text input */}
+          {/* Text input.
+              autoComplete="off" + a non-autofillable name hide Chrome's
+              autofill suggestion strip on Android (the key / card / location
+              icons above the keyboard). Chrome sometimes ignores
+              autoComplete="off" for fields with autofill-suggestive names, so
+              the bland "chat-message" name reinforces it.
+              Keyboard prediction / autocorrect / capitalization are left at
+              their defaults so English-practice users keep the helpful
+              suggestions. iOS's WebKit Form Assistant bar (^/v/Done) is not
+              hide-able via attributes — a separate contenteditable migration
+              is required if we want to remove that. */}
           <input
             ref={inputRef}
             type="text"
+            name="chat-message"
+            autoComplete="off"
             value={input}
             onChange={e => {
               setInput(e.target.value);
