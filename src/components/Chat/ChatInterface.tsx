@@ -184,7 +184,29 @@ export default function ChatInterface() {
   const isRecordingRef = useRef(false);
   // v5: on iOS we accumulate final text across fresh sub-sessions
   const accumulatedRef = useRef('');
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLDivElement>(null);
+
+  // The chat input is a contentEditable <div> (not an <input>) so that mobile
+  // keyboards don't show their autofill / form-assistant accessory bars
+  // (Gboard's key/card/location strip on Android, WebKit's prev/next/Done
+  // bar on iOS). Because contentEditable is uncontrolled from React's
+  // perspective, programmatic writes (voice recognition, send, new session)
+  // must update both the React `input` state AND the DOM's innerText.
+  // User typing only updates state (the DOM already has the text, and
+  // overwriting innerText mid-typing would reset the cursor).
+  const writeInput = useCallback((text: string) => {
+    setInput(text);
+    const el = inputRef.current;
+    if (!el) return;
+    if (text === '') {
+      // Always force-clear via innerHTML so any stray <br> the browser
+      // inserted while editing is removed and the :empty placeholder shows.
+      if (el.innerHTML !== '') el.innerHTML = '';
+    } else if (el.innerText !== text) {
+      el.innerText = text;
+    }
+  }, []);
+
   // Holds the currently-playing Audio element so we can stop it
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
   // Holds the active Web Speech utterance so we can silence its handlers before cancel()
@@ -751,7 +773,7 @@ export default function ChatInterface() {
 
         const finalText = dedupedFinals.map(t => t.trimEnd() + ' ').join('');
         subSessionFinalText = finalText;
-        setInput(prefixText + accumulatedRef.current + finalText + interim);
+        writeInput(prefixText + accumulatedRef.current + finalText + interim);
       };
 
       rec.onend = () => {
@@ -877,7 +899,7 @@ export default function ChatInterface() {
     const userMsg: Message = { id: generateId(), role: 'user', content: userText.trim() };
     const newMessages = [...currentMessages, userMsg];
     setMessages(newMessages);
-    setInput('');
+    writeInput('');
     accumulatedRef.current = '';
     setIsLoading(true);
 
@@ -914,7 +936,7 @@ export default function ChatInterface() {
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading, speakerMode, preloadAudio]);
+  }, [isLoading, speakerMode, preloadAudio, writeInput]);
 
   const handleSend = useCallback(() => {
     if (!session || !input.trim() || isLoading) return;
@@ -981,9 +1003,9 @@ export default function ChatInterface() {
       return [];
     });
     setSession(null);
-    setInput('');
+    writeInput('');
     setIsLoading(false);
-  }, [stopSpeaking, stopRecording]);
+  }, [stopSpeaking, stopRecording, writeInput]);
 
   // ── Don't render on server ─────────────
   if (!mounted) return null;
@@ -1333,36 +1355,62 @@ export default function ChatInterface() {
             </span>
           </button>
 
-          {/* Text input.
-              autoComplete="off" + a non-autofillable name hide Chrome's
-              autofill suggestion strip on Android (the key / card / location
-              icons above the keyboard). Chrome sometimes ignores
-              autoComplete="off" for fields with autofill-suggestive names, so
-              the bland "chat-message" name reinforces it.
-              Keyboard prediction / autocorrect / capitalization are left at
-              their defaults so English-practice users keep the helpful
-              suggestions. iOS's WebKit Form Assistant bar (^/v/Done) is not
-              hide-able via attributes — a separate contenteditable migration
-              is required if we want to remove that. */}
-          <input
+          {/* Text input — contentEditable <div> (not <input>) so mobile
+              keyboards don't show their autofill / form-assistant accessory
+              bars. The div has no React children (text is browser-managed
+              on user input, and programmatically managed via writeInput on
+              voice / send / new-session) — this is what keeps cursor stable
+              while typing. data-chat-placeholder + CSS in the <style> block
+              below renders the placeholder when the div is empty. */}
+          <div
             ref={inputRef}
-            type="text"
-            name="chat-message"
-            autoComplete="off"
-            value={input}
-            onChange={e => {
-              setInput(e.target.value);
-              if (!isRecordingRef.current) accumulatedRef.current = e.target.value;
+            contentEditable={!isLoading}
+            suppressContentEditableWarning
+            role="textbox"
+            aria-multiline="false"
+            aria-label="Type your message"
+            aria-disabled={isLoading}
+            data-chat-placeholder={isRecording ? 'Listening... tap Send to stop & send' : 'Type your message...'}
+            onInput={e => {
+              const el = e.currentTarget as HTMLDivElement;
+              const text = el.innerText;
+              setInput(text);
+              if (!isRecordingRef.current) accumulatedRef.current = text;
+              // Safari leaves a stray <br> after the user deletes everything,
+              // which would defeat the :empty placeholder rule. Clear it.
+              if ((text === '' || text === '\n') && el.innerHTML !== '') {
+                el.innerHTML = '';
+              }
             }}
-            onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
-            placeholder={isRecording ? 'Listening... tap Send to stop & send' : 'Type your message...'}
-            disabled={isLoading}
+            onKeyDown={e => {
+              // Always preventDefault on Enter so the contentEditable never
+              // inserts a newline (matches the original <input> being a
+              // single-line field). Plain Enter sends; Shift+Enter is
+              // swallowed. isComposing guard prevents sending while an IME
+              // (Georgian/CJK composition) is selecting a candidate.
+              if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+                e.preventDefault();
+                if (!e.shiftKey) handleSend();
+              }
+            }}
+            onPaste={e => {
+              // Force plain-text paste so no HTML / formatting leaks into the
+              // contenteditable (matches <input> behaviour).
+              e.preventDefault();
+              const text = e.clipboardData.getData('text/plain');
+              if (text) document.execCommand('insertText', false, text);
+            }}
             style={{
-              flex: 1, height: 44, padding: '0 16px', fontSize: 16,
+              flex: 1, minHeight: 44, maxHeight: 120, padding: '11px 16px',
+              fontSize: 16, lineHeight: '20px',
               border: `1.5px solid ${C.border}`, borderRadius: 22,
               background: C.white, color: C.textPrimary,
               outline: 'none', transition: 'border-color 0.15s, box-shadow 0.15s',
               opacity: isLoading ? 0.5 : 1,
+              overflowY: 'auto',
+              whiteSpace: 'pre-wrap', wordBreak: 'break-word',
+              cursor: isLoading ? 'not-allowed' : 'text',
+              WebkitUserSelect: 'text', userSelect: 'text',
             }}
             onFocus={e => {
               e.currentTarget.style.borderColor = C.green;
@@ -1400,12 +1448,19 @@ export default function ChatInterface() {
         )}
       </div>
 
-      {/* Keyframe animations injected once */}
+      {/* Keyframe animations + placeholder for the contentEditable input */}
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes bounce {
           0%,80%,100% { transform: translateY(0); }
           40% { transform: translateY(-6px); }
+        }
+        /* Placeholder for the contentEditable chat input: shown only while
+           the div is empty (no text and no stray <br>). */
+        [data-chat-placeholder]:empty::before {
+          content: attr(data-chat-placeholder);
+          color: #6b7280;
+          pointer-events: none;
         }
       `}</style>
     </div>,
