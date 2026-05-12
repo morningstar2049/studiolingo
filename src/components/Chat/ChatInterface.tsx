@@ -942,7 +942,13 @@ export default function ChatInterface() {
   return createPortal(
     <div
       style={{
-        position: 'fixed', inset: 0, zIndex: 2147483647,
+        // Top/left/right only (NO `bottom: 0`). On iOS Safari, having both
+        // `bottom: 0` and an explicit `height` anchors the element to the
+        // layout-viewport bottom — which sits behind the keyboard — and pushes
+        // the chat's top edge off-screen above. With only `top: 0` + `height`,
+        // the chat starts at the screen top and grows downward, so it sits
+        // exactly above the keyboard once chatHeight tracks visualViewport.
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 2147483647,
         height: chatHeight, display: 'flex', flexDirection: 'column',
         background: 'linear-gradient(180deg,#f9fafb 0%,#ffffff 100%)',
         fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif',
