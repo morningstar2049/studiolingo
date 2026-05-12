@@ -728,8 +728,15 @@ export default function ChatInterface() {
           level, topic, isFirstMessage: true,
         }),
       });
-      if (!res.ok) throw new Error('API error');
       const data = await res.json();
+      if (res.status === 429) {
+        const hiddenHello: Message = { id: generateId(), role: 'user', content: 'Hello!', hidden: true };
+        const limitMsg: Message = { id: generateId(), role: 'assistant', content: data.message };
+        setSession(newSession);
+        setMessages([hiddenHello, limitMsg]);
+        return;
+      }
+      if (!res.ok) throw new Error('API error');
 
       const hiddenHello: Message = { id: generateId(), role: 'user', content: 'Hello!', hidden: true };
       const welcome: Message = { id: generateId(), role: 'assistant', content: data.message };
@@ -777,8 +784,14 @@ export default function ChatInterface() {
           level: sessionData.level, topic: sessionData.topic, isFirstMessage: false,
         }),
       });
-      if (!res.ok) throw new Error('API error');
       const data = await res.json();
+      if (res.status === 429) {
+        setMessages(prev => [...prev, {
+          id: generateId(), role: 'assistant', content: data.message,
+        }]);
+        return;
+      }
+      if (!res.ok) throw new Error('API error');
 
       const botMsg: Message = { id: generateId(), role: 'assistant', content: data.message };
       setMessages(prev => [...prev, botMsg]);
