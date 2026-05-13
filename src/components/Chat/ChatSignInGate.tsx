@@ -1,6 +1,6 @@
 'use client';
 
-import { SignInButton, SignUpButton } from '@clerk/nextjs';
+import { useClerk } from '@clerk/nextjs';
 
 // Brand tokens lifted from ChatInterface for visual consistency.
 const C = {
@@ -14,14 +14,19 @@ const C = {
 
 /**
  * Sign-in gate shown on /chat for logged-out visitors (Option A from the
- * preview). The chat API is independently protected by middleware, so this
- * is the visible UX layer — middleware is the security layer.
+ * preview).
  *
- * Uses Clerk's SignInButton / SignUpButton in "modal" mode so visitors stay
- * on /chat the whole time and slide back into the chat setup screen as soon
- * as they authenticate.
+ * Why useClerk() instead of <SignInButton> / <SignUpButton>:
+ *   The Clerk button wrappers rely on React.cloneElement to attach an
+ *   onClick to a single child element. In our setup that wiring silently
+ *   failed — clicking the styled button did nothing, with or without
+ *   `forceRedirectUrl`. Calling `openSignIn()` / `openSignUp()` directly
+ *   from the click handler bypasses the cloning entirely: the button is
+ *   a plain <button onClick={...}>, the modal API is invoked explicitly.
  */
 export default function ChatSignInGate() {
+  const { openSignIn, openSignUp } = useClerk();
+
   return (
     <div
       style={{
@@ -86,54 +91,49 @@ export default function ChatSignInGate() {
           track your daily progress.
         </p>
 
-        {/* forceRedirectUrl is required for Clerk's modal mode in v6 — the
-            same pattern the buy-course page uses. Without it the modal
-            silently fails to open. */}
-        <SignInButton mode="modal" forceRedirectUrl="/chat">
-          <button
-            type="button"
-            style={{
-              display: 'block',
-              width: '100%',
-              border: 'none',
-              borderRadius: 12,
-              padding: '12px 14px',
-              fontSize: 14.5,
-              fontWeight: 600,
-              cursor: 'pointer',
-              marginBottom: 10,
-              background: `linear-gradient(135deg, ${C.green}, ${C.greenDark})`,
-              color: C.white,
-              boxShadow: '0 3px 10px rgba(47,158,77,0.35)',
-              fontFamily: 'inherit',
-              transition: 'transform 0.1s, box-shadow 0.15s',
-            }}
-          >
-            Sign in
-          </button>
-        </SignInButton>
+        <button
+          type="button"
+          onClick={() => openSignIn({ forceRedirectUrl: '/chat' })}
+          style={{
+            display: 'block',
+            width: '100%',
+            border: 'none',
+            borderRadius: 12,
+            padding: '12px 14px',
+            fontSize: 14.5,
+            fontWeight: 600,
+            cursor: 'pointer',
+            marginBottom: 10,
+            background: `linear-gradient(135deg, ${C.green}, ${C.greenDark})`,
+            color: C.white,
+            boxShadow: '0 3px 10px rgba(47,158,77,0.35)',
+            fontFamily: 'inherit',
+            transition: 'transform 0.1s, box-shadow 0.15s',
+          }}
+        >
+          Sign in
+        </button>
 
-        <SignUpButton mode="modal" forceRedirectUrl="/chat">
-          <button
-            type="button"
-            style={{
-              display: 'block',
-              width: '100%',
-              borderRadius: 12,
-              padding: '12px 14px',
-              fontSize: 14.5,
-              fontWeight: 600,
-              cursor: 'pointer',
-              background: C.white,
-              color: C.textPrimary,
-              border: `1.5px solid ${C.border}`,
-              fontFamily: 'inherit',
-              transition: 'border-color 0.15s',
-            }}
-          >
-            Create account
-          </button>
-        </SignUpButton>
+        <button
+          type="button"
+          onClick={() => openSignUp({ forceRedirectUrl: '/chat' })}
+          style={{
+            display: 'block',
+            width: '100%',
+            borderRadius: 12,
+            padding: '12px 14px',
+            fontSize: 14.5,
+            fontWeight: 600,
+            cursor: 'pointer',
+            background: C.white,
+            color: C.textPrimary,
+            border: `1.5px solid ${C.border}`,
+            fontFamily: 'inherit',
+            transition: 'border-color 0.15s',
+          }}
+        >
+          Create account
+        </button>
 
         <p
           style={{
