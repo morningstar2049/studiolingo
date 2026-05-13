@@ -1,10 +1,56 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { auth } from '@clerk/nextjs/server';
 import { NextRequest, NextResponse } from 'next/server';
 
 const client = new Anthropic();
 
+// ── Per-user rate limit: 15 messages / 24h ───────────────────────────────────
+// Keyed by Clerk userId (stable across networks / devices, unlike IP).
+// In-memory store — resets on serverless cold start; for school-scale traffic
+// this is acceptable. Swap to Vercel KV / Upstash Redis if persistence is
+// needed across instances.
+const RATE_LIMIT = 15;
+const WINDOW_MS = 24 * 60 * 60 * 1000;
+const userHistory = new Map<string, number[]>();
+
+function checkRateLimit(userId: string): { allowed: boolean; retryAfterSec: number } {
+  const now = Date.now();
+  const cutoff = now - WINDOW_MS;
+  const history = (userHistory.get(userId) || []).filter(t => t > cutoff);
+
+  if (history.length >= RATE_LIMIT) {
+    const oldest = history[0];
+    const retryAfterSec = Math.max(1, Math.ceil((oldest + WINDOW_MS - now) / 1000));
+    userHistory.set(userId, history);
+    return { allowed: false, retryAfterSec };
+  }
+
+  history.push(now);
+  userHistory.set(userId, history);
+  return { allowed: true, retryAfterSec: 0 };
+}
+
 export async function POST(req: NextRequest) {
   try {
+    // Defense-in-depth: middleware also protects this route, but check here
+    // too so the rate-limit key is always a valid Clerk userId.
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+    }
+
+    const { allowed, retryAfterSec } = checkRateLimit(userId);
+    if (!allowed) {
+      return NextResponse.json(
+        {
+          error: 'rate_limit',
+          message: `თქვენ მიაღწიეთ დღევანდელ ${RATE_LIMIT} მესიჯის ლიმიტს. შეგიძლიათ დაბრუნდეთ 24 საათის შემდეგ 💚`,
+          retryAfterSec,
+        },
+        { status: 429, headers: { 'Retry-After': String(retryAfterSec) } }
+      );
+    }
+
     const { messages, level, topic, isFirstMessage } = await req.json();
 
     const levelDescriptions: Record<string, string> = {

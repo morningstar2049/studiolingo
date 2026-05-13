@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
+import { SignedIn, SignedOut } from '@clerk/nextjs';
 import ChatInterface from '@/components/Chat/ChatInterface';
+import ChatSignInGate from '@/components/Chat/ChatSignInGate';
 
 export const metadata: Metadata = {
   title: 'English Practice Chat | Studio Lingo',
@@ -8,5 +10,14 @@ export const metadata: Metadata = {
 };
 
 export default function ChatPage() {
-  return <ChatInterface />;
+  return (
+    <>
+      <SignedIn>
+        <ChatInterface />
+      </SignedIn>
+      <SignedOut>
+        <ChatSignInGate />
+      </SignedOut>
+    </>
+  );
 }
