@@ -1,7 +1,5 @@
 'use client';
 
-import { useClerk } from '@clerk/nextjs';
-
 // Brand tokens lifted from ChatInterface for visual consistency.
 const C = {
   green: '#2f9e4d',
@@ -13,19 +11,17 @@ const C = {
 } as const;
 
 /**
- * Sign-in gate shown on /chat for logged-out visitors (Option A from the
- * preview).
+ * Sign-in gate shown on /chat for logged-out visitors.
  *
- * Why useClerk() instead of <SignInButton> / <SignUpButton>:
- *   The Clerk button wrappers rely on React.cloneElement to attach an
- *   onClick to a single child element. In our setup that wiring silently
- *   failed — clicking the styled button did nothing, with or without
- *   `forceRedirectUrl`. Calling `openSignIn()` / `openSignUp()` directly
- *   from the click handler bypasses the cloning entirely: the button is
- *   a plain <button onClick={...}>, the modal API is invoked explicitly.
+ * Uses plain <a> links to the existing /sign-in and /sign-up Clerk pages
+ * with redirect_url=/chat so the user lands back on /chat after auth.
+ * The Clerk modal pattern (SignInButton mode="modal" / useClerk) was
+ * silently failing in this codebase — plain navigation is the most
+ * reliable fallback. Visually still the green "Option A" card.
  */
 export default function ChatSignInGate() {
-  const { openSignIn, openSignUp } = useClerk();
+  const signInUrl = `/sign-in?redirect_url=${encodeURIComponent('/chat')}`;
+  const signUpUrl = `/sign-up?redirect_url=${encodeURIComponent('/chat')}`;
 
   return (
     <div
@@ -91,9 +87,8 @@ export default function ChatSignInGate() {
           track your daily progress.
         </p>
 
-        <button
-          type="button"
-          onClick={() => openSignIn({ forceRedirectUrl: '/chat' })}
+        <a
+          href={signInUrl}
           style={{
             display: 'block',
             width: '100%',
@@ -108,15 +103,15 @@ export default function ChatSignInGate() {
             color: C.white,
             boxShadow: '0 3px 10px rgba(47,158,77,0.35)',
             fontFamily: 'inherit',
-            transition: 'transform 0.1s, box-shadow 0.15s',
+            textDecoration: 'none',
+            boxSizing: 'border-box',
           }}
         >
           Sign in
-        </button>
+        </a>
 
-        <button
-          type="button"
-          onClick={() => openSignUp({ forceRedirectUrl: '/chat' })}
+        <a
+          href={signUpUrl}
           style={{
             display: 'block',
             width: '100%',
@@ -129,11 +124,12 @@ export default function ChatSignInGate() {
             color: C.textPrimary,
             border: `1.5px solid ${C.border}`,
             fontFamily: 'inherit',
-            transition: 'border-color 0.15s',
+            textDecoration: 'none',
+            boxSizing: 'border-box',
           }}
         >
           Create account
-        </button>
+        </a>
 
         <p
           style={{
