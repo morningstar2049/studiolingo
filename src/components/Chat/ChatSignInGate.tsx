@@ -86,7 +86,10 @@ export default function ChatSignInGate() {
           track your daily progress.
         </p>
 
-        <SignInButton mode="modal">
+        {/* forceRedirectUrl is required for Clerk's modal mode in v6 — the
+            same pattern the buy-course page uses. Without it the modal
+            silently fails to open. */}
+        <SignInButton mode="modal" forceRedirectUrl="/chat">
           <button
             type="button"
             style={{
@@ -110,7 +113,7 @@ export default function ChatSignInGate() {
           </button>
         </SignInButton>
 
-        <SignUpButton mode="modal">
+        <SignUpButton mode="modal" forceRedirectUrl="/chat">
           <button
             type="button"
             style={{
