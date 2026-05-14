@@ -103,6 +103,15 @@ function Page() {
     }
   };
 
+
+  const handleTypeChange = (val: string) => {
+    setCourseTypeVal(val);
+
+    if (val === "ჯგუფური" && courseFormatVal === "ონლაინ") {
+      setCourseFreqVal("კვირაში 2-ჯერ");
+    }
+  }
+
   if (!isLoaded) {
     return (
       <div className="flex items-center justify-center min-h-[90vh] bg-gray-50">
@@ -228,7 +237,7 @@ function Page() {
             fullWidth
             select
             value={courseTypeVal}
-            onChange={(e) => setCourseTypeVal(e.target.value)}
+            onChange={(e) => handleTypeChange(e.target.value)}
             label="გაკვეთილის ტიპი"
             size="medium"
             InputLabelProps={{ shrink: true }}
