@@ -1,5 +1,8 @@
 'use client';
 
+import { SignInButton, SignUpButton } from '@clerk/nextjs';
+import { Button as MuiButton } from '@mui/material';
+
 // Brand tokens lifted from ChatInterface for visual consistency.
 const C = {
   green: '#2f9e4d',
@@ -13,16 +16,13 @@ const C = {
 /**
  * Sign-in gate shown on /chat for logged-out visitors.
  *
- * Uses plain <a> links to the existing /sign-in and /sign-up Clerk pages
- * with redirect_url=/chat so the user lands back on /chat after auth.
- * The Clerk modal pattern (SignInButton mode="modal" / useClerk) was
- * silently failing in this codebase — plain navigation is the most
- * reliable fallback. Visually still the green "Option A" card.
+ * Uses the same modal pattern as the working buy-course page:
+ * <SignInButton mode="modal" forceRedirectUrl> wrapping an MUI Button.
+ * Earlier attempts wrapped a plain <button> and Clerk's cloneElement
+ * onClick wiring silently failed; MUI Button forwards the cloned
+ * onClick correctly which is why buy-course works.
  */
 export default function ChatSignInGate() {
-  const signInUrl = `/sign-in?redirect_url=${encodeURIComponent('/chat')}`;
-  const signUpUrl = `/sign-up?redirect_url=${encodeURIComponent('/chat')}`;
-
   return (
     <div
       style={{
@@ -87,49 +87,54 @@ export default function ChatSignInGate() {
           track your daily progress.
         </p>
 
-        <a
-          href={signInUrl}
-          style={{
-            display: 'block',
-            width: '100%',
-            border: 'none',
-            borderRadius: 12,
-            padding: '12px 14px',
-            fontSize: 14.5,
-            fontWeight: 600,
-            cursor: 'pointer',
-            marginBottom: 10,
-            background: `linear-gradient(135deg, ${C.green}, ${C.greenDark})`,
-            color: C.white,
-            boxShadow: '0 3px 10px rgba(47,158,77,0.35)',
-            fontFamily: 'inherit',
-            textDecoration: 'none',
-            boxSizing: 'border-box',
-          }}
-        >
-          Sign in
-        </a>
+        <SignInButton mode="modal" forceRedirectUrl={'/chat'}>
+          <MuiButton
+            variant="contained"
+            fullWidth
+            sx={{
+              background: `linear-gradient(135deg, ${C.green} 0%, ${C.greenDark} 100%)`,
+              color: C.white,
+              fontWeight: 600,
+              fontSize: '14.5px',
+              borderRadius: '12px',
+              padding: '10px 14px',
+              textTransform: 'none',
+              boxShadow: '0 3px 10px rgba(47,158,77,0.35)',
+              marginBottom: '10px',
+              '&:hover': {
+                background: `linear-gradient(135deg, ${C.greenDark} 0%, ${C.greenDark} 100%)`,
+                boxShadow: '0 4px 14px rgba(47,158,77,0.45)',
+              },
+            }}
+          >
+            Sign in
+          </MuiButton>
+        </SignInButton>
 
-        <a
-          href={signUpUrl}
-          style={{
-            display: 'block',
-            width: '100%',
-            borderRadius: 12,
-            padding: '12px 14px',
-            fontSize: 14.5,
-            fontWeight: 600,
-            cursor: 'pointer',
-            background: C.white,
-            color: C.textPrimary,
-            border: `1.5px solid ${C.border}`,
-            fontFamily: 'inherit',
-            textDecoration: 'none',
-            boxSizing: 'border-box',
-          }}
-        >
-          Create account
-        </a>
+        <SignUpButton mode="modal" forceRedirectUrl={'/chat'}>
+          <MuiButton
+            variant="outlined"
+            fullWidth
+            sx={{
+              borderColor: C.border,
+              borderWidth: '1.5px',
+              color: C.textPrimary,
+              fontWeight: 600,
+              fontSize: '14.5px',
+              borderRadius: '12px',
+              padding: '10px 14px',
+              textTransform: 'none',
+              background: C.white,
+              '&:hover': {
+                borderColor: C.green,
+                borderWidth: '1.5px',
+                background: C.white,
+              },
+            }}
+          >
+            Create account
+          </MuiButton>
+        </SignUpButton>
 
         <p
           style={{
