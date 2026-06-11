@@ -20,7 +20,7 @@ const levelsMap: Record<TLevel, string> = {
   A1: "Elementary -",
   A2: "Elementary",
   B1: "Intermediate",
-  "B1+": "Intermediate",
+  "B1+": "Intermediate +",
   B2: "Intermediate +",
   C1: "Advanced",
 };

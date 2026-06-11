@@ -85,6 +85,7 @@ export default function ChatSignInGate() {
         >
           ივარჯიშეთ ინგლისური ლინგო ჩატში. ანგარიში დაგჭირდებათ თქვენი
           ყოველდღიური პროგრესის შესანახად.
+
         </p>
 
         <SignInButton mode="modal" forceRedirectUrl={'/chat'}>
