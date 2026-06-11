@@ -73,7 +73,7 @@ export default function ChatSignInGate() {
             letterSpacing: '-0.01em',
           }}
         >
-          Sign in to start chatting
+          ლინგო ჩატში ავტორიზაცია
         </h2>
         <p
           style={{
@@ -83,8 +83,9 @@ export default function ChatSignInGate() {
             margin: '0 0 22px',
           }}
         >
-          Practice English with Alex. You&apos;ll need an account so we can
-          track your daily progress.
+          ივარჯიშეთ ინგლისური ლინგო ჩატში. ანგარიში დაგჭირდებათ თქვენი
+          ყოველდღიური პროგრესის შესანახად.
+
         </p>
 
         <SignInButton mode="modal" forceRedirectUrl={'/chat'}>
@@ -107,7 +108,7 @@ export default function ChatSignInGate() {
               },
             }}
           >
-            Sign in
+            შესვლა
           </MuiButton>
         </SignInButton>
 
@@ -132,7 +133,7 @@ export default function ChatSignInGate() {
               },
             }}
           >
-            Create account
+            რეგისტრაცია
           </MuiButton>
         </SignUpButton>
 
@@ -143,7 +144,7 @@ export default function ChatSignInGate() {
             margin: '16px 0 0',
           }}
         >
-          15 free messages every 24 hours
+          15 უფასო მესიჯი ყოველ 24 საათში
         </p>
       </div>
     </div>
