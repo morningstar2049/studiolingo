@@ -1,32 +1,55 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { auth } from '@clerk/nextjs/server';
+import { auth, clerkClient } from '@clerk/nextjs/server';
 import { NextRequest, NextResponse } from 'next/server';
 
 const client = new Anthropic();
 
 // ── Per-user rate limit: 15 messages / 24h ───────────────────────────────────
-// Keyed by Clerk userId (stable across networks / devices, unlike IP).
-// In-memory store — resets on serverless cold start; for school-scale traffic
-// this is acceptable. Swap to Vercel KV / Upstash Redis if persistence is
-// needed across instances.
+// Keyed by Clerk userId and persisted in the user's Clerk privateMetadata.
+// This is a single shared source of truth across ALL serverless instances and
+// devices: whether the same account chats from a phone, a second phone, or a
+// laptop, every request reads/writes the same record. (The previous in-memory
+// Map lived inside one serverless instance, so a second device hitting a
+// different instance saw an empty limit — that was the cross-device bug.)
 const RATE_LIMIT = 15;
 const WINDOW_MS = 24 * 60 * 60 * 1000;
-const userHistory = new Map<string, number[]>();
 
-function checkRateLimit(userId: string): { allowed: boolean; retryAfterSec: number } {
+type ChatLimitMeta = { chatTimestamps?: number[] };
+
+/**
+ * Atomically-ish check + record a message against the user's 24h window,
+ * stored in Clerk privateMetadata. Returns whether the message is allowed and,
+ * if not, how many seconds until the oldest message in the window expires.
+ */
+async function checkRateLimit(
+  userId: string
+): Promise<{ allowed: boolean; retryAfterSec: number }> {
   const now = Date.now();
   const cutoff = now - WINDOW_MS;
-  const history = (userHistory.get(userId) || []).filter(t => t > cutoff);
+
+  const clerk = await clerkClient();
+  const user = await clerk.users.getUser(userId);
+  const meta = (user.privateMetadata ?? {}) as ChatLimitMeta;
+
+  // Keep only timestamps still inside the rolling 24h window.
+  const history = (Array.isArray(meta.chatTimestamps) ? meta.chatTimestamps : [])
+    .filter((t) => typeof t === 'number' && t > cutoff)
+    .sort((a, b) => a - b);
 
   if (history.length >= RATE_LIMIT) {
     const oldest = history[0];
     const retryAfterSec = Math.max(1, Math.ceil((oldest + WINDOW_MS - now) / 1000));
-    userHistory.set(userId, history);
+    // Persist the pruned list so stale timestamps don't accumulate.
+    await clerk.users.updateUserMetadata(userId, {
+      privateMetadata: { chatTimestamps: history },
+    });
     return { allowed: false, retryAfterSec };
   }
 
   history.push(now);
-  userHistory.set(userId, history);
+  await clerk.users.updateUserMetadata(userId, {
+    privateMetadata: { chatTimestamps: history },
+  });
   return { allowed: true, retryAfterSec: 0 };
 }
 
@@ -39,7 +62,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
     }
 
-    const { allowed, retryAfterSec } = checkRateLimit(userId);
+    const { allowed, retryAfterSec } = await checkRateLimit(userId);
     if (!allowed) {
       return NextResponse.json(
         {
