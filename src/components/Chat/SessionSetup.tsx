@@ -9,13 +9,15 @@ interface SessionSetupProps {
   isLoading: boolean;
 }
 
-const LEVELS: { value: Level; label: string; desc: string }[] = [
-  { value: "A1", label: "A1", desc: "Beginner" },
-  { value: "A2", label: "A2", desc: "Elementary" },
-  { value: "B1", label: "B1", desc: "Intermediate" },
-  { value: "B2", label: "B2", desc: "Upper-Int." },
-  { value: "C1", label: "C1", desc: "Advanced" },
-  { value: "C2", label: "C2", desc: "Proficient" },
+// `value` stays as the CEFR code (A1–C2) the API and speech logic rely on;
+// `label` is only what the user sees on the pre-chat level picker.
+const LEVELS: { value: Level; label: string }[] = [
+  { value: "A1", label: "Beginner" },
+  { value: "A2", label: "Elementary" },
+  { value: "B1", label: "Intermediate" },
+  { value: "B2", label: "Upper Intermediate" },
+  { value: "C1", label: "Advanced" },
+  { value: "C2", label: "Proficient" },
 ];
 
 const C = {
@@ -172,21 +174,12 @@ export default function SessionSetup({
                   <div
                     style={{
                       fontWeight: 700,
-                      fontSize: 15,
+                      fontSize: 14,
+                      lineHeight: 1.15,
                       ...(sel ? W : { color: C.textPrimary }),
                     }}
                   >
                     {lvl.label}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 10.5,
-                      marginTop: 2,
-                      fontWeight: 500,
-                      color: sel ? "rgba(255,255,255,0.82)" : C.textMuted,
-                    }}
-                  >
-                    {lvl.desc}
                   </div>
                 </button>
               );
