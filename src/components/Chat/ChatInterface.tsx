@@ -903,36 +903,60 @@ export default function ChatInterface() {
     accumulatedRef.current = '';
     setIsLoading(true);
 
+    // Silently retry transient failures (network blips, server cold-starts /
+    // 5xx) so a student never sees the "connection issue" message for a hiccup
+    // that fixes itself on its own. A 429 (daily limit) is a real, intended
+    // response and is NEVER retried; non-retryable client errors fail fast.
+    const MAX_ATTEMPTS = 3;
+    const payload = JSON.stringify({
+      messages: newMessages.map(m => ({ role: m.role, content: m.content })),
+      level: sessionData.level, topic: sessionData.topic, isFirstMessage: false,
+    });
+
     try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: newMessages.map(m => ({ role: m.role, content: m.content })),
-          level: sessionData.level, topic: sessionData.topic, isFirstMessage: false,
-        }),
-      });
-      const data = await res.json();
-      if (res.status === 429) {
-        setMessages(prev => [...prev, {
-          id: generateId(), role: 'assistant', content: data.message, isLimitReached: true,
-        }]);
-        return;
+      for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+        try {
+          const res = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload,
+          });
+
+          // Daily limit reached — intended response, show it and stop.
+          if (res.status === 429) {
+            const limit = await res.json();
+            setMessages(prev => [...prev, {
+              id: generateId(), role: 'assistant', content: limit.message, isLimitReached: true,
+            }]);
+            return;
+          }
+          // Transient server error — retry silently.
+          if (res.status >= 500) throw new Error('transient');
+          // Other non-OK (e.g. expired auth) won't recover on retry — fail fast.
+          if (!res.ok) throw Object.assign(new Error('client'), { fatal: true });
+
+          const data = await res.json();
+          const botMsg: Message = { id: generateId(), role: 'assistant', content: data.message };
+          setMessages(prev => [...prev, botMsg]);
+
+          // Pre-fetch OpenAI audio in background.
+          // autoPlay=speakerMode: plays the OpenAI voice once the blob is ready.
+          // Falls back to browser TTS only if the TTS fetch fails.
+          preloadAudio(botMsg.id, data.message, sessionData.level, speakerMode);
+          return;
+        } catch (err) {
+          const fatal = (err as { fatal?: boolean })?.fatal === true;
+          if (fatal || attempt === MAX_ATTEMPTS) {
+            setMessages(prev => [...prev, {
+              id: generateId(), role: 'assistant',
+              content: "I'm sorry, I had a connection issue. Could you try again?",
+            }]);
+            return;
+          }
+          // Brief backoff (0.6s, then 1.2s) before the next silent attempt.
+          await new Promise(r => setTimeout(r, attempt * 600));
+        }
       }
-      if (!res.ok) throw new Error('API error');
-
-      const botMsg: Message = { id: generateId(), role: 'assistant', content: data.message };
-      setMessages(prev => [...prev, botMsg]);
-
-      // Pre-fetch OpenAI audio in background.
-      // autoPlay=speakerMode: plays the OpenAI voice once the blob is ready.
-      // Falls back to browser TTS only if the TTS fetch fails.
-      preloadAudio(botMsg.id, data.message, sessionData.level, speakerMode);
-    } catch {
-      setMessages(prev => [...prev, {
-        id: generateId(), role: 'assistant',
-        content: "I'm sorry, I had a connection issue. Could you try again?",
-      }]);
     } finally {
       setIsLoading(false);
     }
