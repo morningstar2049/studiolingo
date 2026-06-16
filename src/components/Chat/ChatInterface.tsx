@@ -104,6 +104,12 @@ const getSpeechRate = (level: Level): number => {
   return 1.0;
 };
 
+// Short 2-letter labels for the in-chat header badge. Display only — the
+// underlying session.level stays A1–C2 for all logic (speech rate, API, etc.).
+const LEVEL_BADGE: Record<Level, string> = {
+  A1: 'Be', A2: 'El', B1: 'In', B2: 'Up', C1: 'Ad', C2: 'Pr',
+};
+
 const pickBestVoice = (voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | undefined => {
   const ua = typeof navigator !== 'undefined' ? navigator.userAgent : '';
   const isIOS = /iPad|iPhone|iPod/.test(ua);
@@ -1088,7 +1094,7 @@ export default function ChatInterface() {
               ...W, background: C.green, fontSize: 11, fontWeight: 700,
               padding: '3px 10px', borderRadius: 20, flexShrink: 0, letterSpacing: '0.03em',
               boxShadow: '0 1px 6px rgba(47,158,77,0.4)',
-            }}>{session.level}</span>
+            }}>{LEVEL_BADGE[session.level]}</span>
             <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: 14, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {session.topic.toLowerCase() === 'general' ? '🌍' : '💬'} {topicDisplay}
             </span>
