@@ -4,7 +4,9 @@ import ChatInterface from '@/components/Chat/ChatInterface';
 import ChatSignInGate from '@/components/Chat/ChatSignInGate';
 
 export const metadata: Metadata = {
-  title: 'English Practice Chat | Studio Lingo',
+  // Kept short on purpose: iOS "Add to Home Screen" pre-fills the app name
+  // from the page <title>, so this is what students see as the default name.
+  title: 'Lingo Chat',
   description:
     'Practice your English with an AI native speaker. Chat, speak, and improve — powered by Studio Lingo.',
   // PWA: lets the chat install as a standalone "Lingo Chat" app.
