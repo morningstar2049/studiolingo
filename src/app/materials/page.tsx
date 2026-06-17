@@ -7,20 +7,20 @@ type TPdf = {
 
 const pdfs: TPdf[] = [
   {
-    thumbnail: "/pdfs/eng_a1.png",
-    href: "https://drive.google.com/file/d/12nWuMyYxmgfS_PBVBYkpi5ZsCv7wTBGz/view?usp=sharing",
+    thumbnail: "/pdfs/eng_elementary_minus.webp",
+    href: "https://drive.google.com/file/d/1kNykkf6b9Uo0iaNkOIE0t2Ju3k-Xn1EL/view?usp=sharing",
   },
   {
-    thumbnail: "/pdfs/eng_a2.png",
-    href: "https://drive.google.com/file/d/1tFq8G-J1hhkKcSLRgDzdMIs1dJJK1AvV/view?usp=sharing",
+    thumbnail: "/pdfs/eng_elementary.webp",
+    href: "https://drive.google.com/file/d/1EwzmMaddbI_zXemi3nDWscUlZKaAzyDh/view?usp=sharing",
   },
   {
-    thumbnail: "/pdfs/eng_b1.png",
-    href: "https://drive.google.com/file/d/1YblNrPN-xk87tVdKOx2D7f_nlMLFPrgx/view?usp=sharing",
+    thumbnail: "/pdfs/eng_intermediate.webp",
+    href: "https://drive.google.com/file/d/1B3WAsUqMlU_PbIQRtUBDuMtx_03Iop_H/view?usp=sharing",
   },
   {
-    thumbnail: "/pdfs/eng_b2.png",
-    href: "https://drive.google.com/file/d/1q7bGMOKIKxfADeJsoWxrjh1MepwBtua1/view",
+    thumbnail: "/pdfs/eng_intermediate_plus.webp",
+    href: "https://drive.google.com/file/d/1PvYFgyTVFO3bLZHu8NBdFjJAqUSlylp8/view?usp=sharing",
   },
   {
     thumbnail: "/pdfs/ger_a1.png",
