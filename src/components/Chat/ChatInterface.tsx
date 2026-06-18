@@ -287,6 +287,10 @@ export default function ChatInterface() {
   // Bumped whenever playback should restart/stop; a running chunked-playback
   // loop aborts once its generation is no longer current (prevents overlap).
   const playGenRef = useRef(0);
+  // Cancels in-flight TTS sentence fetches when playback is superseded/stopped,
+  // so abandoned audio requests release their connections instead of crowding
+  // out the next /api/chat request (was causing Android "connection issue").
+  const ttsAbortRef = useRef<AbortController | null>(null);
 
   // Mount flag for portal (must be client-side)
   useEffect(() => { setMounted(true); }, []);
@@ -483,6 +487,8 @@ export default function ChatInterface() {
     if (!clean) return;
 
     const gen = ++playGenRef.current; // this call now owns playback
+    ttsAbortRef.current?.abort(); // cancel in-flight chunked audio fetches
+    ttsAbortRef.current = null;
 
     // Stop anything currently playing (silence handlers first to prevent callbacks)
     if (currentAudioRef.current) {
@@ -595,6 +601,12 @@ export default function ChatInterface() {
   ) => {
     const gen = ++playGenRef.current;
 
+    // Cancel audio fetches from a previous (now superseded) playback so they
+    // release their connections instead of competing with the chat request.
+    ttsAbortRef.current?.abort();
+    const abort = new AbortController();
+    ttsAbortRef.current = abort;
+
     // Stop whatever is currently playing.
     if (currentAudioRef.current) {
       currentAudioRef.current.onended = null;
@@ -628,6 +640,7 @@ export default function ChatInterface() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: t, level }),
+          signal: abort.signal,
         });
         if (!res.ok) return null;
         return await res.arrayBuffer();
@@ -738,6 +751,8 @@ export default function ChatInterface() {
 
   const stopSpeaking = useCallback(() => {
     playGenRef.current++; // abort any running chunked auto-play loop
+    ttsAbortRef.current?.abort(); // cancel in-flight audio fetches
+    ttsAbortRef.current = null;
     // ── OpenAI Audio element ──────────────────────────────────────────────────
     if (currentAudioRef.current) {
       const audio = currentAudioRef.current;
