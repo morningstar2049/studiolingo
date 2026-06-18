@@ -52,8 +52,8 @@ export async function POST(req: NextRequest) {
       }),
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
+    if (!response.ok || !response.body) {
+      const errorText = await response.text().catch(() => "");
       console.error("OpenAI TTS error:", response.status, errorText);
       return NextResponse.json(
         { error: `OpenAI TTS failed: ${response.status}` },
@@ -61,14 +61,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Stream the mp3 audio directly back to the browser
-    const audioBuffer = await response.arrayBuffer();
-
-    return new NextResponse(audioBuffer, {
+    // Pipe OpenAI's audio straight through to the browser as it is generated,
+    // instead of buffering the whole clip on the server first. The audio bytes
+    // reach the client sooner, so playback can start faster.
+    return new NextResponse(response.body, {
       status: 200,
       headers: {
         "Content-Type": "audio/mpeg",
-        "Content-Length": audioBuffer.byteLength.toString(),
         // Cache for 10 minutes — if the same sentence is played again, browser
         // serves from cache instantly instead of calling OpenAI again
         "Cache-Control": "public, max-age=600",
