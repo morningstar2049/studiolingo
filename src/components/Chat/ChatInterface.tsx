@@ -204,6 +204,8 @@ export default function ChatInterface() {
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const iosRecordActiveRef = useRef(false);
+  // Resolver for the in-flight stop→transcribe promise (see stopAndTranscribeIOS).
+  const transcribeResolveRef = useRef<((text: string) => void) | null>(null);
   const inputRef = useRef<HTMLDivElement>(null);
 
   // The chat input is a contentEditable <div> (not an <input>) so that mobile
@@ -874,6 +876,32 @@ export default function ChatInterface() {
     }
   }, [input]);
 
+  // Re-assert the iOS "playback" (loudspeaker, full-volume) audio route. Opening
+  // the mic with getUserMedia flips iOS to the quiet earpiece route and it stays
+  // there after recording, making the AI's spoken reply play softly. Playing a
+  // silent buffer through the kept-alive AudioContext switches it back to loud
+  // playback. Harmless no-op on non-iOS browsers.
+  const primeLoudspeaker = useCallback(() => {
+    try {
+      let ctx = audioCtxRef.current;
+      if (!ctx) {
+        const Ctx = (window.AudioContext ||
+          (window as any).webkitAudioContext) as typeof AudioContext;
+        ctx = new Ctx();
+        audioCtxRef.current = ctx;
+      }
+      if (ctx.state !== 'running') ctx.resume().catch(() => {});
+      const buf = ctx.createBuffer(1, 1, 22050);
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.connect(ctx.destination);
+      src.start(0);
+      iosAudioUnlockedRef.current = true;
+    } catch {
+      /* non-iOS or unsupported — ignore */
+    }
+  }, []);
+
   // ── iOS voice input: record + server transcription (Whisper) ────────────────
   // The Web Speech API does not work reliably inside iOS standalone PWAs, so on
   // iPhone/iPad we record a short clip with MediaRecorder and transcribe it via
@@ -889,6 +917,7 @@ export default function ChatInterface() {
       // User may have tapped stop before the mic became ready.
       if (!iosRecordActiveRef.current) {
         stream.getTracks().forEach((t) => t.stop());
+        primeLoudspeaker();
         return;
       }
       mediaStreamRef.current = stream;
@@ -904,15 +933,24 @@ export default function ChatInterface() {
       recorder.onstop = async () => {
         mediaStreamRef.current?.getTracks().forEach((t) => t.stop());
         mediaStreamRef.current = null;
+        // Mic released — restore loud loudspeaker playback for the AI's reply.
+        primeLoudspeaker();
 
         const mimeType = recorder.mimeType || 'audio/mp4';
         const blob = new Blob(audioChunksRef.current, { type: mimeType });
         audioChunksRef.current = [];
         mediaRecorderRef.current = null;
 
-        if (blob.size === 0) return; // nothing captured (e.g. instant stop)
+        const resolve = transcribeResolveRef.current;
+        transcribeResolveRef.current = null;
+
+        if (blob.size === 0) {
+          resolve?.(''); // nothing captured (e.g. instant stop)
+          return;
+        }
 
         setIsTranscribing(true);
+        let text = '';
         try {
           const ext = mimeType.includes('webm')
             ? 'webm'
@@ -926,17 +964,14 @@ export default function ChatInterface() {
           const res = await fetch('/api/transcribe', { method: 'POST', body: form });
           if (res.ok) {
             const data = await res.json();
-            const text = (data.text || '').trim();
-            if (text) {
-              const prefix = input.trim() ? input.trim() + ' ' : '';
-              writeInput(prefix + text);
-            }
+            text = (data.text || '').trim();
           }
         } catch {
-          /* transcription failed — leave input as-is, never crash the chat */
+          /* transcription failed — resolve empty, never crash the chat */
         } finally {
           setIsTranscribing(false);
         }
+        resolve?.(text);
       };
 
       recorder.start();
@@ -946,20 +981,33 @@ export default function ChatInterface() {
       mediaStreamRef.current = null;
       setIsRecording(false);
     }
-  }, [input, writeInput, stopSpeaking]);
+  }, [stopSpeaking, primeLoudspeaker]);
 
-  const stopRecordingIOS = useCallback(() => {
-    iosRecordActiveRef.current = false;
-    setIsRecording(false);
-    const recorder = mediaRecorderRef.current;
-    if (recorder && recorder.state !== 'inactive') {
-      try { recorder.stop(); } catch { /* noop */ }
-    } else if (mediaStreamRef.current) {
-      // Recorder not started yet — release the stream we acquired.
-      mediaStreamRef.current.getTracks().forEach((t) => t.stop());
-      mediaStreamRef.current = null;
-    }
-  }, []);
+  // Stops the iOS recorder and resolves with the transcript (or '' if nothing
+  // was captured). Both the mic button and the Send button use this, so a single
+  // tap can stop → transcribe → (optionally) send without a second mic press.
+  const stopAndTranscribeIOS = useCallback((): Promise<string> => {
+    return new Promise((resolve) => {
+      iosRecordActiveRef.current = false;
+      setIsRecording(false);
+      const recorder = mediaRecorderRef.current;
+      if (recorder && recorder.state !== 'inactive') {
+        transcribeResolveRef.current = resolve;
+        try {
+          recorder.stop(); // → onstop transcribes, then resolves the promise
+        } catch {
+          transcribeResolveRef.current = null;
+          resolve('');
+        }
+      } else {
+        // Recorder never started — release any acquired stream and restore audio.
+        mediaStreamRef.current?.getTracks().forEach((t) => t.stop());
+        mediaStreamRef.current = null;
+        primeLoudspeaker();
+        resolve('');
+      }
+    });
+  }, [primeLoudspeaker]);
 
   const handleVoiceInput = useCallback(() => {
     if (isTranscribing) return; // busy transcribing the previous clip
@@ -968,8 +1016,17 @@ export default function ChatInterface() {
       typeof MediaRecorder !== 'undefined' &&
       !!navigator.mediaDevices?.getUserMedia;
     if (useIOSPath) {
-      if (isRecording) stopRecordingIOS();
-      else startRecordingIOS();
+      if (isRecording) {
+        // Stop and drop the transcript into the input box for review.
+        stopAndTranscribeIOS().then((text) => {
+          if (text) {
+            const prefix = input.trim() ? input.trim() + ' ' : '';
+            writeInput(prefix + text);
+          }
+        });
+      } else {
+        startRecordingIOS();
+      }
     } else {
       if (isRecording) stopRecording();
       else startRecording();
@@ -977,10 +1034,12 @@ export default function ChatInterface() {
   }, [
     isRecording,
     isTranscribing,
+    input,
+    writeInput,
     startRecording,
     stopRecording,
     startRecordingIOS,
-    stopRecordingIOS,
+    stopAndTranscribeIOS,
   ]);
 
   // ── Speaker mode toggle ────────────────────────────────────────────────────
@@ -1127,14 +1186,35 @@ export default function ChatInterface() {
   }, [isLoading, speakerMode, preloadAudio, writeInput]);
 
   const handleSend = useCallback(() => {
-    // iOS: ignore Send while a voice clip is still recording or transcribing —
-    // the transcribed text isn't in the input yet, so there's nothing to send.
-    if (iosRecordActiveRef.current || isTranscribing) return;
+    if (isTranscribing) return; // wait for an in-flight transcription to finish
+
+    // iOS: tapping Send while recording stops the recorder, transcribes, and
+    // sends in one action — no need to tap the mic a second time to stop first.
+    if (iosRecordActiveRef.current) {
+      stopAndTranscribeIOS().then((text) => {
+        const prefix = input.trim() ? input.trim() + ' ' : '';
+        const full = (prefix + text).trim();
+        if (full && session && !isLoading) {
+          sendMessage(full, messages, session);
+        }
+      });
+      return;
+    }
+
     if (!session || !input.trim() || isLoading) return;
-    // Tapping Send while recording: stop mic and send in one action
+    // Non-iOS: tapping Send while (Web Speech) recording stops the mic and sends.
     if (isRecordingRef.current) stopRecording();
     sendMessage(input, messages, session);
-  }, [session, input, isLoading, messages, sendMessage, stopRecording, isTranscribing]);
+  }, [
+    session,
+    input,
+    isLoading,
+    messages,
+    sendMessage,
+    stopRecording,
+    isTranscribing,
+    stopAndTranscribeIOS,
+  ]);
 
   // ── Translation ────────────────────────────────────────────────────────────
 
@@ -1580,7 +1660,7 @@ export default function ChatInterface() {
               isTranscribing
                 ? 'Transcribing…'
                 : isRecording
-                  ? (isAppleMobile() ? 'Recording… tap the mic to stop' : 'Listening... tap Send to stop & send')
+                  ? (isAppleMobile() ? 'Recording… tap Send when done' : 'Listening... tap Send to stop & send')
                   : 'Type your message...'
             }
             onInput={e => {
