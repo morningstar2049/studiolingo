@@ -14,6 +14,10 @@ const client = new Anthropic();
 const RATE_LIMIT = 15;
 const WINDOW_MS = 24 * 60 * 60 * 1000;
 
+// Accounts exempt from the limit (e.g. the owner, for smooth testing).
+// Matched case-insensitively against the user's primary Clerk email.
+const RATE_LIMIT_EXEMPT_EMAILS = new Set(['ilikodaraselia@gmail.com']);
+
 type ChatLimitMeta = { chatTimestamps?: number[] };
 
 /**
@@ -29,6 +33,17 @@ async function checkRateLimit(
 
   const clerk = await clerkClient();
   const user = await clerk.users.getUser(userId);
+
+  // Allowlisted accounts bypass the limit entirely — never counted, never blocked.
+  const primaryEmail = (
+    user.emailAddresses.find((e) => e.id === user.primaryEmailAddressId)?.emailAddress ??
+    user.emailAddresses[0]?.emailAddress ??
+    ''
+  ).toLowerCase();
+  if (RATE_LIMIT_EXEMPT_EMAILS.has(primaryEmail)) {
+    return { allowed: true, retryAfterSec: 0 };
+  }
+
   const meta = (user.privateMetadata ?? {}) as ChatLimitMeta;
 
   // Keep only timestamps still inside the rolling 24h window.
