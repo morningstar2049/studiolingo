@@ -128,6 +128,24 @@ const isStandalonePWA = () =>
     window.matchMedia('(display-mode: standalone)').matches) ||
     (navigator as any).standalone === true);
 
+// Splits a reply into sentences so speaking-mode playback can start on the
+// first (short) sentence instead of waiting for the whole reply to synthesize.
+// Very short trailing fragments are glued to the previous sentence so the audio
+// doesn't sound choppy.
+function splitSentences(text: string): string[] {
+  const normalized = text.replace(/\s+/g, ' ').trim();
+  if (!normalized) return [];
+  const pieces = normalized.match(/[^.!?…]+[.!?…]+(?=\s|$)|[^.!?…]+$/g) || [normalized];
+  const out: string[] = [];
+  for (const piece of pieces) {
+    const s = piece.trim();
+    if (!s) continue;
+    if (out.length > 0 && s.length < 15) out[out.length - 1] += ' ' + s;
+    else out.push(s);
+  }
+  return out;
+}
+
 // Starts an inaudible, looping buffer that keeps the iOS audio session
 // continuously "active" on the loudspeaker. Without this, iOS lets the session
 // go idle and reverts to the quiet earpiece route after a few playbacks — which
@@ -266,6 +284,9 @@ export default function ChatInterface() {
   const keepAliveRef = useRef<AudioBufferSourceNode | null>(null);
   // v10: tracks an AudioBufferSourceNode used for iOS auto-play (Web Audio path)
   const currentAudioSourceRef = useRef<AudioBufferSourceNode | null>(null);
+  // Bumped whenever playback should restart/stop; a running chunked-playback
+  // loop aborts once its generation is no longer current (prevents overlap).
+  const playGenRef = useRef(0);
 
   // Mount flag for portal (must be client-side)
   useEffect(() => { setMounted(true); }, []);
@@ -461,6 +482,8 @@ export default function ChatInterface() {
     const clean = stripEmojis(text);
     if (!clean) return;
 
+    playGenRef.current++; // supersede any running chunked auto-play loop
+
     // Stop anything currently playing (silence handlers first to prevent callbacks)
     if (currentAudioRef.current) {
       currentAudioRef.current.onended = null;
@@ -558,22 +581,140 @@ export default function ChatInterface() {
     }
   }, [session, speakWithBrowser]);
 
-  // ── TTS pre-fetch + speaking-mode auto-play ───────────────────────────────
-  // Always pre-fetches the OpenAI audio blob for instant Listen playback.
-  // When autoPlay=true (speaking mode on), also plays the audio once ready.
-  //
-  // Why fetch-then-play instead of speakWithBrowser for speaking mode?
-  // Audio.play() on an already-loaded blob succeeds even in async context on
-  // any browser where the user has previously interacted with audio — which is
-  // always true by the time the first bot reply arrives (the user clicked Start,
-  // tapped level buttons, etc.). This gives the natural OpenAI voice for both
-  // speaking mode AND the Listen button.
+  // ── Speaking-mode playback: sentence-chunked for a fast start ──────────────
+  // Plays the reply one sentence at a time so the voice begins as soon as the
+  // FIRST (short) sentence is synthesized, instead of waiting for the whole
+  // reply. The next sentence is fetched while the current one plays. Any failure
+  // degrades to the browser voice (never silence). A generation token aborts the
+  // loop if a newer reply / Listen / stop supersedes it.
+  const playChunked = useCallback(async (
+    msgId: string, clean: string, level: Level
+  ) => {
+    const gen = ++playGenRef.current;
 
+    // Stop whatever is currently playing.
+    if (currentAudioRef.current) {
+      currentAudioRef.current.onended = null;
+      currentAudioRef.current.onerror = null;
+      currentAudioRef.current.pause();
+      currentAudioRef.current = null;
+    }
+    if (currentAudioSourceRef.current) {
+      currentAudioSourceRef.current.onended = null;
+      try { currentAudioSourceRef.current.stop(); } catch { /* already ended */ }
+      currentAudioSourceRef.current = null;
+    }
+    if (currentUtteranceRef.current) {
+      currentUtteranceRef.current.onend = null;
+      currentUtteranceRef.current.onerror = null;
+      currentUtteranceRef.current = null;
+    }
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+
+    const sentences = splitSentences(clean);
+    if (sentences.length === 0) return;
+
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const aborted = () => playGenRef.current !== gen || isRecordingRef.current;
+
+    const fetchClip = async (t: string): Promise<ArrayBuffer | null> => {
+      try {
+        const res = await fetch('/api/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: t, level }),
+        });
+        if (!res.ok) return null;
+        return await res.arrayBuffer();
+      } catch {
+        return null;
+      }
+    };
+
+    setPlayingId(msgId);
+    // Kick off the first sentence right away; pipeline the rest.
+    let pending: Promise<ArrayBuffer | null> = fetchClip(sentences[0]);
+
+    for (let i = 0; i < sentences.length; i++) {
+      if (aborted()) { if (playGenRef.current === gen) setPlayingId(null); return; }
+      const buf = await pending;
+      // Prefetch the next sentence while this one plays.
+      pending = i + 1 < sentences.length ? fetchClip(sentences[i + 1]) : Promise.resolve(null);
+      if (aborted()) { if (playGenRef.current === gen) setPlayingId(null); return; }
+
+      if (!buf) {
+        // This sentence failed to synthesize — speak the rest with the browser voice.
+        if (!isRecordingRef.current && playGenRef.current === gen) {
+          speakWithBrowser(sentences.slice(i).join(' '), msgId, level);
+        }
+        return;
+      }
+
+      try {
+        if (isIOS && audioCtxRef.current) {
+          if (audioCtxRef.current.state !== 'running') await audioCtxRef.current.resume();
+          if (aborted()) { if (playGenRef.current === gen) setPlayingId(null); return; }
+          const audioBuffer = await audioCtxRef.current.decodeAudioData(buf.slice(0));
+          if (aborted()) { if (playGenRef.current === gen) setPlayingId(null); return; }
+          await new Promise<void>((resolve) => {
+            const source = audioCtxRef.current!.createBufferSource();
+            source.buffer = audioBuffer;
+            source.connect(audioCtxRef.current!.destination);
+            currentAudioSourceRef.current = source;
+            source.onended = () => {
+              if (currentAudioSourceRef.current === source) currentAudioSourceRef.current = null;
+              resolve();
+            };
+            source.start(0);
+          });
+        } else {
+          if (audioCtxRef.current && audioCtxRef.current.state !== 'running') {
+            try { await audioCtxRef.current.resume(); } catch { /* ignore */ }
+          }
+          if (aborted()) { if (playGenRef.current === gen) setPlayingId(null); return; }
+          const url = URL.createObjectURL(new Blob([buf], { type: 'audio/mpeg' }));
+          await new Promise<void>((resolve) => {
+            const audio = new Audio(url);
+            audio.volume = 1.0;
+            currentAudioRef.current = audio;
+            const finish = () => {
+              URL.revokeObjectURL(url);
+              if (currentAudioRef.current === audio) currentAudioRef.current = null;
+              resolve();
+            };
+            audio.onended = finish;
+            audio.onerror = finish;
+            audio.play().catch(finish);
+          });
+        }
+      } catch {
+        currentAudioSourceRef.current = null;
+        if (!isRecordingRef.current && playGenRef.current === gen) {
+          speakWithBrowser(sentences.slice(i).join(' '), msgId, level);
+        }
+        return;
+      }
+    }
+    if (playGenRef.current === gen) setPlayingId(null);
+  }, [speakWithBrowser]);
+
+  // ── TTS: speaking-mode auto-play + Listen-button pre-fetch ─────────────────
+  // Speaking mode (autoPlay): play the reply sentence-by-sentence (playChunked)
+  // so the voice starts fast. Otherwise: pre-fetch the whole clip so the Listen
+  // button plays instantly later.
   const preloadAudio = useCallback(async (
     msgId: string, text: string, level: Level, autoPlay = false
   ) => {
     const clean = stripEmojis(text);
     if (!clean) return;
+
+    if (autoPlay) {
+      if (isRecordingRef.current) return; // don't talk over the user
+      await playChunked(msgId, clean, level);
+      return;
+    }
 
     updateMessage(msgId, { isPreloadingAudio: true });
     try {
@@ -585,103 +726,15 @@ export default function ChatInterface() {
       if (!res.ok) throw new Error(`TTS API ${res.status}`);
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
-      // Store in message state for instant Listen playback
       updateMessage(msgId, { audioUrl: url, isPreloadingAudio: false });
-
-      // ── Auto-play for speaking mode ─────────────────────────────────────
-      if (autoPlay) {
-        // Don't auto-play while the user is recording (avoid talking over them)
-        if (isRecordingRef.current) return;
-
-        // Stop whatever is currently playing — the latest reply is most relevant
-        if (currentAudioRef.current) {
-          currentAudioRef.current.onended = null;
-          currentAudioRef.current.onerror = null;
-          currentAudioRef.current.pause();
-          currentAudioRef.current = null;
-        }
-        if (currentAudioSourceRef.current) {
-          currentAudioSourceRef.current.onended = null;
-          try { currentAudioSourceRef.current.stop(); } catch { /* already ended */ }
-          currentAudioSourceRef.current = null;
-        }
-        if (currentUtteranceRef.current) {
-          currentUtteranceRef.current.onend = null;
-          currentUtteranceRef.current.onerror = null;
-          currentUtteranceRef.current = null;
-        }
-        if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-          window.speechSynthesis.cancel();
-        }
-
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-
-        if (isIOS && audioCtxRef.current) {
-          // v10 iOS path: audio.play() in async context is blocked by iOS even
-          // after AudioContext unlock. Use AudioContext.decodeAudioData +
-          // AudioBufferSourceNode.start() instead — Web Audio API start() is
-          // unlocked when the AudioContext was created in a user gesture, with
-          // no async restriction. This is the only fully reliable iOS solution.
-          try {
-            if (audioCtxRef.current.state !== 'running') {
-              await audioCtxRef.current.resume();
-            }
-            if (isRecordingRef.current) return; // user started mic during resume
-            const arrayBuffer = await fetch(url).then(r => r.arrayBuffer());
-            if (isRecordingRef.current) return; // user started mic during fetch
-            const audioBuffer = await audioCtxRef.current.decodeAudioData(arrayBuffer);
-            if (isRecordingRef.current) return; // user started mic during decode
-            const source = audioCtxRef.current.createBufferSource();
-            source.buffer = audioBuffer;
-            source.connect(audioCtxRef.current.destination);
-            currentAudioSourceRef.current = source;
-            setPlayingId(msgId);
-            source.onended = () => {
-              if (currentAudioSourceRef.current === source) currentAudioSourceRef.current = null;
-              setPlayingId(null);
-            };
-            source.start(0);
-          } catch {
-            currentAudioSourceRef.current = null;
-            setPlayingId(null);
-            if (!isRecordingRef.current) speakWithBrowser(clean, msgId, level);
-          }
-        } else {
-          // Non-iOS: audio.play() works in async context after AudioContext unlock
-          if (audioCtxRef.current && audioCtxRef.current.state !== 'running') {
-            try { await audioCtxRef.current.resume(); } catch { /* ignore */ }
-          }
-          setPlayingId(msgId);
-          const audio = new Audio(url);
-          audio.volume = 1.0;
-          if (audioCtxRef.current?.state === 'running') {
-            try {
-              const src = audioCtxRef.current.createMediaElementSource(audio);
-              src.connect(audioCtxRef.current.destination);
-            } catch { /* non-critical */ }
-          }
-          currentAudioRef.current = audio;
-          audio.onended = () => { currentAudioRef.current = null; setPlayingId(null); };
-          audio.onerror = () => { currentAudioRef.current = null; setPlayingId(null); };
-          try {
-            await audio.play();
-          } catch {
-            currentAudioRef.current = null;
-            setPlayingId(null);
-            speakWithBrowser(clean, msgId, level);
-          }
-        }
-      }
     } catch (err) {
-      // Pre-fetch failed (no API key, rate limit, etc.)
       console.warn('TTS pre-fetch failed:', err);
       updateMessage(msgId, { isPreloadingAudio: false });
-      // If speaking mode was waiting for this audio, fall back to browser TTS
-      if (autoPlay && !isRecordingRef.current) speakWithBrowser(clean, msgId, level);
     }
-  }, [updateMessage, speakWithBrowser]);
+  }, [updateMessage, playChunked]);
 
   const stopSpeaking = useCallback(() => {
+    playGenRef.current++; // abort any running chunked auto-play loop
     // ── OpenAI Audio element ──────────────────────────────────────────────────
     if (currentAudioRef.current) {
       const audio = currentAudioRef.current;
