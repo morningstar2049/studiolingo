@@ -145,7 +145,11 @@ export default function SessionSetup({
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(3,1fr)",
+              // minmax(0,1fr) forces three exactly-equal columns. Plain "1fr"
+              // has a min-content floor, so on narrow screens (e.g. iPhone SE)
+              // a long word like "Intermediate" would widen its column and throw
+              // the whole grid out of alignment.
+              gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
               gap: 8,
             }}
           >
@@ -181,8 +185,9 @@ export default function SessionSetup({
                   <div
                     style={{
                       fontWeight: 700,
-                      fontSize: 14,
+                      fontSize: 13,
                       lineHeight: 1.15,
+                      overflowWrap: "break-word",
                       ...(sel ? W : { color: C.textPrimary }),
                     }}
                   >
