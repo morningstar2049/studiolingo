@@ -118,6 +118,16 @@ const isAppleMobile = () =>
   (/iP(hone|ad|od)/.test(navigator.userAgent) ||
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
 
+// True when launched as an installed/standalone home-screen app (PWA) rather
+// than a normal browser tab. In a browser, voice uses the live Web Speech API
+// (types as you speak); only the installed iOS app — where Web Speech is
+// blocked — falls back to record-then-transcribe.
+const isStandalonePWA = () =>
+  typeof window !== 'undefined' &&
+  ((typeof window.matchMedia === 'function' &&
+    window.matchMedia('(display-mode: standalone)').matches) ||
+    (navigator as any).standalone === true);
+
 // Starts an inaudible, looping buffer that keeps the iOS audio session
 // continuously "active" on the loudspeaker. Without this, iOS lets the session
 // go idle and reverts to the quiet earpiece route after a few playbacks — which
@@ -1038,8 +1048,12 @@ export default function ChatInterface() {
 
   const handleVoiceInput = useCallback(() => {
     if (isTranscribing) return; // busy transcribing the previous clip
+    // Live Web Speech (types as you speak) everywhere it works — i.e. in a real
+    // browser tab. Only the installed iOS app, where Web Speech is blocked,
+    // falls back to record-then-transcribe.
     const useIOSPath =
       isAppleMobile() &&
+      isStandalonePWA() &&
       typeof MediaRecorder !== 'undefined' &&
       !!navigator.mediaDevices?.getUserMedia;
     if (useIOSPath) {
