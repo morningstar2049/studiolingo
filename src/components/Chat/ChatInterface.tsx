@@ -482,7 +482,7 @@ export default function ChatInterface() {
     const clean = stripEmojis(text);
     if (!clean) return;
 
-    playGenRef.current++; // supersede any running chunked auto-play loop
+    const gen = ++playGenRef.current; // this call now owns playback
 
     // Stop anything currently playing (silence handlers first to prevent callbacks)
     if (currentAudioRef.current) {
@@ -550,10 +550,13 @@ export default function ChatInterface() {
       if (!res.ok) throw new Error(`TTS API ${res.status}`);
 
       const blob = await res.blob();
+      // A newer play/stop happened while we were fetching — drop this stale clip.
+      if (playGenRef.current !== gen) return;
       const url = URL.createObjectURL(blob);
       if (audioCtxRef.current && audioCtxRef.current.state !== 'running') {
         try { await audioCtxRef.current.resume(); } catch { /* ignore */ }
       }
+      if (playGenRef.current !== gen) { URL.revokeObjectURL(url); return; }
       const audio = new Audio(url);
       audio.volume = 1.0;
       if (audioCtxRef.current?.state === 'running') {
@@ -1151,12 +1154,14 @@ export default function ChatInterface() {
       if (lastBot) {
         const clean = stripEmojis(lastBot.content);
         if (clean) {
-          // Called directly inside a click handler → audio.play() is permitted
-          speakMessage(lastBot.content, lastBot.id, session?.level, lastBot.audioUrl);
+          // Use the chunked player: it fetches its own audio (so it works even
+          // when the message hasn't finished pre-loading) and its generation
+          // token prevents stale/duplicate playback on repeated toggles.
+          playChunked(lastBot.id, clean, session?.level || 'B1');
         }
       }
     }
-  }, [speakerMode, messages, session, stopSpeaking, speakMessage]);
+  }, [speakerMode, messages, session, stopSpeaking, playChunked]);
 
   // ── Session start ──────────────────────────────────────────────────────────
 
