@@ -739,6 +739,11 @@ export default function ChatInterface() {
     isRecordingRef.current = true;
     setIsRecording(true);
 
+    // One-time guard for the iOS first-attempt permission race (see onerror):
+    // the very first recognition can fail while the OS is still granting access,
+    // so we retry once instead of forcing the user to tap the mic again.
+    let permissionRetried = false;
+
     const createSession = () => {
       let subSessionFinalText = '';
 
@@ -802,6 +807,19 @@ export default function ChatInterface() {
           }
           return;
         }
+        // iOS standalone PWA: the first attempt can fail with a permission /
+        // service error while the OS is still granting microphone & Speech
+        // Recognition access. Retry once (access is usually granted by then)
+        // so a single mic tap works instead of needing a second tap.
+        if (
+          (event.error === 'service-not-allowed' || event.error === 'not-allowed') &&
+          isRecordingRef.current &&
+          !permissionRetried
+        ) {
+          permissionRetried = true;
+          setTimeout(() => { if (isRecordingRef.current) createSession(); }, 350);
+          return;
+        }
         console.error('Speech recognition error:', event.error);
         isRecordingRef.current = false;
         setIsRecording(false);
@@ -814,7 +832,32 @@ export default function ChatInterface() {
       }
     };
 
-    createSession();
+    // On iOS standalone PWAs the very first SpeechRecognition attempt is often
+    // swallowed by the OS permission prompt and returns nothing ("first tap does
+    // nothing, tap again and it works"). Granting microphone access up front via
+    // getUserMedia warms the audio session so that first attempt transcribes.
+    // Scoped to iOS only so the already-working Android/desktop path is untouched.
+    // Best-effort: on failure we still start recognition so nothing regresses.
+    const isIOS =
+      typeof navigator !== 'undefined' &&
+      (/iP(hone|ad|od)/.test(navigator.userAgent) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+    const md = typeof navigator !== 'undefined' ? navigator.mediaDevices : undefined;
+
+    if (isIOS && md && typeof md.getUserMedia === 'function') {
+      md.getUserMedia({ audio: true })
+        .then((stream) => {
+          // SpeechRecognition captures its own audio; release this stream so it
+          // doesn't hold the mic or conflict with recognition on iOS.
+          stream.getTracks().forEach((t) => t.stop());
+          if (isRecordingRef.current) createSession();
+        })
+        .catch(() => {
+          if (isRecordingRef.current) createSession();
+        });
+    } else {
+      createSession();
+    }
   }, [input]);
 
   const handleVoiceInput = useCallback(() => {

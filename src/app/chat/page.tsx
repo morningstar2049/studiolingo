@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { SignedIn, SignedOut } from '@clerk/nextjs';
 import ChatInterface from '@/components/Chat/ChatInterface';
 import ChatSignInGate from '@/components/Chat/ChatSignInGate';
+import ServiceWorkerRegister from '@/components/Chat/ServiceWorkerRegister';
 
 export const metadata: Metadata = {
   // Kept short on purpose: iOS "Add to Home Screen" pre-fills the app name
@@ -34,6 +35,7 @@ export const viewport: Viewport = {
 export default function ChatPage() {
   return (
     <>
+      <ServiceWorkerRegister />
       <SignedIn>
         <ChatInterface />
       </SignedIn>
