@@ -118,6 +118,20 @@ const isAppleMobile = () =>
   (/iP(hone|ad|od)/.test(navigator.userAgent) ||
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
 
+// Starts an inaudible, looping buffer that keeps the iOS audio session
+// continuously "active" on the loudspeaker. Without this, iOS lets the session
+// go idle and reverts to the quiet earpiece route after a few playbacks — which
+// is why the AI's voice got softer after the 2nd–3rd message. Returns the node
+// so it can be stopped (e.g. while the mic is recording).
+function startSilentKeepAlive(ctx: AudioContext): AudioBufferSourceNode {
+  const src = ctx.createBufferSource();
+  src.buffer = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate); // 1s of silence
+  src.loop = true;
+  src.connect(ctx.destination);
+  src.start(0);
+  return src;
+}
+
 const pickBestVoice = (voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | undefined => {
   const ua = typeof navigator !== 'undefined' ? navigator.userAgent : '';
   const isIOS = /iPad|iPhone|iPod/.test(ua);
@@ -238,6 +252,8 @@ export default function ChatInterface() {
   // v9: keep the AudioContext alive in a ref so iOS doesn't GC it and revert the
   // audio session back to earpiece/quiet mode between plays
   const audioCtxRef = useRef<AudioContext | null>(null);
+  // Looping silent source that keeps the iOS audio session loud (see startSilentKeepAlive).
+  const keepAliveRef = useRef<AudioBufferSourceNode | null>(null);
   // v10: tracks an AudioBufferSourceNode used for iOS auto-play (Web Audio path)
   const currentAudioSourceRef = useRef<AudioBufferSourceNode | null>(null);
 
@@ -373,6 +389,9 @@ export default function ChatInterface() {
         src.buffer = buf;
         src.connect(ctx.destination);
         src.start(0);
+        // iOS only: keep the session continuously alive so it stays on the
+        // loudspeaker. (Skipped elsewhere to avoid a "tab playing audio" badge.)
+        if (isAppleMobile()) keepAliveRef.current = startSilentKeepAlive(ctx);
         iosAudioUnlockedRef.current = true;
       } catch { /* ignore — non-iOS browsers may not need this */ }
     };
@@ -896,6 +915,8 @@ export default function ChatInterface() {
       src.buffer = buf;
       src.connect(ctx.destination);
       src.start(0);
+      // Make sure the silent keep-alive is running (it's stopped during recording).
+      if (!keepAliveRef.current) keepAliveRef.current = startSilentKeepAlive(ctx);
       iosAudioUnlockedRef.current = true;
     } catch {
       /* non-iOS or unsupported — ignore */
@@ -908,6 +929,12 @@ export default function ChatInterface() {
   // /api/transcribe. Non-iOS platforms keep the live Web Speech path unchanged.
   const startRecordingIOS = useCallback(async () => {
     stopSpeaking(); // don't let TTS playback leak into the mic
+    // Stop the silent keep-alive so the mic isn't forced into "play & record"
+    // mode; primeLoudspeaker() restarts it once recording ends.
+    if (keepAliveRef.current) {
+      try { keepAliveRef.current.stop(); } catch { /* already stopped */ }
+      keepAliveRef.current = null;
+    }
 
     iosRecordActiveRef.current = true;
     setIsRecording(true);
