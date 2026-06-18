@@ -160,7 +160,14 @@ export default function SessionSetup({
                     cursor: isLoading ? "not-allowed" : "pointer",
                     border: `1.5px solid ${sel ? C.green : C.border}`,
                     borderRadius: 14,
-                    padding: "10px 8px",
+                    padding: "8px",
+                    // Equal height for every button so a 2-line label like
+                    // "Upper Intermediate" doesn't make its row taller than the
+                    // single-line rows (kept the grid asymmetric on iPhone).
+                    minHeight: 54,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                     textAlign: "center",
                     background: sel
                       ? `linear-gradient(135deg,${C.green},${C.greenDark})`
