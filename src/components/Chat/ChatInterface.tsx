@@ -110,6 +110,14 @@ const LEVEL_BADGE: Record<Level, string> = {
   A1: 'Be', A2: 'El', B1: 'In', B2: 'Up', C1: 'Ad', C2: 'Pr',
 };
 
+// True on iPhone / iPad. Voice input is routed to record-and-transcribe on
+// Apple mobile because the Web Speech API is unreliable in iOS standalone PWAs
+// (the first attempt is swallowed and transcribes nothing).
+const isAppleMobile = () =>
+  typeof navigator !== 'undefined' &&
+  (/iP(hone|ad|od)/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+
 const pickBestVoice = (voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | undefined => {
   const ua = typeof navigator !== 'undefined' ? navigator.userAgent : '';
   const isIOS = /iPad|iPhone|iPod/.test(ua);
@@ -172,6 +180,7 @@ export default function ChatInterface() {
   const [isLoading, setIsLoading] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [speakerMode, setSpeakerMode] = useState(false);
 
@@ -190,6 +199,11 @@ export default function ChatInterface() {
   const isRecordingRef = useRef(false);
   // v5: on iOS we accumulate final text across fresh sub-sessions
   const accumulatedRef = useRef('');
+  // iOS record-and-transcribe path (see startRecordingIOS).
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const iosRecordActiveRef = useRef(false);
   const inputRef = useRef<HTMLDivElement>(null);
 
   // The chat input is a contentEditable <div> (not an <input>) so that mobile
@@ -860,13 +874,114 @@ export default function ChatInterface() {
     }
   }, [input]);
 
-  const handleVoiceInput = useCallback(() => {
-    if (isRecording) {
-      stopRecording();
-    } else {
-      startRecording();
+  // ── iOS voice input: record + server transcription (Whisper) ────────────────
+  // The Web Speech API does not work reliably inside iOS standalone PWAs, so on
+  // iPhone/iPad we record a short clip with MediaRecorder and transcribe it via
+  // /api/transcribe. Non-iOS platforms keep the live Web Speech path unchanged.
+  const startRecordingIOS = useCallback(async () => {
+    stopSpeaking(); // don't let TTS playback leak into the mic
+
+    iosRecordActiveRef.current = true;
+    setIsRecording(true);
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // User may have tapped stop before the mic became ready.
+      if (!iosRecordActiveRef.current) {
+        stream.getTracks().forEach((t) => t.stop());
+        return;
+      }
+      mediaStreamRef.current = stream;
+      audioChunksRef.current = [];
+
+      const recorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = recorder;
+
+      recorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+
+      recorder.onstop = async () => {
+        mediaStreamRef.current?.getTracks().forEach((t) => t.stop());
+        mediaStreamRef.current = null;
+
+        const mimeType = recorder.mimeType || 'audio/mp4';
+        const blob = new Blob(audioChunksRef.current, { type: mimeType });
+        audioChunksRef.current = [];
+        mediaRecorderRef.current = null;
+
+        if (blob.size === 0) return; // nothing captured (e.g. instant stop)
+
+        setIsTranscribing(true);
+        try {
+          const ext = mimeType.includes('webm')
+            ? 'webm'
+            : mimeType.includes('ogg')
+              ? 'ogg'
+              : mimeType.includes('wav')
+                ? 'wav'
+                : 'mp4';
+          const form = new FormData();
+          form.append('file', blob, `recording.${ext}`);
+          const res = await fetch('/api/transcribe', { method: 'POST', body: form });
+          if (res.ok) {
+            const data = await res.json();
+            const text = (data.text || '').trim();
+            if (text) {
+              const prefix = input.trim() ? input.trim() + ' ' : '';
+              writeInput(prefix + text);
+            }
+          }
+        } catch {
+          /* transcription failed — leave input as-is, never crash the chat */
+        } finally {
+          setIsTranscribing(false);
+        }
+      };
+
+      recorder.start();
+    } catch {
+      // Permission denied or mic unavailable.
+      iosRecordActiveRef.current = false;
+      mediaStreamRef.current = null;
+      setIsRecording(false);
     }
-  }, [isRecording, startRecording, stopRecording]);
+  }, [input, writeInput, stopSpeaking]);
+
+  const stopRecordingIOS = useCallback(() => {
+    iosRecordActiveRef.current = false;
+    setIsRecording(false);
+    const recorder = mediaRecorderRef.current;
+    if (recorder && recorder.state !== 'inactive') {
+      try { recorder.stop(); } catch { /* noop */ }
+    } else if (mediaStreamRef.current) {
+      // Recorder not started yet — release the stream we acquired.
+      mediaStreamRef.current.getTracks().forEach((t) => t.stop());
+      mediaStreamRef.current = null;
+    }
+  }, []);
+
+  const handleVoiceInput = useCallback(() => {
+    if (isTranscribing) return; // busy transcribing the previous clip
+    const useIOSPath =
+      isAppleMobile() &&
+      typeof MediaRecorder !== 'undefined' &&
+      !!navigator.mediaDevices?.getUserMedia;
+    if (useIOSPath) {
+      if (isRecording) stopRecordingIOS();
+      else startRecordingIOS();
+    } else {
+      if (isRecording) stopRecording();
+      else startRecording();
+    }
+  }, [
+    isRecording,
+    isTranscribing,
+    startRecording,
+    stopRecording,
+    startRecordingIOS,
+    stopRecordingIOS,
+  ]);
 
   // ── Speaker mode toggle ────────────────────────────────────────────────────
   // When turning ON, immediately plays the last bot message.
@@ -1012,11 +1127,14 @@ export default function ChatInterface() {
   }, [isLoading, speakerMode, preloadAudio, writeInput]);
 
   const handleSend = useCallback(() => {
+    // iOS: ignore Send while a voice clip is still recording or transcribing —
+    // the transcribed text isn't in the input yet, so there's nothing to send.
+    if (iosRecordActiveRef.current || isTranscribing) return;
     if (!session || !input.trim() || isLoading) return;
     // Tapping Send while recording: stop mic and send in one action
     if (isRecordingRef.current) stopRecording();
     sendMessage(input, messages, session);
-  }, [session, input, isLoading, messages, sendMessage, stopRecording]);
+  }, [session, input, isLoading, messages, sendMessage, stopRecording, isTranscribing]);
 
   // ── Translation ────────────────────────────────────────────────────────────
 
@@ -1413,19 +1531,37 @@ export default function ChatInterface() {
           {/* Mic — tap to start, tap to stop (does NOT auto-send on stop) */}
           <button
             onClick={handleVoiceInput}
-            title={isRecording ? 'Stop recording' : 'Record voice message'}
+            disabled={isTranscribing}
+            title={
+              isTranscribing
+                ? 'Transcribing…'
+                : isRecording
+                  ? 'Stop recording'
+                  : 'Record voice message'
+            }
             style={{
               flexShrink: 0, width: 44, height: 44, borderRadius: '50%', border: 'none',
-              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: isTranscribing ? 'default' : 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
               transition: 'all 0.2s',
               ...(isRecording
                 ? { background: '#ef4444', color: C.white, boxShadow: '0 0 0 4px rgba(239,68,68,0.2)' }
                 : { background: '#f3f4f6', color: C.textMuted }),
             }}
           >
-            <span style={isRecording ? W : { color: C.textMuted }}>
-              {isRecording ? <IconMicStop /> : <IconMic />}
-            </span>
+            {isTranscribing ? (
+              <span
+                style={{
+                  width: 18, height: 18, borderRadius: '50%',
+                  border: `2px solid ${C.textMuted}`, borderTopColor: 'transparent',
+                  display: 'inline-block', animation: 'spin 0.8s linear infinite',
+                }}
+              />
+            ) : (
+              <span style={isRecording ? W : { color: C.textMuted }}>
+                {isRecording ? <IconMicStop /> : <IconMic />}
+              </span>
+            )}
           </button>
 
           {/* Text input — contentEditable <div> (not <input>) so mobile
@@ -1440,7 +1576,13 @@ export default function ChatInterface() {
             contentEditable={!isLoading}
             suppressContentEditableWarning
             aria-label="Type your message"
-            data-chat-placeholder={isRecording ? 'Listening... tap Send to stop & send' : 'Type your message...'}
+            data-chat-placeholder={
+              isTranscribing
+                ? 'Transcribing…'
+                : isRecording
+                  ? (isAppleMobile() ? 'Recording… tap the mic to stop' : 'Listening... tap Send to stop & send')
+                  : 'Type your message...'
+            }
             onInput={e => {
               const el = e.currentTarget as HTMLDivElement;
               const text = el.innerText;
