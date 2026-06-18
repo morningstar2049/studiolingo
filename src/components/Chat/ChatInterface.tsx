@@ -1714,18 +1714,21 @@ export default function ChatInterface() {
             }}
           />
 
-          {/* Send — if recording: stops mic AND sends in one tap */}
+          {/* Send — if recording: stops mic AND sends in one tap. Enabled while
+              recording even though the input is still empty (the transcript
+              isn't in the box yet), so a single Send tap can finish a voice
+              message. Disabled during transcription and while a reply loads. */}
           <button
             onClick={handleSend}
-            disabled={!input.trim() || isLoading}
+            disabled={(!input.trim() && !isRecording) || isTranscribing || isLoading}
             title={isRecording ? 'Stop recording and send' : 'Send message'}
             style={{
               flexShrink: 0, width: 44, height: 44, borderRadius: '50%', border: 'none',
-              cursor: !input.trim() || isLoading ? 'not-allowed' : 'pointer',
+              cursor: (!input.trim() && !isRecording) || isTranscribing || isLoading ? 'not-allowed' : 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               background: `linear-gradient(135deg,${C.green},${C.greenDark})`,
               boxShadow: '0 3px 10px rgba(47,158,77,0.35)',
-              opacity: !input.trim() || isLoading ? 0.4 : 1,
+              opacity: (!input.trim() && !isRecording) || isTranscribing || isLoading ? 0.4 : 1,
               transition: 'opacity 0.15s',
             }}
           >
