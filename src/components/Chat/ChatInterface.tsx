@@ -1354,9 +1354,19 @@ export default function ChatInterface() {
           const botMsg: Message = { id: generateId(), role: 'assistant', content: data.message };
           setMessages(prev => [...prev, botMsg]);
 
-          // iOS: restore the loudspeaker before the reply plays — voice input
-          // can leave the audio session on the quiet earpiece route.
-          if (isAppleMobile()) primeLoudspeaker();
+          // iOS: restore loud playback before the reply plays. If the mic was
+          // used, the audio context is pinned to the quiet earpiece route, so
+          // rebuild it — by now (after the network round-trip) the mic is fully
+          // released, so the fresh context routes to the loudspeaker. Otherwise
+          // just re-assert on the existing context.
+          if (isAppleMobile()) {
+            if (micUsedRef.current) {
+              micUsedRef.current = false;
+              recreateLoudspeakerContext();
+            } else {
+              primeLoudspeaker();
+            }
+          }
           // Pre-fetch OpenAI audio in background.
           // autoPlay=speakerMode: plays the OpenAI voice once the blob is ready.
           // Falls back to browser TTS only if the TTS fetch fails.
@@ -1379,18 +1389,10 @@ export default function ChatInterface() {
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading, speakerMode, preloadAudio, writeInput, primeLoudspeaker, prefetchTranslation]);
+  }, [isLoading, speakerMode, preloadAudio, writeInput, primeLoudspeaker, prefetchTranslation, recreateLoudspeakerContext]);
 
   const handleSend = useCallback(() => {
     if (isTranscribing) return; // wait for an in-flight transcription to finish
-
-    // iOS: if the mic was used, the audio context is stuck on the quiet earpiece
-    // route. Rebuild it here — inside this Send gesture, which is what lets the
-    // new context unlock — so the upcoming reply plays through the loudspeaker.
-    if (isAppleMobile() && micUsedRef.current) {
-      micUsedRef.current = false;
-      recreateLoudspeakerContext();
-    }
 
     // iOS: tapping Send while recording stops the recorder, transcribes, and
     // sends in one action — no need to tap the mic a second time to stop first.
@@ -1418,7 +1420,6 @@ export default function ChatInterface() {
     stopRecording,
     isTranscribing,
     stopAndTranscribeIOS,
-    recreateLoudspeakerContext,
   ]);
 
   // ── Translation ────────────────────────────────────────────────────────────
