@@ -1164,6 +1164,9 @@ export default function ChatInterface() {
       setSpeakerMode(false);
     } else {
       setSpeakerMode(true);
+      // iOS: restore the loudspeaker before playing (the mic used for voice
+      // input can leave the audio session on the quiet earpiece route).
+      if (isAppleMobile()) primeLoudspeaker();
       // Find the last visible bot message and play it
       const lastBot = [...messages].reverse().find(m => m.role === 'assistant' && !m.hidden);
       if (lastBot) {
@@ -1176,9 +1179,30 @@ export default function ChatInterface() {
         }
       }
     }
-  }, [speakerMode, messages, session, stopSpeaking, playChunked]);
+  }, [speakerMode, messages, session, stopSpeaking, playChunked, primeLoudspeaker]);
 
   // ── Session start ──────────────────────────────────────────────────────────
+
+  // Pre-translate each reply in the background so tapping "translate" is instant.
+  // Fires after a short delay so it doesn't compete with the reply's audio
+  // playback on weaker connections. Result is cached on the message; if it fails,
+  // the student can still translate on demand (handleTranslate).
+  const prefetchTranslation = useCallback(async (msgId: string, text: string) => {
+    if (!text.trim()) return;
+    await new Promise((r) => setTimeout(r, 1200));
+    try {
+      const res = await fetch('/api/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data?.translation) updateMessage(msgId, { translation: data.translation });
+    } catch {
+      /* ignore — translation stays available on demand */
+    }
+  }, [updateMessage]);
 
   const handleStartSession = useCallback(async (level: Level, topic: string) => {
     setIsStarting(true);
@@ -1208,9 +1232,13 @@ export default function ChatInterface() {
       setSession(newSession);
       setMessages([hiddenHello, welcome]);
 
+      // iOS: restore the loudspeaker before the reply plays — using the mic for
+      // voice input can leave the audio session on the quiet earpiece route.
+      if (isAppleMobile()) primeLoudspeaker();
       // Pre-fetch OpenAI audio; autoPlay=true means it also plays when ready
       // (speaking mode). Falls back to browser TTS only if fetch fails.
       preloadAudio(welcome.id, data.message, level, speakerMode);
+      prefetchTranslation(welcome.id, data.message); // make translate instant
     } catch {
       const topicLabel = topic.toLowerCase() === 'general' ? 'all sorts of interesting things' : topic;
       const fallback: Message = {
@@ -1220,11 +1248,12 @@ export default function ChatInterface() {
       setSession(newSession);
       setMessages([{ id: generateId(), role: 'user', content: 'Hello!', hidden: true }, fallback]);
 
+      if (isAppleMobile()) primeLoudspeaker();
       preloadAudio(fallback.id, fallback.content, level, speakerMode);
     } finally {
       setIsStarting(false);
     }
-  }, [speakerMode, preloadAudio]);
+  }, [speakerMode, preloadAudio, primeLoudspeaker, prefetchTranslation]);
 
   // ── Send message ───────────────────────────────────────────────────────────
 
@@ -1276,10 +1305,14 @@ export default function ChatInterface() {
           const botMsg: Message = { id: generateId(), role: 'assistant', content: data.message };
           setMessages(prev => [...prev, botMsg]);
 
+          // iOS: restore the loudspeaker before the reply plays — voice input
+          // can leave the audio session on the quiet earpiece route.
+          if (isAppleMobile()) primeLoudspeaker();
           // Pre-fetch OpenAI audio in background.
           // autoPlay=speakerMode: plays the OpenAI voice once the blob is ready.
           // Falls back to browser TTS only if the TTS fetch fails.
           preloadAudio(botMsg.id, data.message, sessionData.level, speakerMode);
+          prefetchTranslation(botMsg.id, data.message); // make translate instant
           return;
         } catch (err) {
           const fatal = (err as { fatal?: boolean })?.fatal === true;
@@ -1297,7 +1330,7 @@ export default function ChatInterface() {
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading, speakerMode, preloadAudio, writeInput]);
+  }, [isLoading, speakerMode, preloadAudio, writeInput, primeLoudspeaker, prefetchTranslation]);
 
   const handleSend = useCallback(() => {
     if (isTranscribing) return; // wait for an in-flight transcription to finish
