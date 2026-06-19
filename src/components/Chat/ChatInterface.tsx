@@ -128,6 +128,24 @@ const isStandalonePWA = () =>
     window.matchMedia('(display-mode: standalone)').matches) ||
     (navigator as any).standalone === true);
 
+// One translation request to /api/translate. Returns the Georgian text, or null
+// on any failure. Shared by the background pre-translate and the on-tap handler
+// so a quick tap can reuse a single in-flight request.
+async function requestTranslation(text: string): Promise<string | null> {
+  try {
+    const res = await fetch('/api/translate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return typeof data?.translation === 'string' ? data.translation : null;
+  } catch {
+    return null;
+  }
+}
+
 // Splits a reply into sentences so speaking-mode playback can start on the
 // first (short) sentence instead of waiting for the whole reply to synthesize.
 // Very short trailing fragments are glued to the previous sentence so the audio
@@ -291,6 +309,9 @@ export default function ChatInterface() {
   // so abandoned audio requests release their connections instead of crowding
   // out the next /api/chat request (was causing Android "connection issue").
   const ttsAbortRef = useRef<AbortController | null>(null);
+  // Per-message in-flight translation request, so a tap reuses the background
+  // pre-translation instead of starting a second (slower) one.
+  const translationInFlightRef = useRef<Map<string, Promise<string | null>>>(new Map());
 
   // Mount flag for portal (must be client-side)
   useEffect(() => { setMounted(true); }, []);
@@ -1183,25 +1204,17 @@ export default function ChatInterface() {
 
   // ── Session start ──────────────────────────────────────────────────────────
 
-  // Pre-translate each reply in the background so tapping "translate" is instant.
-  // Fires after a short delay so it doesn't compete with the reply's audio
-  // playback on weaker connections. Result is cached on the message; if it fails,
-  // the student can still translate on demand (handleTranslate).
-  const prefetchTranslation = useCallback(async (msgId: string, text: string) => {
-    if (!text.trim()) return;
-    await new Promise((r) => setTimeout(r, 1200));
-    try {
-      const res = await fetch('/api/translate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text }),
-      });
-      if (!res.ok) return;
-      const data = await res.json();
-      if (data?.translation) updateMessage(msgId, { translation: data.translation });
-    } catch {
-      /* ignore — translation stays available on demand */
-    }
+  // Pre-translate each reply in the background, immediately, so the Georgian is
+  // usually ready before the student taps "translate". The in-flight promise is
+  // stored so a tap reuses the SAME request instead of starting a second one.
+  const prefetchTranslation = useCallback((msgId: string, text: string) => {
+    if (!text.trim() || translationInFlightRef.current.has(msgId)) return;
+    const p = requestTranslation(text);
+    translationInFlightRef.current.set(msgId, p);
+    p.then((result) => {
+      translationInFlightRef.current.delete(msgId);
+      if (result) updateMessage(msgId, { translation: result });
+    });
   }, [updateMessage]);
 
   const handleStartSession = useCallback(async (level: Level, topic: string) => {
@@ -1369,22 +1382,17 @@ export default function ChatInterface() {
     const msg = messages.find(m => m.id === msgId);
     if (!msg) return;
     if (msg.showTranslation) { updateMessage(msgId, { showTranslation: false }); return; }
-    if (msg.translation) { updateMessage(msgId, { showTranslation: true }); return; }
+    if (msg.translation) { updateMessage(msgId, { showTranslation: true }); return; } // instant (pre-translated)
 
+    // Not cached yet — show a spinner and reuse the in-flight background
+    // pre-translation if there is one, rather than starting a second request.
     updateMessage(msgId, { isTranslating: true, showTranslation: true });
-    try {
-      const res = await fetch('/api/translate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'API error');
-      updateMessage(msgId, { translation: data.translation, isTranslating: false });
-    } catch (err) {
-      console.error('Translate error:', err);
-      updateMessage(msgId, { translation: 'Translation failed. Please try again.', isTranslating: false });
-    }
+    const inFlight = translationInFlightRef.current.get(msgId);
+    const result = inFlight ? await inFlight : await requestTranslation(text);
+    updateMessage(msgId, {
+      translation: result || 'Translation failed. Please try again.',
+      isTranslating: false,
+    });
   }, [messages, updateMessage]);
 
   // ── Grammar ────────────────────────────────────────────────────────────────
