@@ -1034,20 +1034,26 @@ export default function ChatInterface() {
   // NOT change the route. So we tear it down and build a fresh one, which routes
   // to the loudspeaker again. MUST be called inside a user gesture (e.g. the Send
   // tap) so the new context unlocks for playback.
-  const recreateLoudspeakerContext = useCallback(() => {
+  const recreateLoudspeakerContext = useCallback(async () => {
     try {
       stopSpeaking(); // abort any old playback loops / fetches first
       if (keepAliveRef.current) {
         try { keepAliveRef.current.stop(); } catch { /* noop */ }
         keepAliveRef.current = null;
       }
+      // Fully close the old context BEFORE making a new one so iOS doesn't keep
+      // a stale (earpiece-routed) context around — that accumulation is why the
+      // rebuild only worked for the first message.
       const old = audioCtxRef.current;
-      if (old && old.state !== 'closed') old.close().catch(() => {});
+      audioCtxRef.current = null;
+      if (old && old.state !== 'closed') {
+        try { await old.close(); } catch { /* already closing */ }
+      }
       const Ctx = (window.AudioContext ||
         (window as any).webkitAudioContext) as typeof AudioContext;
       const ctx = new Ctx();
       audioCtxRef.current = ctx;
-      ctx.resume().catch(() => {});
+      try { await ctx.resume(); } catch { /* ignore */ }
       const buf = ctx.createBuffer(1, 1, 22050);
       const src = ctx.createBufferSource();
       src.buffer = buf;
@@ -1176,6 +1182,11 @@ export default function ChatInterface() {
 
   const handleVoiceInput = useCallback(() => {
     if (isTranscribing) return; // busy transcribing the previous clip
+    // iOS: this mic tap is a user gesture and the mic is not engaged yet, so
+    // touch the audio session now to refresh its "unlocked for audio" state.
+    // That fresh activation is what lets the reply-time context rebuild route to
+    // the loudspeaker on EVERY message (not just the first after page load).
+    if (!isRecording && isAppleMobile()) primeLoudspeaker();
     // Live Web Speech (types as you speak) everywhere it works — i.e. in a real
     // browser tab. Only the installed iOS app, where Web Speech is blocked,
     // falls back to record-then-transcribe.
@@ -1209,6 +1220,7 @@ export default function ChatInterface() {
     stopRecording,
     startRecordingIOS,
     stopAndTranscribeIOS,
+    primeLoudspeaker,
   ]);
 
   // ── Speaker mode toggle ────────────────────────────────────────────────────
@@ -1362,7 +1374,7 @@ export default function ChatInterface() {
           if (isAppleMobile()) {
             if (micUsedRef.current) {
               micUsedRef.current = false;
-              recreateLoudspeakerContext();
+              await recreateLoudspeakerContext();
             } else {
               primeLoudspeaker();
             }
