@@ -1039,26 +1039,25 @@ export default function ChatInterface() {
   // NOT change the route. So we tear it down and build a fresh one, which routes
   // to the loudspeaker again. MUST be called inside a user gesture (e.g. the Send
   // tap) so the new context unlocks for playback.
-  const recreateLoudspeakerContext = useCallback(async () => {
+  const recreateLoudspeakerContext = useCallback(() => {
     try {
       stopSpeaking(); // abort any old playback loops / fetches first
       if (keepAliveRef.current) {
         try { keepAliveRef.current.stop(); } catch { /* noop */ }
         keepAliveRef.current = null;
       }
-      // Fully close the old context BEFORE making a new one so iOS doesn't keep
-      // a stale (earpiece-routed) context around — that accumulation is why the
-      // rebuild only worked for the first message.
+      // CRITICAL: never `await` close()/resume() here. On iOS (after getUserMedia)
+      // resume() can stay pending forever, which would hang the caller and stop
+      // the reply from ever playing. Fire them in the background; if the new
+      // context can't wake, playback falls back to <audio> (see playChunked).
       const old = audioCtxRef.current;
       audioCtxRef.current = null;
-      if (old && old.state !== 'closed') {
-        try { await old.close(); } catch { /* already closing */ }
-      }
+      if (old && old.state !== 'closed') old.close().catch(() => {});
       const Ctx = (window.AudioContext ||
         (window as any).webkitAudioContext) as typeof AudioContext;
       const ctx = new Ctx();
       audioCtxRef.current = ctx;
-      try { await ctx.resume(); } catch { /* ignore */ }
+      ctx.resume().catch(() => {});
       const buf = ctx.createBuffer(1, 1, 22050);
       const src = ctx.createBufferSource();
       src.buffer = buf;
@@ -1375,7 +1374,7 @@ export default function ChatInterface() {
           if (isAppleMobile()) {
             if (micUsedRef.current) {
               micUsedRef.current = false;
-              await recreateLoudspeakerContext();
+              recreateLoudspeakerContext();
             } else {
               primeLoudspeaker();
             }
