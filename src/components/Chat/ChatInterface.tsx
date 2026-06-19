@@ -118,16 +118,6 @@ const isAppleMobile = () =>
   (/iP(hone|ad|od)/.test(navigator.userAgent) ||
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
 
-// True when launched as an installed/standalone home-screen app (PWA) rather
-// than a normal browser tab. In a browser, voice uses the live Web Speech API
-// (types as you speak); only the installed iOS app — where Web Speech is
-// blocked — falls back to record-then-transcribe.
-const isStandalonePWA = () =>
-  typeof window !== 'undefined' &&
-  ((typeof window.matchMedia === 'function' &&
-    window.matchMedia('(display-mode: standalone)').matches) ||
-    (navigator as any).standalone === true);
-
 // One translation request to /api/translate. Returns the Georgian text, or null
 // on any failure. Shared by the background pre-translate and the on-tap handler
 // so a quick tap can reuse a single in-flight request.
@@ -1183,15 +1173,13 @@ export default function ChatInterface() {
   const handleVoiceInput = useCallback(() => {
     if (isTranscribing) return; // busy transcribing the previous clip
     // NOTE: do NOT touch audio here on the mic tap — playing anything as the
-    // speech recognizer is starting up can make it capture nothing on iOS. The
-    // audio "touch" that keeps replies loud happens on the Send tap (handleSend),
-    // after the words are already captured, so it can't interfere with recognition.
-    // Live Web Speech (types as you speak) everywhere it works — i.e. in a real
-    // browser tab. Only the installed iOS app, where Web Speech is blocked,
-    // falls back to record-then-transcribe.
+    // recorder starts up can make it capture nothing on iOS. The audio "touch"
+    // that keeps replies loud happens on the Send tap (handleSend).
+    // ALL of iOS uses record-then-transcribe (Whisper): Apple's live Web Speech
+    // recognizer drops words unpredictably on iPhone, so it isn't reliable enough
+    // even in the browser. Android keeps live Web Speech (it works there).
     const useIOSPath =
       isAppleMobile() &&
-      isStandalonePWA() &&
       typeof MediaRecorder !== 'undefined' &&
       !!navigator.mediaDevices?.getUserMedia;
     if (useIOSPath) {
