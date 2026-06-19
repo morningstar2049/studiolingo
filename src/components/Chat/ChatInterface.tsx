@@ -683,10 +683,18 @@ export default function ChatInterface() {
       }
 
       try {
-        if (isIOS && audioCtxRef.current) {
-          if (audioCtxRef.current.state !== 'running') await audioCtxRef.current.resume();
-          if (aborted()) { if (playGenRef.current === gen) setPlayingId(null); return; }
-          const audioBuffer = await audioCtxRef.current.decodeAudioData(buf.slice(0));
+        // Wake the audio context if we have one.
+        if (audioCtxRef.current && audioCtxRef.current.state !== 'running') {
+          try { await audioCtxRef.current.resume(); } catch { /* ignore */ }
+        }
+        if (aborted()) { if (playGenRef.current === gen) setPlayingId(null); return; }
+
+        const ctxRunning =
+          !!audioCtxRef.current && audioCtxRef.current.state === 'running';
+
+        if (isIOS && ctxRunning) {
+          // iOS with a live context: Web Audio (reliable + async-safe).
+          const audioBuffer = await audioCtxRef.current!.decodeAudioData(buf.slice(0));
           if (aborted()) { if (playGenRef.current === gen) setPlayingId(null); return; }
           await new Promise<void>((resolve) => {
             const source = audioCtxRef.current!.createBufferSource();
@@ -700,11 +708,12 @@ export default function ChatInterface() {
             source.start(0);
           });
         } else {
-          if (audioCtxRef.current && audioCtxRef.current.state !== 'running') {
-            try { await audioCtxRef.current.resume(); } catch { /* ignore */ }
-          }
-          if (aborted()) { if (playGenRef.current === gen) setPlayingId(null); return; }
+          // Non-iOS, OR iOS when the (rebuilt) context could not wake up. Play
+          // through a plain <audio> element: it routes to the loudspeaker and
+          // does not depend on the AudioContext, so the reply is never silently
+          // queued. If even that is blocked, fall back to the browser voice.
           const url = URL.createObjectURL(new Blob([buf], { type: 'audio/mpeg' }));
+          let blocked = false;
           await new Promise<void>((resolve) => {
             const audio = new Audio(url);
             audio.volume = 1.0;
@@ -716,8 +725,14 @@ export default function ChatInterface() {
             };
             audio.onended = finish;
             audio.onerror = finish;
-            audio.play().catch(finish);
+            audio.play().catch(() => { blocked = true; finish(); });
           });
+          if (blocked) {
+            if (!isRecordingRef.current && playGenRef.current === gen) {
+              speakWithBrowser(sentences.slice(i).join(' '), msgId, level);
+            }
+            return;
+          }
         }
       } catch {
         currentAudioSourceRef.current = null;
