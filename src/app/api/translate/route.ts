@@ -24,6 +24,35 @@ ABSOLUTE REQUIREMENTS — failure to follow ANY of these makes the output useles
 4. Output ONLY the Georgian translation — no English, no labels, no explanations, no quotation marks.
 5. Grammar and idiom must be natural Georgian — not word-for-word.`;
 
+// Sonnet is much faster than Opus with equivalent quality for translating short
+// chat sentences. Opus stays as an automatic fallback so translation keeps
+// working even if Sonnet isn't enabled on the account.
+const FAST_MODEL = "claude-sonnet-4-6";
+const FALLBACK_MODEL = "claude-opus-4-6";
+// Remembered for the life of the serverless instance: once we learn the fast
+// model isn't available, skip straight to the fallback (no repeated retry cost).
+let fastModelUnavailable = false;
+
+async function translateFast(text: string): Promise<string> {
+  if (!fastModelUnavailable) {
+    try {
+      return await translateToGeorgian(text, FAST_MODEL);
+    } catch (err) {
+      // Only fall back when the model itself is unavailable (404 / not found);
+      // rethrow real errors (rate limits, etc.) so the caller handles them.
+      const status = (err as { status?: number })?.status;
+      const msg = err instanceof Error ? err.message.toLowerCase() : "";
+      if (status === 404 || msg.includes("model")) {
+        console.warn("Fast translate model unavailable, falling back to Opus.");
+        fastModelUnavailable = true;
+      } else {
+        throw err;
+      }
+    }
+  }
+  return await translateToGeorgian(text, FALLBACK_MODEL);
+}
+
 async function translateToGeorgian(
   text: string,
   model: string,
@@ -53,8 +82,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing text" }, { status: 400 });
     }
 
-    // Translate with Opus — the only model confirmed available in this account
-    let translation = await translateToGeorgian(text, "claude-opus-4-6");
+    // Fast model (Sonnet) with an automatic Opus fallback.
+    let translation = await translateFast(text);
 
     // Safety net: if non-Georgian scripts leaked in, retry with a more explicit prompt
     if (hasNonGeorgianScript(translation)) {
