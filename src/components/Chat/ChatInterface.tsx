@@ -1182,11 +1182,10 @@ export default function ChatInterface() {
 
   const handleVoiceInput = useCallback(() => {
     if (isTranscribing) return; // busy transcribing the previous clip
-    // iOS: this mic tap is a user gesture and the mic is not engaged yet, so
-    // touch the audio session now to refresh its "unlocked for audio" state.
-    // That fresh activation is what lets the reply-time context rebuild route to
-    // the loudspeaker on EVERY message (not just the first after page load).
-    if (!isRecording && isAppleMobile()) primeLoudspeaker();
+    // NOTE: do NOT touch audio here on the mic tap — playing anything as the
+    // speech recognizer is starting up can make it capture nothing on iOS. The
+    // audio "touch" that keeps replies loud happens on the Send tap (handleSend),
+    // after the words are already captured, so it can't interfere with recognition.
     // Live Web Speech (types as you speak) everywhere it works — i.e. in a real
     // browser tab. Only the installed iOS app, where Web Speech is blocked,
     // falls back to record-then-transcribe.
@@ -1220,7 +1219,6 @@ export default function ChatInterface() {
     stopRecording,
     startRecordingIOS,
     stopAndTranscribeIOS,
-    primeLoudspeaker,
   ]);
 
   // ── Speaker mode toggle ────────────────────────────────────────────────────
@@ -1406,6 +1404,12 @@ export default function ChatInterface() {
   const handleSend = useCallback(() => {
     if (isTranscribing) return; // wait for an in-flight transcription to finish
 
+    // iOS: refresh the audio activation in THIS Send gesture (the words are
+    // already captured by now, so this can't disturb recognition). It's what
+    // lets the reply-time context rebuild route to the loudspeaker on every
+    // message. micUsedRef is left set so sendMessage still does the rebuild.
+    if (isAppleMobile() && micUsedRef.current) primeLoudspeaker();
+
     // iOS: tapping Send while recording stops the recorder, transcribes, and
     // sends in one action — no need to tap the mic a second time to stop first.
     if (iosRecordActiveRef.current) {
@@ -1432,6 +1436,7 @@ export default function ChatInterface() {
     stopRecording,
     isTranscribing,
     stopAndTranscribeIOS,
+    primeLoudspeaker,
   ]);
 
   // ── Translation ────────────────────────────────────────────────────────────
