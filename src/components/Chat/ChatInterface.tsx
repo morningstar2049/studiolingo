@@ -312,6 +312,9 @@ export default function ChatInterface() {
   // Per-message in-flight translation request, so a tap reuses the background
   // pre-translation instead of starting a second (slower) one.
   const translationInFlightRef = useRef<Map<string, Promise<string | null>>>(new Map());
+  // True once the mic has been used since the last reply, so iOS can rebuild its
+  // audio context (the mic leaves it stuck on the quiet earpiece route).
+  const micUsedRef = useRef(false);
 
   // Mount flag for portal (must be client-side)
   useEffect(() => { setMounted(true); }, []);
@@ -834,6 +837,7 @@ export default function ChatInterface() {
       alert('Voice input is not supported in your browser. Please use Chrome or Safari.');
       return;
     }
+    micUsedRef.current = true; // mic used → iOS audio context needs rebuilding
 
     // v8: Stop any TTS playback immediately so the mic doesn't pick it up.
     // This is the primary fix for "empty recording right after AI message" — the
@@ -1025,11 +1029,43 @@ export default function ChatInterface() {
     }
   }, []);
 
+  // The reliable iOS fix: once the mic is used, the AudioContext gets stuck on
+  // the quiet earpiece route for its whole life — replaying a tick on it does
+  // NOT change the route. So we tear it down and build a fresh one, which routes
+  // to the loudspeaker again. MUST be called inside a user gesture (e.g. the Send
+  // tap) so the new context unlocks for playback.
+  const recreateLoudspeakerContext = useCallback(() => {
+    try {
+      stopSpeaking(); // abort any old playback loops / fetches first
+      if (keepAliveRef.current) {
+        try { keepAliveRef.current.stop(); } catch { /* noop */ }
+        keepAliveRef.current = null;
+      }
+      const old = audioCtxRef.current;
+      if (old && old.state !== 'closed') old.close().catch(() => {});
+      const Ctx = (window.AudioContext ||
+        (window as any).webkitAudioContext) as typeof AudioContext;
+      const ctx = new Ctx();
+      audioCtxRef.current = ctx;
+      ctx.resume().catch(() => {});
+      const buf = ctx.createBuffer(1, 1, 22050);
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.connect(ctx.destination);
+      src.start(0);
+      keepAliveRef.current = startSilentKeepAlive(ctx);
+      iosAudioUnlockedRef.current = true;
+    } catch {
+      /* ignore */
+    }
+  }, [stopSpeaking]);
+
   // ── iOS voice input: record + server transcription (Whisper) ────────────────
   // The Web Speech API does not work reliably inside iOS standalone PWAs, so on
   // iPhone/iPad we record a short clip with MediaRecorder and transcribe it via
   // /api/transcribe. Non-iOS platforms keep the live Web Speech path unchanged.
   const startRecordingIOS = useCallback(async () => {
+    micUsedRef.current = true; // mic used → iOS audio context needs rebuilding
     stopSpeaking(); // don't let TTS playback leak into the mic
     // Stop the silent keep-alive so the mic isn't forced into "play & record"
     // mode; primeLoudspeaker() restarts it once recording ends.
@@ -1348,6 +1384,14 @@ export default function ChatInterface() {
   const handleSend = useCallback(() => {
     if (isTranscribing) return; // wait for an in-flight transcription to finish
 
+    // iOS: if the mic was used, the audio context is stuck on the quiet earpiece
+    // route. Rebuild it here — inside this Send gesture, which is what lets the
+    // new context unlock — so the upcoming reply plays through the loudspeaker.
+    if (isAppleMobile() && micUsedRef.current) {
+      micUsedRef.current = false;
+      recreateLoudspeakerContext();
+    }
+
     // iOS: tapping Send while recording stops the recorder, transcribes, and
     // sends in one action — no need to tap the mic a second time to stop first.
     if (iosRecordActiveRef.current) {
@@ -1374,6 +1418,7 @@ export default function ChatInterface() {
     stopRecording,
     isTranscribing,
     stopAndTranscribeIOS,
+    recreateLoudspeakerContext,
   ]);
 
   // ── Translation ────────────────────────────────────────────────────────────
