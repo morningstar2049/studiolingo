@@ -57,7 +57,7 @@ function Footer() {
               target="_blank"
               rel="noreferrer"
             >
-              <p className="text-[#fff]">ბ. კვერნაძის 13</p>
+              <p className="text-[#fff]">წერეთლის 116</p>
             </a>
           </div>
         </div>
