@@ -9,6 +9,9 @@ const image = "https://i.ibb.co/f8s59ww/page-Thumbnail.png";
 export const metadata: Metadata = {
   title,
   description,
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title,
     description,

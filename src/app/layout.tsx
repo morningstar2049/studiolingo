@@ -8,8 +8,10 @@ import MobileNavMenu from "@/components/MobileNavMenu";
 import { Analytics } from "@vercel/analytics/react";
 import { ClerkProvider } from "@clerk/nextjs";
 import { localization } from "./localization";
+import { SITE_URL, siteSchemas } from "@/lib/schema";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Studio Lingo - ინგლისური ენის კურსები",
   description: "ინგლისური ენის კურსები. ისწავლეთ ინგლისური სტუდიო ლინგოში!",
   icons: {
@@ -51,8 +53,12 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider localization={localization}>
-      <html lang="en" className={`${firago.variable} font-sans scroll-smooth`}>
+      <html lang="ka" className={`${firago.variable} font-sans scroll-smooth`}>
         <body>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(siteSchemas) }}
+          />
           {/* <Analytics /> */}
           <MobileMenuContextProvider>
             <div className="sticky top-[-2px] z-10">
