@@ -17,6 +17,9 @@
     "@mui/icons-material": "^5.14.3",
     "@mui/joy": "^5.0.0-beta.4",
     "@mui/material": "^5.14.5",
+    "@portabletext/react": "^6.2.0",
+    "@sanity/image-url": "^2.1.1",
+    "@sanity/vision": "^4.22.0",
     "@types/node": "20.4.6",
     "@types/react": "18.2.18",
     "@types/react-dom": "18.2.7",
@@ -27,14 +30,19 @@
     "eslint-config-next": "13.4.12",
     "framer-motion": "^11.5.4",
     "next": "15.5.9",
+    "next-sanity": "^11.6.13",
     "postcss": "8.4.27",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-hook-form": "^7.46.1",
     "react-icons": "^4.10.1",
     "react-slick": "^0.29.0",
+    "sanity": "^4.22.0",
     "slick-carousel": "^1.8.1",
-    "tailwindcss": "3.3.3",
-    "typescript": "5.1.6"
+    "styled-components": "^6.5.1",
+    "tailwindcss": "3.3.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
   }
 }

@@ -26,6 +26,7 @@ function Navbar() {
       name: "ჩვენი გუნდი",
       href: "#team",
     },
+    { name: "ბლოგი", href: "/blog" },
     { name: "კარიერა", href: "/career" },
     { name: "მასალები", href: "/materials" },
     { name: "ენის ტესტი", href: "/language-test" },
@@ -33,7 +34,11 @@ function Navbar() {
     { name: "კურსის შეძენა", href: "/buy-course" },
   ];
 
-  if (pathname !== "/") return null;
+  // Bare anchors only resolve on the homepage, so prefix them with "/" when the
+  // nav renders on any other page.
+  const isHome = pathname === "/";
+  const resolveHref = (href?: HRef) =>
+    href && href.startsWith("#") && !isHome ? (`/${href}` as HRef) : href;
 
   return (
     <>
@@ -46,8 +51,11 @@ function Navbar() {
             <NavItem
               key={item.name}
               name={item.name}
-              href={item.href}
-              menuItems={item.menuItems}
+              href={resolveHref(item.href)}
+              menuItems={item.menuItems?.map((menuItem) => ({
+                ...menuItem,
+                href: resolveHref(menuItem.href),
+              }))}
             />
           ))}
         </div>
