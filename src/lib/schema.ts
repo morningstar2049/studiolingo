@@ -2,7 +2,9 @@
 // Every value here must reflect reality — Google penalises structured data
 // that disagrees with what is on the page.
 
-export const SITE_URL = "https://studiolingo.ge";
+// The apex domain 308-redirects to www, so www is the canonical host. Canonical
+// tags, sitemap entries and JSON-LD ids must all use it.
+export const SITE_URL = "https://www.studiolingo.ge";
 export const SITE_NAME = "Studio Lingo";
 
 const OG_IMAGE = "https://i.ibb.co/f8s59ww/page-Thumbnail.png";
