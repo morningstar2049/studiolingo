@@ -16,9 +16,9 @@ export default function CoursesAccordion() {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <h1 className="text-[#fff] rounded-md bg-lingo-green p-2 font-bold w-[205px] text-center">
+          <h2 className="text-[#fff] rounded-md bg-lingo-green p-2 font-bold w-[205px] text-center">
             ინგლისურის კურსები
-          </h1>
+          </h2>
         </AccordionSummary>
         <AccordionDetails>
           <CourseDetails courseTitle="english" />
@@ -44,9 +44,9 @@ export default function CoursesAccordion() {
           aria-controls="panel3a-content"
           id="panel3a-header"
         >
-          <h1 className="text-[#fff] rounded-md bg-lingo-green p-2 font-bold w-[205px] text-center">
+          <h2 className="text-[#fff] rounded-md bg-lingo-green p-2 font-bold w-[205px] text-center">
             ინგლისური მოზარდებისთვის
-          </h1>
+          </h2>
         </AccordionSummary>
         <AccordionDetails>
           <CourseDetails courseTitle="englishForTeens" />

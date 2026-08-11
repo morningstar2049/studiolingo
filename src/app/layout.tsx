@@ -6,7 +6,6 @@ import Navbar from "@/components/Navbar";
 import { MobileMenuContextProvider } from "@/Context/MobileMenuContext";
 import MobileNavMenu from "@/components/MobileNavMenu";
 import { Analytics } from "@vercel/analytics/react";
-import Head from "next/head";
 import { ClerkProvider } from "@clerk/nextjs";
 import { localization } from "./localization";
 
@@ -16,13 +15,6 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.png",
   },
-  keywords: [
-    "ინგლისურის კურსები",
-    "ინგლისური",
-    "ონლაინ ინგლისურის კურსები",
-    "english classes",
-    "შეაბიჯე ახალ სამყაროში",
-  ],
   openGraph: {
     title: "სტუდიო ლინგო - ინგლისური ენების სკოლა",
     description: "ისწავლეთ ინგლისური სტუდიო ლინგოში!",
@@ -59,13 +51,6 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider localization={localization}>
-      <Head>
-        <meta
-          name="description"
-          content="ინგლისური ენის კურსები ონლაინ. ისწავლეთ ინგლისური სტუდიო ლინგოში!"
-          key="desc"
-        />
-      </Head>
       <html lang="en" className={`${firago.variable} font-sans scroll-smooth`}>
         <body>
           {/* <Analytics /> */}
