@@ -1,10 +1,8 @@
-import Header from "@/components/Header";
 import "./globals.css";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import Navbar from "@/components/Navbar";
+import SiteChrome from "@/components/SiteChrome";
 import { MobileMenuContextProvider } from "@/Context/MobileMenuContext";
-import MobileNavMenu from "@/components/MobileNavMenu";
 import { Analytics } from "@vercel/analytics/react";
 import { ClerkProvider } from "@clerk/nextjs";
 import { localization } from "./localization";
@@ -61,11 +59,7 @@ export default function RootLayout({
           />
           {/* <Analytics /> */}
           <MobileMenuContextProvider>
-            <div className="sticky top-[-2px] z-10">
-              <Header />
-              <Navbar />
-            </div>
-            <MobileNavMenu />
+            <SiteChrome />
             {children}
           </MobileMenuContextProvider>
         </body>
