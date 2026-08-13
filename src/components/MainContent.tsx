@@ -3,7 +3,6 @@ import Corporate from "./Corporate/Corporate";
 import Courses from "./Courses/Courses";
 import MainBanner from "./MainBanner";
 import Reviews from "./Reviews/Reviews";
-import Team from "./Team/Team";
 
 function MainContent() {
   return (
@@ -13,7 +12,6 @@ function MainContent() {
       </div>
       <Courses />
       <Corporate />
-      <Team />
       <Reviews />
       <Contact />
     </div>

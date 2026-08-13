@@ -22,10 +22,7 @@ function Navbar() {
         { name: "შეფასებები", href: "#reviews" },
       ],
     },
-    {
-      name: "ჩვენი გუნდი",
-      href: "#team",
-    },
+    { name: "ჩვენი გუნდი", href: "/team" },
     { name: "ბლოგი", href: "/blog" },
     { name: "კარიერა", href: "/career" },
     { name: "მასალები", href: "/materials" },
