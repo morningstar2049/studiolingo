@@ -71,6 +71,13 @@ const components: PortableTextComponents = {
     ),
   },
   marks: {
+    green: ({ children }) => (
+      <span style={{ color: "#2f9e4d" }}>{children}</span>
+    ),
+    navy: ({ children }) => (
+      <span style={{ color: "#293142" }}>{children}</span>
+    ),
+    red: ({ children }) => <span style={{ color: "#e24b4a" }}>{children}</span>,
     link: ({ children, value }) => (
       <a
         href={value?.href}

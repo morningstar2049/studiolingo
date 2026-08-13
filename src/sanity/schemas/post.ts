@@ -1,4 +1,15 @@
 import { defineField, defineType } from "sanity";
+import React from "react";
+
+// Toolbar swatch shown in the editor for each preset text colour.
+const swatchIcon = (hex: string) =>
+  function ColorSwatch() {
+    return React.createElement(
+      "span",
+      { style: { color: hex, fontWeight: 700, fontSize: "1.05em" } },
+      "A"
+    );
+  };
 
 // Field titles are in Georgian because the Studio is used by the school's
 // own team, not by developers.
@@ -65,6 +76,28 @@ export const post = defineType({
             { title: "სათაური 3", value: "h3" },
             { title: "ციტატა", value: "blockquote" },
           ],
+          marks: {
+            decorators: [
+              { title: "Bold", value: "strong" },
+              { title: "Italic", value: "em" },
+              { title: "Underline", value: "underline" },
+              { title: "მწვანე", value: "green", icon: swatchIcon("#2f9e4d") },
+              {
+                title: "მუქი ლურჯი",
+                value: "navy",
+                icon: swatchIcon("#293142"),
+              },
+              { title: "წითელი", value: "red", icon: swatchIcon("#e24b4a") },
+            ],
+            annotations: [
+              {
+                name: "link",
+                type: "object",
+                title: "ბმული",
+                fields: [{ name: "href", type: "url", title: "URL" }],
+              },
+            ],
+          },
         },
         { type: "image", options: { hotspot: true } },
       ],
