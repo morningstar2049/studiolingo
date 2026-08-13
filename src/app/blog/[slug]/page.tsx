@@ -3,10 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
+import { AiOutlineArrowRight } from "react-icons/ai";
 
 import { SITE_URL } from "@/lib/schema";
 import { urlForImage } from "@/sanity/client";
 import { getPost, getPostSlugs } from "@/sanity/queries";
+import ArticleShare from "@/components/blog/ArticleShare";
 
 export const revalidate = 60;
 
@@ -162,6 +164,21 @@ export default async function BlogPostPage({ params }: Props) {
       <article>
         <PortableText value={post.body} components={components} />
       </article>
+
+      <div className="pt-8 mt-12 border-t border-gray-200">
+        <Link
+          href="/#courses"
+          className="flex items-center justify-center gap-2 px-6 py-4 mb-8 font-bold text-center text-[#fff] transition-opacity bg-lingo-green rounded-xl hover:opacity-90"
+        >
+          გაეცანი სტუდიო ლინგოს კურსებს
+          <AiOutlineArrowRight className="shrink-0" />
+        </Link>
+
+        <ArticleShare
+          url={`${SITE_URL}/blog/${post.slug}`}
+          title={post.title}
+        />
+      </div>
     </main>
   );
 }
