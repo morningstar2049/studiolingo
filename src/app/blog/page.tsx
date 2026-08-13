@@ -36,7 +36,7 @@ export default async function BlogPage() {
         style={{ fontFeatureSettings: "'case' on" }}
         className="mb-3 text-3xl font-bold text-center sm:text-4xl text-lingo-green"
       >
-        ბლოგი
+        ლინგო ბლოგი
       </h1>
       <p className="max-w-2xl mx-auto mb-12 text-center text-lingo-black">
         რჩევები და სტატიები ინგლისურის სწავლის შესახებ.
