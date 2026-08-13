@@ -144,7 +144,7 @@ export default async function BlogPostPage({ params }: Props) {
       >
         {post.title}
       </h1>
-      <time className="block mb-8 text-sm text-gray-500" dateTime={post.publishedAt}>
+      <time className="block mb-8 text-sm text-[#6b7280]" dateTime={post.publishedAt}>
         {formatDate(post.publishedAt)}
       </time>
 
@@ -165,7 +165,7 @@ export default async function BlogPostPage({ params }: Props) {
         <PortableText value={post.body} components={components} />
       </article>
 
-      <div className="pt-8 mt-12 border-t border-gray-200">
+      <div className="pt-8 mt-12 border-t border-[#e5e7eb]">
         <Link
           href="/#courses"
           className="flex items-center justify-center gap-2 px-6 py-4 mb-8 font-bold text-center text-[#fff] transition-opacity bg-lingo-green rounded-xl hover:opacity-90"

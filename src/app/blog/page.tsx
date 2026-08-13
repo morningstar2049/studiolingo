@@ -40,7 +40,7 @@ export default async function BlogPage() {
         >
           ლინგო ბლოგი
         </h1>
-        <p className="mt-3 text-lg text-gray-500">
+        <p className="mt-3 text-lg text-[#6b7280]">
           რჩევები და სტატიები ინგლისურის სწავლის შესახებ.
         </p>
       </div>
@@ -55,7 +55,7 @@ export default async function BlogPage() {
             <Link
               key={post._id}
               href={`/blog/${post.slug}`}
-              className="flex flex-col overflow-hidden bg-white group rounded-xl transition-all duration-300 shadow-[0_10px_24px_-8px_rgba(41,49,66,0.22)] hover:shadow-[0_22px_40px_-12px_rgba(41,49,66,0.30)] hover:-translate-y-[3px]"
+              className="flex flex-col overflow-hidden bg-[#fff] group rounded-xl transition-all duration-300 shadow-[0_10px_24px_-8px_rgba(41,49,66,0.22)] hover:shadow-[0_22px_40px_-12px_rgba(41,49,66,0.30)] hover:-translate-y-[3px]"
             >
               {post.coverImage?.asset && (
                 <div className="relative w-full h-48">
@@ -69,13 +69,13 @@ export default async function BlogPage() {
                 </div>
               )}
               <div className="flex flex-col flex-1 gap-2 p-5">
-                <time className="text-sm text-gray-500" dateTime={post.publishedAt}>
+                <time className="text-sm text-[#6b7280]" dateTime={post.publishedAt}>
                   {formatDate(post.publishedAt)}
                 </time>
                 <h2 className="text-lg font-bold text-lingo-black">
                   {post.title}
                 </h2>
-                <p className="text-sm text-gray-600">{post.excerpt}</p>
+                <p className="text-sm text-[#4b5563]">{post.excerpt}</p>
                 <span className="inline-flex items-center gap-1.5 pt-3 mt-auto text-sm font-bold text-lingo-green">
                   ვრცლად
                   <AiOutlineArrowRight className="transition-transform group-hover:translate-x-1" />
