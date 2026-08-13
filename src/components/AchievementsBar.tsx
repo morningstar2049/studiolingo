@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FaUserGraduate, FaUsers, FaGoogle } from "react-icons/fa";
+import { FaUserGraduate, FaGoogle } from "react-icons/fa";
+import { HiUsers } from "react-icons/hi";
 import type { IconType } from "react-icons";
 
 type Stat = {
   icon: IconType;
+  iconClass: string;
   value: number;
   decimals: number;
   group: boolean;
@@ -16,6 +18,7 @@ type Stat = {
 const stats: Stat[] = [
   {
     icon: FaUserGraduate,
+    iconClass: "text-lg sm:text-4xl",
     value: 3000,
     decimals: 0,
     group: false,
@@ -23,7 +26,8 @@ const stats: Stat[] = [
     label: "მოსწავლე",
   },
   {
-    icon: FaUsers,
+    icon: HiUsers,
+    iconClass: "text-2xl sm:text-5xl",
     value: 300000,
     decimals: 0,
     group: true,
@@ -32,6 +36,7 @@ const stats: Stat[] = [
   },
   {
     icon: FaGoogle,
+    iconClass: "text-lg sm:text-4xl",
     value: 5,
     decimals: 1,
     group: false,
@@ -90,15 +95,18 @@ function Counter({
 
 export default function AchievementsBar() {
   return (
-    <div className="flex items-stretch px-2 py-4 mt-8 border shadow-lg sm:mt-0 rounded-2xl sm:rounded-3xl bg-[#ffffff14] backdrop-blur-md border-[#ffffff33] sm:px-8 sm:py-8">
-      {stats.map(({ icon: Icon, value, decimals, group, suffix, label }, i) => (
-        <div
-          key={label}
-          className={`flex flex-col items-center justify-center px-4 sm:px-14 ${
-            i > 0 ? "border-l border-[#ffffff26]" : ""
-          }`}
-        >
-          <Icon className="mb-2 text-lg sm:text-4xl sm:mb-3 text-lingo-green" />
+    <div className="grid grid-cols-3 px-1 py-4 mt-8 border shadow-lg sm:mt-0 rounded-2xl sm:rounded-3xl bg-[#ffffff14] backdrop-blur-md border-[#ffffff33] sm:px-6 sm:py-8">
+      {stats.map(
+        ({ icon: Icon, iconClass, value, decimals, group, suffix, label }, i) => (
+          <div
+            key={label}
+            className={`flex flex-col items-center justify-center ${
+              i === 1 ? "px-4 sm:px-16" : "px-2 sm:px-12"
+            } ${i > 0 ? "border-l border-[#ffffff26]" : ""}`}
+          >
+            <span className="flex items-center justify-center h-8 mb-2 sm:h-14 sm:mb-3">
+              <Icon className={`text-lingo-green ${iconClass}`} />
+            </span>
           <Counter
             value={value}
             decimals={decimals}
