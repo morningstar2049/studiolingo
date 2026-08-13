@@ -32,15 +32,17 @@ export default async function BlogPage() {
 
   return (
     <main className="max-w-5xl px-5 pt-10 pb-20 mx-auto">
-      <h1
-        style={{ fontFeatureSettings: "'case' on" }}
-        className="mb-3 text-3xl font-bold text-center sm:text-4xl text-lingo-green"
-      >
-        ლინგო ბლოგი
-      </h1>
-      <p className="max-w-2xl mx-auto mb-12 text-center text-lingo-black">
-        რჩევები და სტატიები ინგლისურის სწავლის შესახებ.
-      </p>
+      <div className="mb-12 border-l-[5px] border-lingo-green pl-5">
+        <h1
+          style={{ fontFeatureSettings: "'case' on" }}
+          className="text-3xl font-bold sm:text-4xl text-lingo-black"
+        >
+          ლინგო ბლოგი
+        </h1>
+        <p className="mt-3 text-lg text-gray-500">
+          რჩევები და სტატიები ინგლისურის სწავლის შესახებ.
+        </p>
+      </div>
 
       {posts.length === 0 ? (
         <p className="text-center text-lingo-black">
