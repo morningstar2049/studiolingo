@@ -183,7 +183,7 @@ function Page() {
     <div className="flex items-center justify-center min-h-[90vh] bg-gray-50 py-8 px-4">
       <div className="w-full max-w-md bg-white rounded-xl shadow-2xl p-6 sm:p-8 flex flex-col gap-6">
         <h2 className="text-2xl font-semibold opacity-90 text-center text-lingo-black mb-2">
-          კურსის შეძენა
+          განვადება
         </h2>
         <Stack spacing={3}>
           <TextField

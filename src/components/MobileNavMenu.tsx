@@ -28,7 +28,7 @@ export default function MobileNavMenu() {
     { name: "მასალები", href: "/materials" },
     { name: "ენის ტესტი", href: "/language-test" },
     { name: "კონტაქტი", href: "/#contact" },
-    { name: "კურსის შეძენა", href: "/buy-course" },
+    { name: "განვადება", href: "/buy-course" },
   ];
 
   return (

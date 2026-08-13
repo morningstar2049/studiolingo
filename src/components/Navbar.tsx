@@ -31,7 +31,7 @@ function Navbar() {
     { name: "მასალები", href: "/materials" },
     { name: "ენის ტესტი", href: "/language-test" },
     { name: "კონტაქტი", href: "#contact" },
-    { name: "კურსის შეძენა", href: "/buy-course" },
+    { name: "განვადება", href: "/buy-course" },
   ];
 
   // Bare anchors only resolve on the homepage, so prefix them with "/" when the
