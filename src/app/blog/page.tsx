@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { AiOutlineArrowRight } from "react-icons/ai";
 
 import { urlForImage } from "@/sanity/client";
 import { getPosts } from "@/sanity/queries";
@@ -54,7 +55,7 @@ export default async function BlogPage() {
             <Link
               key={post._id}
               href={`/blog/${post.slug}`}
-              className="flex flex-col overflow-hidden transition-shadow bg-white border rounded-xl hover:shadow-lg"
+              className="flex flex-col overflow-hidden transition-shadow bg-white border group rounded-xl hover:shadow-lg"
             >
               {post.coverImage?.asset && (
                 <div className="relative w-full h-48">
@@ -75,6 +76,10 @@ export default async function BlogPage() {
                   {post.title}
                 </h2>
                 <p className="text-sm text-gray-600">{post.excerpt}</p>
+                <span className="inline-flex items-center gap-1.5 pt-3 mt-auto text-sm font-bold text-lingo-green">
+                  ვრცლად
+                  <AiOutlineArrowRight className="transition-transform group-hover:translate-x-1" />
+                </span>
               </div>
             </Link>
           ))}
