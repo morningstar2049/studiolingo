@@ -55,7 +55,7 @@ export default async function BlogPage() {
             <Link
               key={post._id}
               href={`/blog/${post.slug}`}
-              className="flex flex-col overflow-hidden transition-shadow bg-white border group rounded-xl hover:shadow-lg"
+              className="flex flex-col overflow-hidden bg-white group rounded-xl transition-all duration-300 shadow-[0_10px_24px_-8px_rgba(41,49,66,0.22)] hover:shadow-[0_22px_40px_-12px_rgba(41,49,66,0.30)] hover:-translate-y-[3px]"
             >
               {post.coverImage?.asset && (
                 <div className="relative w-full h-48">
