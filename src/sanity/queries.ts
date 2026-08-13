@@ -2,6 +2,21 @@ import type { PortableTextBlock } from "sanity";
 
 import { client } from "./client";
 
+export type Review = {
+  _id: string;
+  author: string;
+  rating: number;
+  text: string;
+};
+
+export async function getReviews(): Promise<Review[]> {
+  return client.fetch(
+    `*[_type == "review"] | order(order asc, _createdAt asc) { _id, author, rating, text }`,
+    {},
+    { next: { revalidate: 60 } }
+  );
+}
+
 export type PostListItem = {
   _id: string;
   title: string;
