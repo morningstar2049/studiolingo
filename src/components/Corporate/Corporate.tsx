@@ -6,7 +6,7 @@ function Corporate() {
   return (
     <div
       id="corporate"
-      className="flex flex-col mt-4 mb-8 gap-16 sm:gap-24 scroll-m-40"
+      className="flex flex-col mt-4 mb-8 gap-16 sm:gap-24 scroll-m-[85px] sm:scroll-m-40"
     >
       <PartnersBanner />
       <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 flex flex-col items-center gap-8 sm:flex-row sm:items-stretch sm:gap-10">
