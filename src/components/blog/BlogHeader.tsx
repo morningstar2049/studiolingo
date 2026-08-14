@@ -44,7 +44,7 @@ export default function BlogHeader() {
             visible ? "blog-rise-2" : "opacity-0"
           }`}
         >
-          რჩევები და სტატიები ინგლისურის სწავლის შესახებ.
+          რჩევები და სტატიები ინგლისურის სწავლის შესახებ
         </p>
       </div>
     </div>
