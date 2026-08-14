@@ -6,18 +6,17 @@ function Corporate() {
   return (
     <div
       id="corporate"
-      className="flex flex-col my-20 gap-5 sm:gap-[100px] scroll-m-40"
+      className="flex flex-col mt-4 mb-8 gap-16 sm:gap-24 scroll-m-40"
     >
       <PartnersBanner />
-      <div className="block sm:flex sm:justify-evenly sm:p-5">
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 flex flex-col items-center gap-8 sm:flex-row sm:items-stretch sm:gap-10">
         <CorporateCoursesAccordion />
-        <div className="hidden sm:block relative h-[500px] w-[720px]">
+        <div className="hidden sm:block relative flex-1 self-stretch min-h-[420px] overflow-hidden rounded-[22px] shadow-[0_24px_54px_-22px_rgba(41,49,66,0.28)]">
           <Image
             src="/corporate-pic.png"
-            alt="corporate"
-            fill={true}
-            objectFit="cover"
-            className="rounded-3xl"
+            alt="კორპორაციული ტრენინგი"
+            fill
+            className="object-cover"
           />
         </div>
       </div>
