@@ -5,6 +5,7 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 
 import { urlForImage } from "@/sanity/client";
 import { getPosts } from "@/sanity/queries";
+import BlogHeader from "@/components/blog/BlogHeader";
 
 const title = "ბლოგი — ინგლისურის სწავლის რჩევები | Studio Lingo";
 const description =
@@ -33,17 +34,7 @@ export default async function BlogPage() {
 
   return (
     <main className="max-w-5xl px-5 pt-10 pb-20 mx-auto">
-      <div className="mb-12 border-l-[5px] border-lingo-green pl-5">
-        <h1
-          style={{ fontFeatureSettings: "'case' on" }}
-          className="text-3xl font-bold sm:text-4xl text-lingo-black"
-        >
-          ლინგო ბლოგი
-        </h1>
-        <p className="mt-3 text-lg text-[#6b7280]">
-          რჩევები და სტატიები ინგლისურის სწავლის შესახებ.
-        </p>
-      </div>
+      <BlogHeader />
 
       {posts.length === 0 ? (
         <p className="text-center text-lingo-black">
