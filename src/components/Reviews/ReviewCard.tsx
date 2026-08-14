@@ -22,7 +22,9 @@ function Stars({ rating }: { rating: number }) {
 export default function ReviewCard({ review }: { review: ReviewItem }) {
   const [expanded, setExpanded] = useState(false);
   const [clampable, setClampable] = useState(false);
+  const [visible, setVisible] = useState(false);
   const textRef = useRef<HTMLParagraphElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const measure = useCallback(() => {
     const el = textRef.current;
@@ -37,8 +39,30 @@ export default function ReviewCard({ review }: { review: ReviewItem }) {
     return () => window.removeEventListener("resize", measure);
   }, [measure]);
 
+  // Slow reveal that re-runs every time the card scrolls into view (up or
+  // down), matching the blog header / CoursesIntro behaviour.
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => setVisible(entry.isIntersecting),
+      { threshold: 0.15, rootMargin: "0px 0px -60px 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="flex flex-col min-h-[16rem] bg-[#fff] rounded-xl p-6 shadow-[0_10px_24px_-8px_rgba(41,49,66,0.18)]">
+    <div
+      ref={cardRef}
+      className={`flex flex-col min-h-[16rem] bg-[#fff] rounded-xl p-6 shadow-[0_10px_24px_-8px_rgba(41,49,66,0.18)] ${
+        visible ? "review-rise" : "opacity-0"
+      }`}
+    >
       <div className="flex items-center gap-3 mb-3">
         <div className="flex items-center justify-center w-11 h-11 text-lg font-bold rounded-full bg-lingo-green text-[#fff] shrink-0">
           {review.author.trim().charAt(0)}
