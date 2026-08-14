@@ -1,5 +1,6 @@
 import Image from "next/image";
 import AchievementsBar from "./AchievementsBar";
+import BannerHeadline from "./BannerHeadline";
 import Overlay from "./Overlay";
 
 function MainBanner() {
@@ -22,10 +23,7 @@ function MainBanner() {
       <Overlay />
 
       <div className="absolute inset-0 z-10 flex flex-col items-center px-4 text-center pt-[17%] pb-[9%] sm:pt-[9%] sm:pb-[2%] sm:justify-between">
-        <h1 className="text-[#fff] font-bold text-lg sm:text-4xl tracking-[2px] max-w-4xl">
-          ინგლისურის კურსები თბილისში და ონლაინ — ზრდასრულებისა და
-          მოზარდებისთვის
-        </h1>
+        <BannerHeadline />
 
         <AchievementsBar />
       </div>

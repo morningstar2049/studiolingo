@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaUserGraduate, FaGoogle } from "react-icons/fa";
 import { HiUsers } from "react-icons/hi";
 import type { IconType } from "react-icons";
@@ -59,15 +59,20 @@ function Counter({
   decimals,
   group,
   suffix,
-}: Pick<Stat, "value" | "decimals" | "group" | "suffix">) {
+  inView,
+}: Pick<Stat, "value" | "decimals" | "group" | "suffix"> & {
+  inView: boolean;
+}) {
   // Initial state is the final value so SSR renders real numbers (good for SEO
-  // and no-JS); the animation from 0 kicks in on mount.
+  // and no-JS); the count-up runs whenever the bar scrolls into view.
   const [display, setDisplay] = useState(value);
 
   useEffect(() => {
-    if (
-      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
-    ) {
+    if (!inView) {
+      setDisplay(0);
+      return;
+    }
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
       setDisplay(value);
       return;
     }
@@ -83,7 +88,7 @@ function Counter({
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [value]);
+  }, [value, inView]);
 
   return (
     <span className="text-2xl font-bold leading-none sm:text-6xl text-[#fff] tabular-nums whitespace-nowrap">
@@ -94,8 +99,29 @@ function Counter({
 }
 
 export default function AchievementsBar() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setInView(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0.2 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="grid grid-cols-3 px-1 py-4 mt-8 border shadow-lg sm:mt-0 rounded-2xl sm:rounded-3xl bg-[#ffffff14] backdrop-blur-md border-[#ffffff33] sm:px-6 sm:py-8">
+    <div
+      ref={ref}
+      className="grid grid-cols-3 px-1 py-4 mt-8 border shadow-lg sm:mt-0 rounded-2xl sm:rounded-3xl bg-[#ffffff14] backdrop-blur-md border-[#ffffff33] sm:px-6 sm:py-8"
+    >
       {stats.map(
         ({ icon: Icon, iconClass, value, decimals, group, suffix, label }, i) => (
           <div
@@ -112,6 +138,7 @@ export default function AchievementsBar() {
             decimals={decimals}
             group={group}
             suffix={suffix}
+            inView={inView}
           />
           <span className="mt-1.5 sm:mt-2.5 text-[11px] sm:text-lg text-[#ffffffcc] whitespace-nowrap">
             {label}

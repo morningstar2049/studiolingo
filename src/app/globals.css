@@ -104,13 +104,44 @@
 .cli-spark {
   animation: cli-spark 1.7s ease-in-out infinite;
 }
+
+/* Course header icon glow */
+@keyframes course-glow {
+  0%,
+  100% {
+    box-shadow: 0 8px 18px -6px rgba(47, 158, 77, 0.5);
+  }
+  50% {
+    box-shadow: 0 10px 26px -4px rgba(47, 158, 77, 0.85);
+  }
+}
+.course-ic {
+  animation: course-glow 2.6s ease-in-out infinite;
+}
+
+/* Banner headline reveal (re-runs each time the hero scrolls into view) */
+@keyframes hero-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+.hero-reveal {
+  animation: hero-reveal 1.3s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
 @media (prefers-reduced-motion: reduce) {
   .cli-card,
   .cli-pop,
   .cli-chip,
   .cli-line,
   .cli-photo,
-  .cli-spark {
+  .cli-spark,
+  .course-ic,
+  .hero-reveal {
     animation: none;
     opacity: 1;
     transform: none;

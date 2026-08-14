@@ -1,9 +1,43 @@
 "use client";
 import { AiOutlineMail, AiOutlinePhone } from "react-icons/ai";
 import { CiLocationOn } from "react-icons/ci";
-import ImageWrapper from "../ImageWrapper";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaYoutube,
+  FaTiktok,
+  FaLinkedinIn,
+} from "react-icons/fa";
 import { useState } from "react";
 import Modal from "../Modal";
+
+const socials = [
+  {
+    name: "Facebook",
+    href: "https://www.facebook.com/studiolingo",
+    icon: <FaFacebookF />,
+  },
+  {
+    name: "Instagram",
+    href: "https://www.instagram.com/studio_lingo/",
+    icon: <FaInstagram />,
+  },
+  {
+    name: "YouTube",
+    href: "https://www.youtube.com/@studio_lingo",
+    icon: <FaYoutube />,
+  },
+  {
+    name: "TikTok",
+    href: "https://www.tiktok.com/@studio.lingo",
+    icon: <FaTiktok />,
+  },
+  {
+    name: "LinkedIn",
+    href: "https://www.linkedin.com/company/studio-lingo/",
+    icon: <FaLinkedinIn />,
+  },
+];
 
 function Footer() {
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
@@ -12,56 +46,98 @@ function Footer() {
   const [isReturnPolicyModalOpen, setIsReturnPolicyModalOpen] = useState(false);
   return (
     <>
-      <footer
-        id="contact"
-        className="bg-lingo-black mt-20 grid grid-flow-row md:grid-flow-col place-items-center text-[#fff] text-base md:text-lg py-5 h-[300px] lg:h-[240px]"
-      >
-        <div className="flex flex-col items-center gap-5">
-          <p
-            className="font-bold cursor-pointer"
-            onClick={() => setIsConfidentialityModalOpen(true)}
-          >
-            კონფიდენციალურობის პოლიტიკა
-          </p>
-          <p
-            className="font-bold cursor-pointer"
-            onClick={() => setIsReturnPolicyModalOpen(true)}
-          >
-            დაბრუნების პოლიტიკა
-          </p>
-        </div>
-        <ImageWrapper
-          alt="logo-white"
-          src="/lingo-logo-white.png"
-          fill={true}
-          objectFit="contain"
-          extraStyles="hidden sm:block sm:h-[200px] sm:w-[200px]"
+      <footer id="contact" className="mt-20 bg-lingo-black text-[#fff]">
+        <div
+          className="w-full h-[3px]"
+          style={{
+            background: "linear-gradient(90deg,#2f9e4d,#5fd07b,#2f9e4d)",
+          }}
         />
-        <div className="flex flex-col justify-center h-full gap-4">
-          <div className="flex gap-2">
-            <AiOutlinePhone className="text-[20px] md:text-[22px]" />
-            <p className="text-[#fff]">
-              <a href="tel:+995322114623">+995 32 2 114 623</a>
-            </p>
+        <div className="max-w-6xl px-6 py-12 mx-auto">
+          <div className="flex flex-col items-center gap-10 text-center md:flex-row md:items-start md:justify-between md:text-left">
+            <div className="max-w-xs">
+              <div className="text-[26px] font-bold leading-none">
+                <span className="text-[#fff]">studio</span>
+                <span className="text-lingo-green">lingo</span>
+              </div>
+              <p className="mt-4 text-sm leading-relaxed text-[#9aa5b4]">
+                ინგლისურის სკოლა თბილისში და ონლაინ — თანამედროვე, პრაქტიკული
+                სწავლება.
+              </p>
+              <div className="flex justify-center gap-3 mt-5 md:justify-start">
+                {socials.map((s) => (
+                  <a
+                    key={s.name}
+                    href={s.href}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    aria-label={s.name}
+                    className="flex items-center justify-center w-10 h-10 text-[#fff] transition-colors rounded-full bg-[#3a4356] hover:bg-lingo-green"
+                  >
+                    {s.icon}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center gap-3 md:items-start">
+              <h3 className="text-sm font-bold tracking-[0.08em] uppercase">
+                კონტაქტი
+              </h3>
+              <a
+                href="tel:+995322114623"
+                className="flex items-center gap-2 text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
+              >
+                <AiOutlinePhone className="text-lg text-lingo-green" />
+                +995 32 2 114 623
+              </a>
+              <a
+                href="mailto:info@studiolingo.ge"
+                className="flex items-center gap-2 text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
+              >
+                <AiOutlineMail className="text-lg text-lingo-green" />
+                info@studiolingo.ge
+              </a>
+              <a
+                href="https://www.google.com/maps/dir//studiolingo"
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2 text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
+              >
+                <CiLocationOn className="text-lg text-lingo-green" />
+                წერეთლის 116, თბილისი
+              </a>
+            </div>
+
+            <div className="flex flex-col items-center gap-2.5 md:items-start">
+              <h3 className="mb-0.5 text-sm font-bold tracking-[0.08em] uppercase">
+                ბმულები
+              </h3>
+              <button
+                onClick={() => setIsConfidentialityModalOpen(true)}
+                className="text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
+              >
+                კონფიდენციალურობის პოლიტიკა
+              </button>
+              <button
+                onClick={() => setIsReturnPolicyModalOpen(true)}
+                className="text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
+              >
+                დაბრუნების პოლიტიკა
+              </button>
+              <button
+                onClick={() => setIsTermsModalOpen(true)}
+                className="text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
+              >
+                წესები და პირობები
+              </button>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <AiOutlineMail className="text-[20px] md:text-[22px]" />
-            <p className="text-[#fff]">
-              <a href="mailto:info@studiolingo.ge">info@studiolingo.ge</a>
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <CiLocationOn className="text-[20px] md:text-[22px]" />
-            <a
-              href="https://www.google.com/maps/dir//studiolingo"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <p className="text-[#fff]">წერეთლის 116</p>
-            </a>
+
+          <div className="pt-6 mt-10 text-sm text-center border-t border-[#ffffff14] text-[#7c8598]">
+            © Studio Lingo — ყველა უფლება დაცულია
           </div>
         </div>
-        <p>© Studio Lingo - ყველა უფლება დაცულია</p>
       </footer>
       <Modal
         open={isTermsModalOpen}
