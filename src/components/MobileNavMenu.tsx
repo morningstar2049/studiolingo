@@ -3,6 +3,7 @@ import { useContext } from "react";
 import Image from "next/image";
 import { MobileMenuContext } from "@/Context/MobileMenuContext";
 import Link from "next/link";
+import { FaBookOpen, FaBuilding, FaStar } from "react-icons/fa6";
 import Button from "./Button";
 import MobileNavMenuItemAccordion from "./MobileNavMenuItemAccordion";
 import { TNavItem } from "./Navbar";
@@ -14,9 +15,24 @@ export default function MobileNavMenu() {
     {
       name: "კურსები",
       menuItems: [
-        { name: "სტანდარტული კურსები", href: "/#courses" },
-        { name: "კურსები კომპანიებისთვის", href: "/#corporate" },
-        { name: "შეფასებები", href: "/#reviews" },
+        {
+          name: "სტანდარტული კურსები",
+          href: "/#courses",
+          description: "ზრდასრულებისა და მოზარდებისთვის",
+          icon: <FaBookOpen size={20} />,
+        },
+        {
+          name: "კურსები კომპანიებისთვის",
+          href: "/#corporate",
+          description: "ბიზნეს-ინგლისური",
+          icon: <FaBuilding size={20} />,
+        },
+        {
+          name: "შეფასებები",
+          href: "/#reviews",
+          description: "მოსწავლეების გამოხმაურება",
+          icon: <FaStar size={20} />,
+        },
       ],
     },
     { name: "ჩვენი გუნდი", href: "/team" },
@@ -32,9 +48,9 @@ export default function MobileNavMenu() {
     <>
       <div
         style={{ fontFeatureSettings: "'case' on" }}
-        className={`h-[90dvh] fixed left-0 top-[85px] right-0 bottom-0 bg-[#FFFFFE] sm:hidden flex flex-col justify-evenly z-50 text-lingo-green text-[20px] ${translateClass} transition-transform ease-in duration-500 px-16`}
+        className={`h-[90dvh] fixed left-0 top-[85px] right-0 bottom-0 bg-[#FFFFFE] sm:hidden flex flex-col justify-between z-50 text-lingo-green text-[20px] ${translateClass} transition-transform ease-in duration-500 px-16 pt-10 pb-6 overflow-y-auto`}
       >
-        <section className="flex flex-col justify-between gap-5">
+        <section className="flex flex-col gap-5">
           {navItems.map((item) => {
             if (item.href) {
               return (

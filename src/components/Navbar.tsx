@@ -1,5 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
+import { FaBookOpen, FaBuilding, FaStar } from "react-icons/fa6";
 import NavItem from "./NavItem";
 
 type HRef = `#${string}` | `/${string}`;
@@ -7,6 +8,8 @@ type HRef = `#${string}` | `/${string}`;
 export type TNavItem = {
   name: string;
   href?: HRef;
+  description?: string;
+  icon?: React.ReactNode;
   menuItems?: Omit<TNavItem, "menuItems">[];
 };
 
@@ -17,9 +20,24 @@ function Navbar() {
     {
       name: "კურსები",
       menuItems: [
-        { name: "სტანდარტული კურსები", href: "#courses" },
-        { name: "კურსები კომპანიებისთვის", href: "#corporate" },
-        { name: "შეფასებები", href: "#reviews" },
+        {
+          name: "სტანდარტული კურსები",
+          href: "#courses",
+          description: "ზრდასრულებისა და მოზარდებისთვის",
+          icon: <FaBookOpen size={18} />,
+        },
+        {
+          name: "კურსები კომპანიებისთვის",
+          href: "#corporate",
+          description: "ბიზნეს-ინგლისური",
+          icon: <FaBuilding size={18} />,
+        },
+        {
+          name: "შეფასებები",
+          href: "#reviews",
+          description: "მოსწავლეების გამოხმაურება",
+          icon: <FaStar size={18} />,
+        },
       ],
     },
     { name: "ჩვენი გუნდი", href: "/team" },
