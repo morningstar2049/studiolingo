@@ -4,6 +4,7 @@ import { SITE_URL } from "@/lib/schema";
 import { getReviews, type Review } from "@/sanity/queries";
 import { fallbackReviews } from "./reviewsData";
 import ReviewCard from "./ReviewCard";
+import RevealOnScroll from "../RevealOnScroll";
 
 const GOOGLE_REVIEWS_URL = "https://maps.app.goo.gl/jjNmMYDcq6hFzN1VA";
 
@@ -54,12 +55,14 @@ async function Reviews() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <h2
-        style={{ fontFeatureSettings: "'case' on" }}
-        className="mx-auto mb-12 text-2xl font-bold text-lingo-green sm:text-3xl"
-      >
-        შეფასებები
-      </h2>
+      <RevealOnScroll className="mx-auto mb-12">
+        <h2
+          style={{ fontFeatureSettings: "'case' on" }}
+          className="text-2xl font-bold text-lingo-green sm:text-3xl"
+        >
+          შეფასებები
+        </h2>
+      </RevealOnScroll>
 
       <div className="grid items-start w-full max-w-6xl grid-cols-1 gap-6 px-5 mx-auto sm:grid-cols-2 lg:grid-cols-3">
         {list.map((review, i) => (
