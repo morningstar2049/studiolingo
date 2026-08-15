@@ -1,4 +1,22 @@
+import type { Metadata } from "next";
 import PdfWrapper from "./components/PdfWrapper";
+
+const title = "სასწავლო მასალები — ინგლისურის რესურსები | Studio Lingo";
+const description =
+  "ჩამოტვირთე ინგლისურისა და გერმანულის სასწავლო მასალები Studio Lingo-სგან — დონეების მიხედვით დალაგებული უფასო რესურსები.";
+
+export const metadata: Metadata = {
+  title,
+  description,
+  alternates: { canonical: "/materials" },
+  openGraph: { title, description, images: ["/og-image.png"] },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    images: ["/og-image.png"],
+  },
+};
 
 type TPdf = {
   thumbnail: string;

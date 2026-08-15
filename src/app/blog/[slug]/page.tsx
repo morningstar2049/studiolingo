@@ -134,11 +134,33 @@ export default async function BlogPostPage({ params }: Props) {
     ...(image && { image }),
   };
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "მთავარი", item: SITE_URL },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "ბლოგი",
+        item: `${SITE_URL}/blog`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: post.title,
+        item: `${SITE_URL}/blog/${post.slug}`,
+      },
+    ],
+  };
+
   return (
     <main className="max-w-3xl px-5 pt-10 pb-20 mx-auto">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([articleSchema, breadcrumbSchema]),
+        }}
       />
 
       <Link href="/blog" className="text-sm text-lingo-green hover:underline">

@@ -7,7 +7,7 @@
 export const SITE_URL = "https://www.studiolingo.ge";
 export const SITE_NAME = "Studio Lingo";
 
-const OG_IMAGE = "https://i.ibb.co/f8s59ww/page-Thumbnail.png";
+const OG_IMAGE = `${SITE_URL}/og-image.png`;
 const MAP_URL = "https://maps.app.goo.gl/jjNmMYDcq6hFzN1VA";
 
 export const organizationSchema = {

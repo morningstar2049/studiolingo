@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/schema";
 import { getPosts } from "@/sanity/queries";
+import { positionData } from "@/app/career/[positionId]/positionData";
 
 export const revalidate = 60;
 
@@ -61,5 +62,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.5,
     },
+    ...Object.keys(positionData).map((positionId) => ({
+      url: `${SITE_URL}/career/${positionId}`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.4,
+    })),
   ];
 }
