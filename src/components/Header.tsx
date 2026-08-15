@@ -17,7 +17,7 @@ function Header() {
         <div className="ml-[16%]">
           <HeaderLogo height={72} width={72} />
         </div>
-        <div className="flex justify-end flex-1 gap-3 pr-16">
+        <div className="flex justify-end flex-1 gap-3 pr-[13%]">
           {/* <a
             href="https://docs.google.com/forms/d/e/1FAIpQLSfyXSZCZCGhCAHQV4Zn1AAuJxeb4Yll3Acs8EwkndGDmQTAZA/viewform?fbclid=IwAR1OVyQbCE_wBL2xDTIMfwI30o03Oc1eCdhRBSlvwEF6u4N48O2bzV88YAw"
             className="flex items-center"
