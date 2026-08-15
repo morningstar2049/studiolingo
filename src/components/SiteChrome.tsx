@@ -2,6 +2,7 @@
 import { usePathname } from "next/navigation";
 
 import Header from "./Header";
+import MessengerButton from "./MessengerButton";
 import MobileNavMenu from "./MobileNavMenu";
 import Navbar from "./Navbar";
 
@@ -19,6 +20,7 @@ export default function SiteChrome() {
         <Navbar />
       </div>
       <MobileNavMenu />
+      <MessengerButton />
     </>
   );
 }
