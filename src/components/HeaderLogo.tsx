@@ -26,16 +26,22 @@ function HeaderLogo({ height, width }: THeaderLogoProps) {
   }
 
   return (
-    <>
-      <Image
-        className="cursor-pointer"
-        src="/lingo-logo-svg.svg"
-        alt="lingo-logo"
-        width={width}
-        height={height}
-        onClick={handleClick}
-      />
-    </>
+    <div
+      className="flex items-center cursor-pointer"
+      style={{ gap: Math.round(height * 0.65) }}
+      onClick={handleClick}
+    >
+      <Image src="/lingo-icon.svg" alt="lingo-logo" width={width} height={height} />
+      {/* Same wordmark as the contact footer (studio + green lingo), with
+          "studio" in navy since the header sits on a light background. */}
+      <span
+        className="font-bold leading-none"
+        style={{ fontSize: Math.round(height * 0.36) }}
+      >
+        <span className="text-lingo-black">studio</span>
+        <span className="text-lingo-green">lingo</span>
+      </span>
+    </div>
   );
 }
 

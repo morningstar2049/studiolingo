@@ -13,9 +13,11 @@ function Header() {
 
   return (
     <>
-      <header className="hidden animate-appear bg-[#fff] h-[110px] sm:flex justify-evenly items-center shadow-md">
-        <HeaderLogo height={150} width={150} />
-        <div className="flex justify-end w-1/2 gap-3">
+      <header className="hidden animate-appear bg-[#fff] h-[110px] sm:flex items-center shadow-md">
+        <div className="ml-[16%]">
+          <HeaderLogo height={72} width={72} />
+        </div>
+        <div className="flex justify-end flex-1 gap-3 pr-16">
           {/* <a
             href="https://docs.google.com/forms/d/e/1FAIpQLSfyXSZCZCGhCAHQV4Zn1AAuJxeb4Yll3Acs8EwkndGDmQTAZA/viewform?fbclid=IwAR1OVyQbCE_wBL2xDTIMfwI30o03Oc1eCdhRBSlvwEF6u4N48O2bzV88YAw"
             className="flex items-center"
@@ -71,8 +73,8 @@ function Header() {
         </div>
       </header>
       <header className="flex items-center justify-between px-10 shadow-md bg-[#fffffe] h-11 sm:hidden py-11">
-        <div className="flex items-center justify-between w-full animate-appear sm:hidden">
-          <HeaderLogo height={120} width={120} />
+        <div className="flex items-center justify-between w-full pl-8 animate-appear sm:hidden">
+          <HeaderLogo height={48} width={48} />
           {!isOpen ? (
             <GiHamburgerMenu
               color="#2f9e4d"
