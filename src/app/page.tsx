@@ -1,4 +1,5 @@
 import MainContent from "@/components/MainContent";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
 import type { Metadata } from "next";
 
 const title = "ინგლისური ენის კურსები თბილისში და ონლაინ | Studio Lingo";
@@ -29,6 +30,7 @@ export default async function Home() {
   return (
     <main>
       <MainContent />
+      <ScrollToTopButton />
     </main>
   );
 }
