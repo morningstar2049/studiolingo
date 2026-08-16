@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Noto_Sans_Georgian } from "next/font/google";
 import SiteChrome from "@/components/SiteChrome";
 import { MobileMenuContextProvider } from "@/Context/MobileMenuContext";
 import { Analytics } from "@vercel/analytics/react";
@@ -44,6 +45,15 @@ const firago = localFont({
   variable: "--font-firago",
 });
 
+// Noto Sans Georgian includes Mtavruli (capital Georgian) glyphs, which FiraGO
+// lacks — used only for the capitalized hero headline.
+const notoGeorgian = Noto_Sans_Georgian({
+  subsets: ["georgian", "latin"],
+  weight: ["700"],
+  variable: "--font-noto-ge",
+  display: "swap",
+});
+
 export default function RootLayout({
   children,
 }: {
@@ -51,7 +61,10 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider localization={localization}>
-      <html lang="ka" className={`${firago.variable} font-sans scroll-smooth`}>
+      <html
+        lang="ka"
+        className={`${firago.variable} ${notoGeorgian.variable} font-sans scroll-smooth`}
+      >
         <body>
           <script
             type="application/ld+json"
