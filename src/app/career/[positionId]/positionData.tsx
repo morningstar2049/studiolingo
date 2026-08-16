@@ -1,5 +1,6 @@
 type TPosition = {
   title: string;
+  intro?: string;
   obligations: (string | JSX.Element)[];
   extraText?: string;
   requirements: string[];
@@ -103,6 +104,8 @@ export const positionData: TPositionData = {
   },
   englishTeacher: {
     title: "ინგლისურის მასწავლებელი",
+    intro:
+      "სტუდიო ლინგო ეძებს ინგლისურის მასწავლებელს, რომელსაც ძალიან ეყვარება თავისი საქმე და მოსწავლეები",
     obligations: [
       "ონლაინ და ცოცხალი გაკვეთილების ჩატარება მოსწავლეებთან 17 წელს ზემოთ (1 გაკვეთილი 1 სთ 30 წთ)",
       "გუნდის წევრებთან დროული კომუნიკაცია (მაგ: მოსწავლის გაცდენის თარიღების ადმინისტრატორისთვის მიწოდება) და იშვიათად რეპორტების წერა.",

@@ -1,9 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
-import { BiTimeFive, BiWallet } from "react-icons/bi";
+import { FaLocationDot, FaBriefcase, FaCoins } from "react-icons/fa6";
 import { positionData } from "../positionData";
-import { IoLocationOutline } from "react-icons/io5";
 import Button from "@/components/Button";
 import Image from "next/image";
+import RevealOnScroll from "@/components/RevealOnScroll";
+
+// FiraGO has no capital Georgian, so map Mkhedruli -> Mtavruli and render in
+// Noto (which has the caps); the plain title is kept for SEO/screen readers.
+const toMtavruli = (text: string) =>
+  text.replace(/[ა-ჺ]/g, (c) =>
+    String.fromCharCode(c.charCodeAt(0) + 0xbc0)
+  );
 
 export type TPositionKey =
   | "englishTeacher"
@@ -21,21 +28,37 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
 
   return (
     <div className="bg-[whitesmoke] rounded-md lg:p-10 p-5 flex flex-col gap-8 w-full lg:w-[70%]">
-      <h1 className="text-3xl font-bold text-lingo-green">{position.title}</h1>
-      <div className="flex flex-wrap gap-5 md:flex-nowrap ">
-        <div className="flex gap-2">
-          <IoLocationOutline />
+      <h1 className="text-3xl font-bold text-lingo-black">
+        <span
+          aria-hidden="true"
+          style={{
+            fontFamily: "var(--font-noto-ge), sans-serif",
+            fontFeatureSettings: "'case' on",
+          }}
+        >
+          {toMtavruli(position.title)}
+        </span>
+        <span className="sr-only">{position.title}</span>
+      </h1>
+      <div className="flex flex-wrap gap-5 md:flex-nowrap">
+        <div className="flex items-center gap-2">
+          <FaLocationDot className="text-lingo-green" />
           <p>{position.location}</p>
         </div>
-        <div className="flex gap-2">
-          <BiTimeFive />
+        <div className="flex items-center gap-2">
+          <FaBriefcase className="text-lingo-green" />
           <p>{position.time}</p>
         </div>
-        <div className="flex gap-2">
-          <BiWallet />
+        <div className="flex items-center gap-2">
+          <FaCoins className="text-lingo-green" />
           <p>{position.salaryType}</p>
         </div>
       </div>
+      {position.intro && (
+        <p className="text-base sm:text-lg leading-relaxed text-lingo-black">
+          {position.intro}
+        </p>
+      )}
       <div>
         <h2 className="text-xl font-bold text-lingo-green">
           ძირითადი მოვალეობებია:
@@ -65,13 +88,13 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
           ))}
         </ul>
       </div>
-      <div className="hidden sm:flex justify-center">
+      <RevealOnScroll className="justify-center hidden sm:flex">
         <img
           src="/career-pic.jpeg"
           alt="career"
           className="object-contain rounded-2xl w-[700px]"
         />
-      </div>
+      </RevealOnScroll>
       <div>
         <h2 className="text-xl font-bold text-lingo-green">
           ჩვენი გუნდი გთავაზობთ:
