@@ -46,7 +46,7 @@ export default async function BlogPage() {
             <Link
               key={post._id}
               href={`/blog/${post.slug}`}
-              className="flex flex-col overflow-hidden bg-[#fff] group rounded-xl transition-all duration-300 shadow-[0_10px_24px_-8px_rgba(41,49,66,0.22)] hover:shadow-[0_22px_40px_-12px_rgba(41,49,66,0.30)] hover:-translate-y-[3px]"
+              className="flex flex-col overflow-hidden bg-[#fff] group rounded-xl transition-all duration-300 shadow-[0_10px_24px_-8px_rgba(41,49,66,0.22)] hover:shadow-[0_22px_40px_-12px_rgba(47,158,77,0.28)] hover:-translate-y-[3px]"
             >
               {post.coverImage?.asset && (
                 <div className="relative w-full h-48">
@@ -60,10 +60,10 @@ export default async function BlogPage() {
                 </div>
               )}
               <div className="flex flex-col flex-1 gap-2 p-5">
-                <time className="text-sm text-[#6b7280]" dateTime={post.publishedAt}>
+                <time className="text-sm font-medium text-lingo-green" dateTime={post.publishedAt}>
                   {formatDate(post.publishedAt)}
                 </time>
-                <h2 className="text-lg font-bold text-lingo-black">
+                <h2 className="text-lg font-bold transition-colors text-lingo-black group-hover:text-lingo-green">
                   {post.title}
                 </h2>
                 <p className="text-sm text-[#4b5563]">{post.excerpt}</p>
