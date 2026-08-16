@@ -127,51 +127,29 @@ function Page() {
 
   if (!isSignedIn) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[90vh] bg-gray-50 px-4">
-        <div className="bg-white rounded-xl shadow-2xl p-8 flex flex-col items-center gap-6 max-w-sm w-full">
-          <LoginIcon
-            sx={{ fontSize: 64, mb: 2, opacity: 0.8 }}
-            className="mb-2"
-          />
-          <h2 className="text-xl font-semibold text-lingo-black text-center mb-2">
-            გთხოვთ, გაიარეთ ავტორიზაცია კურსის შესაძენად
+      <div className="flex flex-col items-center justify-center min-h-[90vh] px-4 bg-gray-50">
+        <div
+          style={{ fontFeatureSettings: "'case' on" }}
+          className="w-full max-w-sm rounded-[24px] bg-[#fff] border border-[#eceef2] shadow-[0_24px_54px_-22px_rgba(41,49,66,0.3)] p-8 text-center"
+        >
+          <div className="flex items-center justify-center mx-auto rounded-2xl w-14 h-14 bg-lingo-green/10 text-lingo-green">
+            <LoginIcon sx={{ fontSize: 30 }} />
+          </div>
+          <h2 className="mt-5 text-lg font-bold leading-snug text-lingo-black">
+            გთხოვთ, გაიარეთ ავტორიზაცია კურსის{" "}
+            <span className="text-lingo-green">უპროცენტო განვადებით</span>{" "}
+            შესაძენად
           </h2>
-          <div className="flex gap-4 w-full">
+          <div className="flex flex-col gap-3 mt-7">
             <SignInButton mode="modal" forceRedirectUrl={"/buy-course"}>
-              <MuiButton
-                variant="contained"
-                color="primary"
-                fullWidth
-                sx={{
-                  background:
-                    "linear-gradient(90deg, #1DBF73 0%, #1DBF73 100%)",
-                  color: "#fff",
-                  fontWeight: 600,
-                  borderRadius: 2,
-                  boxShadow: "0 2px 8px rgba(29,191,115,0.10)",
-                  textTransform: "none",
-                  fontSize: "1rem",
-                }}
-              >
+              <button className="w-full py-3 font-bold text-[#fff] transition-all rounded-xl bg-lingo-green shadow-lg shadow-lingo-green/25 hover:bg-[#2f904d] hover:scale-[1.01]">
                 შესვლა
-              </MuiButton>
+              </button>
             </SignInButton>
             <SignUpButton mode="modal" forceRedirectUrl={"/buy-course"}>
-              <MuiButton
-                variant="outlined"
-                color="primary"
-                fullWidth
-                sx={{
-                  borderColor: "#1DBF73",
-                  color: "#1DBF73",
-                  fontWeight: 600,
-                  borderRadius: 2,
-                  textTransform: "none",
-                  fontSize: "1rem",
-                }}
-              >
+              <button className="w-full py-3 font-bold transition-colors border-2 rounded-xl text-lingo-green border-lingo-green hover:bg-lingo-green/5">
                 რეგისტრაცია
-              </MuiButton>
+              </button>
             </SignUpButton>
           </div>
         </div>
