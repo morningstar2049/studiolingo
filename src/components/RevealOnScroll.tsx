@@ -8,10 +8,12 @@ export default function RevealOnScroll({
   children,
   className = "",
   revealClass = "review-rise",
+  delay = 0,
 }: {
   children: ReactNode;
   className?: string;
   revealClass?: string;
+  delay?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -32,7 +34,11 @@ export default function RevealOnScroll({
   }, []);
 
   return (
-    <div ref={ref} className={`${className} ${visible ? revealClass : "opacity-0"}`}>
+    <div
+      ref={ref}
+      style={delay ? { animationDelay: `${delay}ms` } : undefined}
+      className={`${className} ${visible ? revealClass : "opacity-0"}`}
+    >
       {children}
     </div>
   );

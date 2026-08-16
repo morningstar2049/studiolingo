@@ -6,6 +6,7 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 import { urlForImage } from "@/sanity/client";
 import { getPosts } from "@/sanity/queries";
 import BlogHeader from "@/components/blog/BlogHeader";
+import RevealOnScroll from "@/components/RevealOnScroll";
 
 const title = "ბლოგი — ინგლისურის სწავლის რჩევები | Studio Lingo";
 const description =
@@ -42,12 +43,12 @@ export default async function BlogPage() {
         </p>
       ) : (
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post) => (
-            <Link
-              key={post._id}
-              href={`/blog/${post.slug}`}
-              className="flex flex-col overflow-hidden bg-[#fff] group rounded-xl transition-all duration-300 shadow-[0_10px_24px_-8px_rgba(41,49,66,0.22)] hover:shadow-[0_22px_40px_-12px_rgba(47,158,77,0.28)] hover:-translate-y-[3px]"
-            >
+          {posts.map((post, i) => (
+            <RevealOnScroll key={post._id} delay={(i % 3) * 120} className="h-full">
+              <Link
+                href={`/blog/${post.slug}`}
+                className="flex flex-col h-full overflow-hidden bg-[#fff] group rounded-xl transition-all duration-300 shadow-[0_10px_24px_-8px_rgba(41,49,66,0.22)] hover:shadow-[0_22px_40px_-12px_rgba(47,158,77,0.28)] hover:-translate-y-[3px]"
+              >
               {post.coverImage?.asset && (
                 <div className="relative w-full h-48">
                   <Image
@@ -72,7 +73,8 @@ export default async function BlogPage() {
                   <AiOutlineArrowRight className="transition-transform group-hover:translate-x-1" />
                 </span>
               </div>
-            </Link>
+              </Link>
+            </RevealOnScroll>
           ))}
         </div>
       )}

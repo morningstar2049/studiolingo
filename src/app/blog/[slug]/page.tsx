@@ -9,6 +9,7 @@ import { SITE_URL } from "@/lib/schema";
 import { urlForImage } from "@/sanity/client";
 import { getPost, getPostSlugs } from "@/sanity/queries";
 import ArticleShare from "@/components/blog/ArticleShare";
+import RevealOnScroll from "@/components/RevealOnScroll";
 
 export const revalidate = 60;
 
@@ -52,14 +53,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 const components: PortableTextComponents = {
   block: {
     h2: ({ children }) => (
-      <h2 className="mt-8 mb-3 text-2xl font-bold text-lingo-black">
-        {children}
-      </h2>
+      <RevealOnScroll className="mt-8 mb-3">
+        <h2 className="text-2xl font-bold text-lingo-black">{children}</h2>
+      </RevealOnScroll>
     ),
     h3: ({ children }) => (
-      <h3 className="mt-6 mb-2 text-xl font-bold text-lingo-black">
-        {children}
-      </h3>
+      <RevealOnScroll className="mt-6 mb-2">
+        <h3 className="text-xl font-bold text-lingo-black">{children}</h3>
+      </RevealOnScroll>
     ),
     blockquote: ({ children }) => (
       <blockquote className="pl-4 my-6 italic border-l-4 border-lingo-green">
@@ -167,12 +168,14 @@ export default async function BlogPostPage({ params }: Props) {
         ← ყველა სტატია
       </Link>
 
-      <h1
-        style={{ fontFeatureSettings: "'case' on" }}
-        className="mt-4 mb-3 text-3xl font-bold sm:text-4xl text-lingo-black"
-      >
-        {post.title}
-      </h1>
+      <RevealOnScroll className="mt-4 mb-3">
+        <h1
+          style={{ fontFeatureSettings: "'case' on" }}
+          className="text-3xl font-bold sm:text-4xl text-lingo-black"
+        >
+          {post.title}
+        </h1>
+      </RevealOnScroll>
       <time className="block mb-8 text-sm text-[#6b7280]" dateTime={post.publishedAt}>
         {formatDate(post.publishedAt)}
       </time>
