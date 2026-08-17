@@ -18,7 +18,7 @@ type Stat = {
 const stats: Stat[] = [
   {
     icon: FaUserGraduate,
-    iconClass: "text-lg sm:text-4xl",
+    iconClass: "text-base sm:text-3xl",
     value: 3000,
     decimals: 0,
     group: false,
@@ -27,7 +27,7 @@ const stats: Stat[] = [
   },
   {
     icon: HiUsers,
-    iconClass: "text-2xl sm:text-5xl",
+    iconClass: "text-xl sm:text-4xl",
     value: 300000,
     decimals: 0,
     group: true,
@@ -36,7 +36,7 @@ const stats: Stat[] = [
   },
   {
     icon: FaGoogle,
-    iconClass: "text-lg sm:text-4xl",
+    iconClass: "text-base sm:text-3xl",
     value: 5,
     decimals: 1,
     group: false,
@@ -130,8 +130,8 @@ export default function AchievementsBar() {
               i === 1 ? "px-4 sm:px-16" : "px-2 sm:px-12"
             } ${i > 0 ? "border-l border-[#ffffff26]" : ""}`}
           >
-            <span className="flex items-center justify-center h-8 mb-2 sm:h-14 sm:mb-3">
-              <Icon className={`text-lingo-green ${iconClass}`} />
+            <span className="mb-2 sm:mb-3 flex h-9 w-9 sm:h-16 sm:w-16 items-center justify-center rounded-[14px] sm:rounded-2xl bg-gradient-to-br from-[#43c667] to-[#1e7d3a] shadow-[0_8px_20px_-6px_rgba(47,158,77,0.6)] ring-1 ring-inset ring-[#ffffff40]">
+              <Icon className={`text-[#fff] ${iconClass}`} />
             </span>
           <Counter
             value={value}
