@@ -10,6 +10,7 @@ import { urlForImage } from "@/sanity/client";
 import { getPost, getPostSlugs } from "@/sanity/queries";
 import ArticleShare from "@/components/blog/ArticleShare";
 import RevealOnScroll from "@/components/RevealOnScroll";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
 
 export const revalidate = 60;
 
@@ -225,6 +226,8 @@ export default async function BlogPostPage({ params }: Props) {
           title={post.title}
         />
       </div>
+
+      <ScrollToTopButton />
     </main>
   );
 }
