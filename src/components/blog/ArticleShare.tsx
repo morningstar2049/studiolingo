@@ -6,11 +6,24 @@ import {
   FaWhatsapp,
   FaTelegramPlane,
   FaLinkedinIn,
-  FaTwitter,
 } from "react-icons/fa";
 import { FiLink, FiCheck } from "react-icons/fi";
 
 type Props = { url: string; title: string };
+
+// Official X (formerly Twitter) mark. Inlined because this react-icons
+// version predates FaXTwitter.
+const XIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    fill="currentColor"
+    aria-hidden="true"
+  >
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+);
 
 export default function ArticleShare({ url, title }: Props) {
   const [copied, setCopied] = useState(false);
@@ -24,10 +37,10 @@ export default function ArticleShare({ url, title }: Props) {
       bg: "#1877F2",
     },
     {
-      name: "X / Twitter",
+      name: "X",
       href: `https://twitter.com/intent/tweet?url=${e(url)}&text=${e(title)}`,
-      icon: <FaTwitter />,
-      bg: "#1DA1F2",
+      icon: <XIcon />,
+      bg: "#000000",
     },
     {
       name: "WhatsApp",
