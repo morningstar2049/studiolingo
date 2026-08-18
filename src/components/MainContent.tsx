@@ -1,4 +1,3 @@
-import Contact from "./Contact/Contact";
 import Corporate from "./Corporate/Corporate";
 import Courses from "./Courses/Courses";
 import MainBanner from "./MainBanner";
@@ -13,7 +12,6 @@ function MainContent() {
       <Courses />
       <Corporate />
       <Reviews />
-      <Contact />
     </div>
   );
 }

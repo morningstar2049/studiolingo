@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Noto_Sans_Georgian } from "next/font/google";
 import SiteChrome from "@/components/SiteChrome";
+import SiteFooter from "@/components/SiteFooter";
 import { MobileMenuContextProvider } from "@/Context/MobileMenuContext";
 import { Analytics } from "@vercel/analytics/react";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -74,6 +75,7 @@ export default function RootLayout({
           <MobileMenuContextProvider>
             <SiteChrome />
             {children}
+            <SiteFooter />
           </MobileMenuContextProvider>
         </body>
       </html>
