@@ -9,6 +9,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import SchoolIcon from "@mui/icons-material/School";
 import CourseDetails from "./CourseDetails";
+import RevealOnScroll from "@/components/RevealOnScroll";
 
 const accordionSx = {
   background: "transparent",
@@ -102,6 +103,11 @@ export default function CoursesAccordion() {
       style={{ fontFeatureSettings: "'case' on" }}
       className="w-full p-3 sm:p-0 sm:w-[48%] self-center"
     >
+      <RevealOnScroll className="mb-5">
+        <h2 className="text-2xl font-bold text-center sm:text-3xl text-lingo-black">
+          ჩვენი ინგლისურის კურსები
+        </h2>
+      </RevealOnScroll>
       <Accordion
         ref={adultsRef}
         disableGutters

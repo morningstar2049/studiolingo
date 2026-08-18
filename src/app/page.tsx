@@ -1,5 +1,6 @@
 import MainContent from "@/components/MainContent";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
+import { coursesSchema } from "@/lib/schema";
 import type { Metadata } from "next";
 
 const title = "ინგლისური ენის კურსები თბილისში და ონლაინ | Studio Lingo";
@@ -29,6 +30,10 @@ export const metadata: Metadata = {
 export default async function Home() {
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(coursesSchema) }}
+      />
       <MainContent />
       <ScrollToTopButton />
     </main>

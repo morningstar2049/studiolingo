@@ -82,6 +82,53 @@ export const websiteSchema = {
   publisher: { "@id": `${SITE_URL}/#organization` },
 };
 
+// Course offerings shown on the homepage (#courses). Kept factual — both
+// courses genuinely run onsite (საბურთალო) and online. Rendered only on the
+// homepage, where these courses appear.
+const courseInstances = [
+  {
+    "@type": "CourseInstance",
+    courseMode: "onsite",
+    location: {
+      "@type": "Place",
+      name: SITE_NAME,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "წერეთლის გამზ. 116",
+        addressLocality: "თბილისი",
+        addressCountry: "GE",
+      },
+    },
+  },
+  { "@type": "CourseInstance", courseMode: "online" },
+];
+
+export const coursesSchema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: "ინგლისურის კურსები ზრდასრულებისთვის",
+    description:
+      "ინგლისურის კურსები ზრდასრულთათვის A1-დან C1-მდე — მცირე ჯგუფებში ან ინდივიდუალურად, თბილისში (საბურთალო) და ონლაინ.",
+    url: `${SITE_URL}/#courses`,
+    inLanguage: "ka",
+    educationalLevel: "A1–C1",
+    provider: { "@id": `${SITE_URL}/#organization` },
+    hasCourseInstance: courseInstances,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: "ინგლისურის კურსები მოზარდებისთვის",
+    description:
+      "ინგლისურის კურსები მოზარდებისთვის (12–16 წელი) — თბილისში (საბურთალო) და ონლაინ.",
+    url: `${SITE_URL}/#courses`,
+    inLanguage: "ka",
+    provider: { "@id": `${SITE_URL}/#organization` },
+    hasCourseInstance: courseInstances,
+  },
+];
+
 export const siteSchemas = [
   organizationSchema,
   localBusinessSchema,
