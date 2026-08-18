@@ -76,7 +76,9 @@ async function Reviews() {
         rel="noreferrer noopener"
         className="inline-flex items-center self-center gap-2 px-6 py-3 mt-8 font-bold transition-opacity rounded-xl text-lingo-green ring-1 ring-lingo-green hover:opacity-80"
       >
-        ნახე ყველა შეფასება Google-ზე
+        <span style={{ fontFeatureSettings: "'case' on" }}>
+          ნახე ყველა შეფასება Google-ზე
+        </span>
         <AiOutlineArrowRight className="shrink-0" />
       </a>
     </div>

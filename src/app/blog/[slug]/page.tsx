@@ -14,11 +14,6 @@ import ScrollToTopButton from "@/components/ScrollToTopButton";
 
 export const revalidate = 60;
 
-// FiraGO has no capital Georgian, so map Mkhedruli -> Mtavruli and render in
-// Noto (which has the caps); the plain text is kept for SEO/screen readers.
-const toMtavruli = (text: string) =>
-  text.replace(/[ა-ჺ]/g, (c) => String.fromCharCode(c.charCodeAt(0) + 0xbc0));
-
 export async function generateStaticParams() {
   const slugs = await getPostSlugs();
   return slugs.map((slug) => ({ slug }));
@@ -211,16 +206,9 @@ export default async function BlogPostPage({ params }: Props) {
           href="/#courses"
           className="flex items-center justify-center gap-2 px-6 py-4 mb-8 font-bold text-center text-[#fff] transition-opacity bg-lingo-green rounded-xl hover:opacity-90"
         >
-          <span
-            aria-hidden="true"
-            style={{
-              fontFamily: "var(--font-noto-ge), sans-serif",
-              fontFeatureSettings: "'case' on",
-            }}
-          >
-            {toMtavruli("გაეცანი სტუდიო ლინგოს კურსებს")}
+          <span style={{ fontFeatureSettings: "'case' on" }}>
+            გაეცანი სტუდიო ლინგოს კურსებს
           </span>
-          <span className="sr-only">გაეცანი სტუდიო ლინგოს კურსებს</span>
           <AiOutlineArrowRight className="shrink-0" />
         </Link>
 
