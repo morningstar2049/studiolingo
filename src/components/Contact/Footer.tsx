@@ -81,7 +81,10 @@ function Footer() {
             </div>
 
             <div className="flex flex-col items-center gap-3 md:items-start">
-              <h3 className="text-sm font-bold tracking-[0.08em] uppercase">
+              <h3
+                style={{ fontFeatureSettings: "'case' on" }}
+                className="text-sm font-bold tracking-[0.08em]"
+              >
                 კონტაქტი
               </h3>
               <a
@@ -110,7 +113,10 @@ function Footer() {
             </div>
 
             <div className="flex flex-col items-center gap-2.5 md:items-start">
-              <h3 className="mb-0.5 text-sm font-bold tracking-[0.08em] uppercase">
+              <h3
+                style={{ fontFeatureSettings: "'case' on" }}
+                className="mb-0.5 text-sm font-bold tracking-[0.08em]"
+              >
                 ბმულები
               </h3>
               <button

@@ -64,7 +64,10 @@ export default async function BlogPage() {
                 <time className="text-sm font-medium text-lingo-green" dateTime={post.publishedAt}>
                   {formatDate(post.publishedAt)}
                 </time>
-                <h2 className="text-lg font-bold transition-colors text-lingo-black group-hover:text-lingo-green">
+                <h2
+                  style={{ fontFeatureSettings: "'case' on" }}
+                  className="text-lg font-bold transition-colors text-lingo-black group-hover:text-lingo-green"
+                >
                   {post.title}
                 </h2>
                 <p className="text-sm text-[#4b5563]">{post.excerpt}</p>
