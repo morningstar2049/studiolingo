@@ -24,24 +24,12 @@ export default function BannerHeadline() {
   return (
     <h1
       ref={ref}
+      style={{ fontFeatureSettings: "'case' on" }}
       className={`text-[#fff] font-bold text-lg sm:text-4xl tracking-[2px] max-w-4xl ${
         inView ? "hero-reveal" : "opacity-0"
       }`}
     >
-      {/* Visible capitalized form (Mtavruli, Noto — has the glyphs FiraGO lacks) */}
-      <span
-        aria-hidden="true"
-        style={{
-          fontFamily: "var(--font-noto-ge), sans-serif",
-          fontFeatureSettings: "'case' on",
-        }}
-      >
-        ᲘᲜᲒᲚᲘᲡᲣᲠᲘᲡ ᲙᲣᲠᲡᲔᲑᲘ ᲗᲑᲘᲚᲘᲡᲨᲘ ᲓᲐ ᲝᲜᲚᲐᲘᲜ — ᲖᲠᲓᲐᲡᲠᲣᲚᲔᲑᲘᲡᲐ ᲓᲐ ᲛᲝᲖᲐᲠᲓᲔᲑᲘᲡᲗᲕᲘᲡ
-      </span>
-      {/* Normal Mkhedruli text for search engines & screen readers */}
-      <span className="sr-only">
-        ინგლისურის კურსები თბილისში და ონლაინ — ზრდასრულებისა და მოზარდებისთვის
-      </span>
+      ინგლისურის კურსები თბილისში და ონლაინ — ზრდასრულებისა და მოზარდებისთვის
     </h1>
   );
 }

@@ -5,13 +5,6 @@ import Button from "@/components/Button";
 import Image from "next/image";
 import RevealOnScroll from "@/components/RevealOnScroll";
 
-// FiraGO has no capital Georgian, so map Mkhedruli -> Mtavruli and render in
-// Noto (which has the caps); the plain title is kept for SEO/screen readers.
-const toMtavruli = (text: string) =>
-  text.replace(/[ა-ჺ]/g, (c) =>
-    String.fromCharCode(c.charCodeAt(0) + 0xbc0)
-  );
-
 export type TPositionKey =
   | "englishTeacher"
   | "germanTeacher"
@@ -28,17 +21,11 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
 
   return (
     <div className="bg-[whitesmoke] rounded-md lg:p-10 p-5 flex flex-col gap-8 w-full lg:w-[70%]">
-      <h1 className="text-3xl font-bold text-lingo-black">
-        <span
-          aria-hidden="true"
-          style={{
-            fontFamily: "var(--font-noto-ge), sans-serif",
-            fontFeatureSettings: "'case' on",
-          }}
-        >
-          {toMtavruli(position.title)}
-        </span>
-        <span className="sr-only">{position.title}</span>
+      <h1
+        style={{ fontFeatureSettings: "'case' on" }}
+        className="text-3xl font-bold text-lingo-black"
+      >
+        {position.title}
       </h1>
       <div className="flex flex-wrap gap-5 md:flex-nowrap">
         <div className="flex items-center gap-2">

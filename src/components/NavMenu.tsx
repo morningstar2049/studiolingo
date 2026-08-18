@@ -69,7 +69,13 @@ function NavMenu({
               {item.icon}
             </span>
             <span className="flex flex-col">
-              <span className="font-bold leading-tight transition-colors nm-title text-[14px] text-lingo-black">
+              <span
+                style={{
+                  fontFamily: "var(--font-firago), sans-serif",
+                  fontFeatureSettings: "'case' on",
+                }}
+                className="font-bold leading-tight transition-colors nm-title text-[14px] text-lingo-black"
+              >
                 {item.name}
               </span>
               {item.description && (
