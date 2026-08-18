@@ -3,7 +3,7 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 import { SITE_URL } from "@/lib/schema";
 import { getReviews, type Review } from "@/sanity/queries";
 import { fallbackReviews } from "./reviewsData";
-import ReviewCard from "./ReviewCard";
+import ReviewsGrid from "./ReviewsGrid";
 import RevealOnScroll from "../RevealOnScroll";
 
 const GOOGLE_REVIEWS_URL = "https://maps.app.goo.gl/jjNmMYDcq6hFzN1VA";
@@ -64,11 +64,7 @@ async function Reviews() {
         </h2>
       </RevealOnScroll>
 
-      <div className="grid items-start w-full max-w-6xl grid-cols-1 gap-6 px-5 mx-auto sm:grid-cols-2 lg:grid-cols-3">
-        {list.map((review, i) => (
-          <ReviewCard key={`${review.author}-${i}`} review={review} />
-        ))}
-      </div>
+      <ReviewsGrid reviews={list} />
 
       <a
         href={GOOGLE_REVIEWS_URL}
