@@ -47,7 +47,10 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
         </p>
       )}
       <div>
-        <h2 className="text-xl font-bold text-lingo-green">
+        <h2
+          style={{ fontFeatureSettings: "'case' on" }}
+          className="text-xl font-bold text-lingo-green"
+        >
           ძირითადი მოვალეობებია:
         </h2>
         <ul className="p-5 list-disc">
@@ -59,14 +62,20 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
       <p>{position.extraText}</p>
       {position.workHours ? (
         <div>
-          <h2 className="text-xl font-bold text-lingo-green">
+          <h2
+            style={{ fontFeatureSettings: "'case' on" }}
+            className="text-xl font-bold text-lingo-green"
+          >
             სამუშაო გრაფიკი:
           </h2>
           <p className="py-5">{position.workHours}</p>
         </div>
       ) : null}
       <div>
-        <h2 className="text-xl font-bold text-lingo-green">
+        <h2
+          style={{ fontFeatureSettings: "'case' on" }}
+          className="text-xl font-bold text-lingo-green"
+        >
           თქვენგან ვითხოვთ, რომ:
         </h2>
         <ul className="p-5 list-disc">
@@ -83,7 +92,10 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
         />
       </RevealOnScroll>
       <div>
-        <h2 className="text-xl font-bold text-lingo-green">
+        <h2
+          style={{ fontFeatureSettings: "'case' on" }}
+          className="text-xl font-bold text-lingo-green"
+        >
           ჩვენი გუნდი გთავაზობთ:
         </h2>
         <ul className="p-5 list-disc">
@@ -95,7 +107,10 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
       <p>{position.salary}</p>
       {positionKey === "contentCreator" && (
         <div>
-          <h2 className="text-xl font-bold text-lingo-green">
+          <h2
+            style={{ fontFeatureSettings: "'case' on" }}
+            className="text-xl font-bold text-lingo-green"
+          >
             შერჩევა არის სამეტაპიანი:
           </h2>
           <ul className="p-5 list-disc">
@@ -117,9 +132,13 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
           წარმატების ისტორიის განუყოფელი ნაწილი!
         </p>
       )}
-      <a href={position.googleFormLink} target="_blank">
-        <Button>განაცხადის გაგზავნა</Button>
-      </a>
+      <RevealOnScroll stable>
+        <a href={position.googleFormLink} target="_blank">
+          <Button extraStyles="shadow-lg shadow-lingo-green/25">
+            განაცხადის გაგზავნა
+          </Button>
+        </a>
+      </RevealOnScroll>
     </div>
   );
 }

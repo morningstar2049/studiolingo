@@ -9,11 +9,13 @@ export default function RevealOnScroll({
   className = "",
   revealClass = "review-rise",
   delay = 0,
+  stable = false,
 }: {
   children: ReactNode;
   className?: string;
   revealClass?: string;
   delay?: number;
+  stable?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -27,11 +29,17 @@ export default function RevealOnScroll({
     }
     const observer = new IntersectionObserver(
       ([entry]) => setVisible(entry.isIntersecting),
-      { threshold: 0.2, rootMargin: "0px 0px -60px 0px" }
+      // `stable` is for elements at the very bottom of the page (e.g. a final
+      // CTA): a plain edge trigger, with no 0.2 ratio boundary or bottom
+      // margin, avoids the flicker that restarts the animation on mobile as
+      // the address bar resizes the viewport near the page end.
+      stable
+        ? { threshold: 0 }
+        : { threshold: 0.2, rootMargin: "0px 0px -60px 0px" }
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [stable]);
 
   return (
     <div
