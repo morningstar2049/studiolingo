@@ -1,17 +1,22 @@
 type TPosition = {
   title: string;
   intro?: string;
-  obligations: (string | JSX.Element)[];
+  obligations?: (string | JSX.Element)[];
   extraText?: string;
-  requirements: string[];
+  requirements?: (string | JSX.Element)[];
   workHours?: string;
-  offer: (string | JSX.Element)[];
-  salary: JSX.Element;
+  offer?: (string | JSX.Element)[];
+  salary?: JSX.Element;
   location: string;
   time: string;
   salaryType: string;
   googleFormLink: string;
   metaImageUrl: string;
+  // Positions with a non-standard shape (e.g. the academy internship) define
+  // their own headed bullet sections + closing paragraph instead of the fixed
+  // obligations/requirements/offer blocks.
+  sections?: { heading: string; items: (string | JSX.Element)[] }[];
+  closingText?: string | JSX.Element;
 };
 
 type TPositionData = {
@@ -20,6 +25,7 @@ type TPositionData = {
   chineseTeacher: TPosition;
   contentCreator: TPosition;
   administrator: TPosition;
+  academyInternship: TPosition;
 };
 
 export const positionData: TPositionData = {
@@ -168,7 +174,7 @@ export const positionData: TPositionData = {
         დამატებით დეტალებს გაეცნობით{" "}
         <a
           className="underline text-lingo-green"
-          href="https://forms.gle/izvqRGjCB5pwU4T1A"
+          href="/career/academyInternship"
           target="_blank"
         >
           ამ ბმულზე
@@ -358,6 +364,86 @@ export const positionData: TPositionData = {
     salaryType: "კონკურენტული",
     googleFormLink: "https://forms.gle/sNGvDbdSdDoi7oXA9",
     metaImageUrl: "https://i.ibb.co/8gSDB4wp/administrator.png",
+  },
+  academyInternship: {
+    title: "მასწავლებელთა აკადემია",
+    location: "თბილისი",
+    time: "3 თვე",
+    salaryType: "უფასო კურსი",
+    googleFormLink: "https://forms.gle/izvqRGjCB5pwU4T1A",
+    metaImageUrl: "https://www.studiolingo.ge/og-image.png",
+    intro:
+      "Studio Lingo-ს მასწავლებელთა აკადემია მიზნად ისახავს წარმატებული კურსდამთავრებულების ჩვენს სკოლაში დასაქმებას.",
+    sections: [
+      {
+        heading: "წინ გელოდება უნიკალური შანსი:",
+        items: [
+          "გახდე პროფესიონალი მასწავლებელი",
+          "მიიღო მასტერკლასი პროფესიონალი მენტორებისგან",
+          "საკუთარი თვალით ნახო და დაესწრო მენტორების ონლაინ და ცოცხალ გაკვეთილებს",
+          "დასაქმდე ინგლისურის ენის ყველაზე რეიტინგულ სკოლაში",
+          "გამოჩნდე ყურებად ვიდეოებში და გაგიცნოს ფართო აუდიტორიამ",
+        ],
+      },
+      {
+        heading: "აკადემიის კურსი მოიცავს:",
+        items: [
+          "ტრეინინგ შეხვედრებს მენტორებთან ონლაინ და ადგილზე",
+          "პრაქტიკულ დავალებებს",
+          "მენტორების ონლაინ და ცოცხალ ჯგუფურ გაკვეთილებზე დამსწრე და ასისტენტ მასწავლებლად დასწრებას",
+          "სასწავლო და ენობრივ ქუიზებს",
+          "სატესტო გაკვეთილებს ზრდასრულ მოსწავლეებთან",
+          "აკადემიის წინა კურსდამთავრებულების გამოცდილების გაზიარებას",
+        ],
+      },
+      {
+        heading: "კურსის დასრულების შემდეგ შეძლებ:",
+        items: [
+          "ინდივიდუალური და ჯგუფური გაკვეთილების პროფესიონალურად და თავდაჯერებულად ჩატარებას როგორც ონლაინ, ასევე ადგილზე ზრდასრულ და მოზარდ მოსწავლეებთან",
+          "ნებისმიერი რთული ენობრივი საკითხის მარტივი ენით ახსნას",
+          "Studio Lingo-ს ყველა უნიკალური სასწავლო მეთოდის პროფესიონალურად გამოყენებას",
+          "პროფესიული ონლაინ სასწავლო პლატფორმებისა და ხელსაწყოების გამოყენებას",
+          "ხელოვნური ინტელექტის გამოყენებას სწავლებაში",
+          "ენობრივი კომპეტენციის გაუმჯობესებას (საჭიროებისამებრ)",
+          "ადამიანებთან ურთიერთობის ხელოვნების დაუფლებას",
+          "კამერასთან თავისუფლად მუშაობას",
+          "ორგანიზაციაში მუშაობისა და ორგანიზაციული კულტურის გაცნობას",
+          "ჩვენს სკოლაში დასაქმებას",
+        ],
+      },
+      {
+        heading: "სტაჟირების დეტალები:",
+        items: [
+          "სტაჟირების ხანგრძლივობა — 3 თვე",
+          "აკადემიის კურსი ყველასთვის უფასოა და მოიცავს სალექციო და პრაქტიკულ შეხვედრებს — ონლაინ და ადგილზე ჩვენს ოფისში",
+          "ონლაინ სალექციო შეხვედრები მენტორთან — კვირაში 3 (თითო 30-40 წთ)",
+          "აქტიური პრაქტიკები — კვირაში თითო",
+          "ჯამში კვირაში თქვენგან ვითხოვთ 3-4 საათს 🕰️",
+          "წარმატებულ კურსდამთავრებულს საზეიმოდ გადაეცემა სერთიფიკატი და ოფიციალურად ჯუნიორ მასწავლებლის წოდება 🏆",
+        ],
+      },
+      {
+        heading: "ჩვენთვის მთავარია:",
+        items: [
+          "ინგლისურს ფლობდე გამართულად მინიმუმ B2 დონეზე",
+          "იყო მინიმუმ 21 წლის",
+          "იყო მინიმუმ მე-4 კურსის სტუდენტი (რათა უნივერსიტეტმაც მოგცეს ჩვენთან სწავლის საშუალება)",
+          "საკუთარ თავს მხოლოდ სწავლების სფეროში ხედავდე",
+          "გინდოდეს ჩვენს სკოლაში მასწავლებლად სრულ განაკვეთზე დასაქმება",
+          "ცხოვრობდე თბილისში",
+        ],
+      },
+    ],
+    closingText: (
+      <>
+        📍 ჩვენი ოფისის მისამართია წერეთლის 116.
+        <br />
+        <br />
+        თუ ეს ყველაფერი შენთვის საინტერესო და მიმზიდველია, წინ გელოდება
+        ინგლისურად შესავსები ფორმა, რომ გადადგა პირველი ნაბიჯი შენი ცხოვრების
+        ყველაზე საინტერესო გზაზე! 🚀
+      </>
+    ),
   },
   // reporter: {
   //   title: "რეპორტიორი",

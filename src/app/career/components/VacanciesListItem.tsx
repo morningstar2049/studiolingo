@@ -9,6 +9,10 @@ export type VacanciesListItemProps = {
   location: string;
   salary: string;
   route: string;
+  // Per-card overrides for the two right-hand meta labels (e.g. the academy
+  // internship uses "პერიოდი" / "გადასახადი" instead of the job defaults).
+  timeLabel?: string;
+  salaryLabel?: string;
 };
 
 function VacanciesListItem({
@@ -17,11 +21,13 @@ function VacanciesListItem({
   time,
   salary,
   route,
+  timeLabel = "განაკვეთი",
+  salaryLabel = "ანაზღაურება",
 }: VacanciesListItemProps) {
   const meta = [
     { Icon: IoLocationOutline, label: "ლოკაცია", value: location },
-    { Icon: BiTimeFive, label: "განაკვეთი", value: time },
-    { Icon: BiWallet, label: "ანაზღაურება", value: salary },
+    { Icon: BiTimeFive, label: timeLabel, value: time },
+    { Icon: BiWallet, label: salaryLabel, value: salary },
   ];
 
   return (

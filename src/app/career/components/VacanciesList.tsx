@@ -8,6 +8,15 @@ export const vacancies: VacanciesListItemProps[] = [
     salary: "მაღალი",
     route: "englishTeacher",
   },
+  {
+    position: "მასწავლებელთა აკადემია",
+    location: "თბილისი",
+    time: "3 თვე",
+    timeLabel: "პერიოდი",
+    salary: "უფასო კურსი",
+    salaryLabel: "გადასახადი",
+    route: "academyInternship",
+  },
   // {
   //   position: "გერმანულის მასწავლებელი",
   //   location: "თბილისი",
@@ -43,14 +52,7 @@ function VacanciesList() {
     <div className="flex flex-col items-center justify-around gap-10">
       {!!vacancies.length ? (
         vacancies.map((vacancy) => (
-          <VacanciesListItem
-            key={vacancy.position}
-            position={vacancy.position}
-            location={vacancy.location}
-            time={vacancy.time}
-            salary={vacancy.salary}
-            route={vacancy.route}
-          />
+          <VacanciesListItem key={vacancy.position} {...vacancy} />
         ))
       ) : (
         <h1 className="text-lingo-green font-bold text-xl text-center h-[calc(100vh-200px)] flex items-center justify-center">
