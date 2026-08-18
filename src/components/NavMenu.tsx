@@ -82,7 +82,13 @@ function NavMenu({
                 {item.name}
               </span>
               {item.description && (
-                <span className="text-[11px] text-[#8a929d] mt-0.5">
+                <span
+                  style={{
+                    fontFamily: "var(--font-firago), sans-serif",
+                    fontFeatureSettings: "'case' on",
+                  }}
+                  className="text-[11px] text-[#8a929d] mt-0.5"
+                >
                   {item.description}
                 </span>
               )}
