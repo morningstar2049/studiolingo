@@ -1,9 +1,9 @@
 "use client";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { AiOutlineCloseCircle } from "react-icons/ai";
-import Image from "next/image";
 import Button from "./Button";
 import HeaderLogo from "./HeaderLogo";
+import SocialLinks from "./SocialLinks";
 import { useContext } from "react";
 import { MobileMenuContext } from "@/Context/MobileMenuContext";
 import { usePathname } from "next/navigation";
@@ -17,59 +17,8 @@ function Header() {
         <div className="ml-[16%]">
           <HeaderLogo height={72} width={72} />
         </div>
-        <div className="flex justify-end flex-1 gap-3 pr-[13%]">
-          {/* <a
-            href="https://docs.google.com/forms/d/e/1FAIpQLSfyXSZCZCGhCAHQV4Zn1AAuJxeb4Yll3Acs8EwkndGDmQTAZA/viewform?fbclid=IwAR1OVyQbCE_wBL2xDTIMfwI30o03Oc1eCdhRBSlvwEF6u4N48O2bzV88YAw"
-            className="flex items-center"
-            target="_blank"
-          >
-            {!pathname.includes("career") && (
-              <Button extraStyles="mr-5">შემოგვიერთდი</Button>
-            )}
-          </a> */}
-          <a href="https://www.facebook.com/studiolingo" target="_blank">
-            <Image
-              src="/facebook-green.svg"
-              alt="facebook-green"
-              width={55}
-              height={55}
-            />
-          </a>
-          <a href="https://www.instagram.com/studio_lingo/" target="_blank">
-            <Image
-              src="/instagram-green.svg"
-              alt="instagram-green"
-              width={55}
-              height={55}
-            />
-          </a>
-          <a href="https://www.tiktok.com/@studio.lingo" target="_blank">
-            <Image
-              src="/tiktok-green.svg"
-              alt="tikTok-green"
-              width={50}
-              height={50}
-            />
-          </a>
-          <a
-            href="https://www.linkedin.com/company/studio-lingo/"
-            target="_blank"
-          >
-            <Image
-              src="/linkedin-green.svg"
-              alt="linkedin-green"
-              width={50}
-              height={50}
-            />
-          </a>
-          <a href="https://www.youtube.com/@studio_lingo" target="_blank">
-            <Image
-              src="/youtube-green.svg"
-              alt="youtube-green"
-              width={50}
-              height={50}
-            />
-          </a>
+        <div className="flex justify-end flex-1 pr-[13%]">
+          <SocialLinks circleClass="h-12 w-12 text-xl" />
         </div>
       </header>
       <header className="flex items-center justify-between px-10 shadow-md bg-[#fffffe] h-11 sm:hidden py-11">

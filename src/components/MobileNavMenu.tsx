@@ -1,11 +1,11 @@
 "use client";
 import { useContext } from "react";
-import Image from "next/image";
 import { MobileMenuContext } from "@/Context/MobileMenuContext";
 import Link from "next/link";
 import { FaBookOpen, FaBuilding, FaStar } from "react-icons/fa6";
 import Button from "./Button";
 import MobileNavMenuItemAccordion from "./MobileNavMenuItemAccordion";
+import SocialLinks from "./SocialLinks";
 import { TNavItem } from "./Navbar";
 
 export default function MobileNavMenu() {
@@ -90,50 +90,8 @@ export default function MobileNavMenu() {
           })}
         </section>
 
-        <section className="flex gap-1 h-[10%]">
-          <a href="https://www.facebook.com/studiolingo" target="_blank">
-            <Image
-              src="/facebook-green.svg"
-              alt="facebook-green"
-              width={43}
-              height={43}
-            />
-          </a>
-          <a href="https://www.instagram.com/studio_lingo/" target="_blank">
-            <Image
-              src="/instagram-green.svg"
-              alt="instagram-green"
-              width={43}
-              height={43}
-            />
-          </a>
-          <a href="https://www.tiktok.com/@studio.lingo" target="_blank">
-            <Image
-              src="/tiktok-green.svg"
-              alt="tikTok-green"
-              width={40}
-              height={40}
-            />
-          </a>
-          <a
-            href="https://www.linkedin.com/company/studio-lingo/"
-            target="_blank"
-          >
-            <Image
-              src="/linkedin-green.svg"
-              alt="linkedin-green"
-              width={40}
-              height={40}
-            />
-          </a>
-          <a href="https://www.youtube.com/@studio_lingo" target="_blank">
-            <Image
-              src="/youtube-green.svg"
-              alt="youtube-green"
-              width={43}
-              height={43}
-            />
-          </a>
+        <section className="flex items-center h-[10%]">
+          <SocialLinks circleClass="h-10 w-10 text-lg" />
         </section>
       </div>
     </>
