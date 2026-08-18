@@ -11,6 +11,7 @@ import {
   FaMicrophone,
 } from "react-icons/fa";
 import LevelTest from "./LevelTest";
+import UserInfoForm from "./UserInfoForm";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 22 },
@@ -29,9 +30,14 @@ const stats = [
 ];
 
 export default function LevelTestWrapper({ levelTest }: TLevelTest) {
+  const [userInfo, setUserInfo] = useState<TUserInfo | null>(null);
   const [startTest, setStartTest] = useState(false);
 
-  if (startTest) return <LevelTest levelTest={levelTest} />;
+  // Step 1: collect the visitor's details before anything else.
+  if (!userInfo) return <UserInfoForm onSubmit={setUserInfo} />;
+
+  // Step 3: the test itself, once they've read the intro card.
+  if (startTest) return <LevelTest levelTest={levelTest} userInfo={userInfo} />;
 
   return (
     <motion.div

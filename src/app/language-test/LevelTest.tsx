@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CircularProgress } from "@mui/material";
 import { FaCheckCircle, FaRegClock, FaVolumeUp, FaCheck } from "react-icons/fa";
@@ -34,7 +34,10 @@ const tierIndexMap: Record<TLevel, number> = {
   C1: 3,
 };
 
-function LevelTest({ levelTest }: TLevelTest) {
+function LevelTest({
+  levelTest,
+  userInfo,
+}: TLevelTest & { userInfo: TUserInfo }) {
   const [value, setValue] = useState("");
   const [questionNumber, setQuestionNumber] = useState(0);
   const currentQuestion = levelTest[questionNumber] || {};
@@ -136,6 +139,25 @@ function LevelTest({ levelTest }: TLevelTest) {
   useEffect(() => {
     typeof window !== undefined && window.scrollTo(0, 0);
   }, []);
+
+  // Email the visitor's details + result to the school once, when the test
+  // finishes. Fire-and-forget: a mail failure never blocks the result screen.
+  const resultSentRef = useRef(false);
+  useEffect(() => {
+    if (!testResult || resultSentRef.current) return;
+    resultSentRef.current = true;
+    fetch("/api/level-test-result", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        firstName: userInfo.firstName,
+        lastName: userInfo.lastName,
+        email: userInfo.email,
+        result: levelsMap[testResult],
+        level: testResult,
+      }),
+    }).catch(() => {});
+  }, [testResult, userInfo]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue((event.target as HTMLInputElement).value);

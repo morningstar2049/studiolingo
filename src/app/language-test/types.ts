@@ -32,3 +32,9 @@ type TIncorrectAnswersCounter = Array<{ level: TLevel; count: number }>;
 type TTestResult = {
   resultLevel: TLevel;
 };
+
+type TUserInfo = {
+  firstName: string;
+  lastName: string;
+  email: string;
+};
