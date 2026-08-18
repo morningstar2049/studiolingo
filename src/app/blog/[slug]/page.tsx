@@ -170,7 +170,10 @@ export default async function BlogPostPage({ params }: Props) {
         }}
       />
 
-      <Link href="/blog" className="text-sm text-lingo-green hover:underline">
+      <Link
+        href="/blog"
+        className="text-sm font-bold text-lingo-green hover:underline"
+      >
         ← ყველა სტატია
       </Link>
 
