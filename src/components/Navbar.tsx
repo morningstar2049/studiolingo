@@ -1,7 +1,11 @@
 "use client";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { FaBookOpen, FaBuilding, FaStar } from "react-icons/fa6";
 import NavItem from "./NavItem";
+
+// Homepage in-page sections the nav links to (anchor hrefs above).
+const SECTION_IDS = ["courses", "corporate", "reviews", "contact"];
 
 type HRef = `#${string}` | `/${string}`;
 
@@ -15,6 +19,38 @@ export type TNavItem = {
 
 function Navbar() {
   const pathname = usePathname();
+  const isHome = pathname === "/";
+  const [activeSection, setActiveSection] = useState("");
+
+  // Scrollspy: keep the nav item highlighted while its homepage section is the
+  // one on screen. Only runs on the homepage, where these sections exist.
+  useEffect(() => {
+    if (!isHome) {
+      setActiveSection("");
+      return;
+    }
+    const els = SECTION_IDS.map((id) => document.getElementById(id)).filter(
+      (el): el is HTMLElement => el !== null,
+    );
+    if (els.length === 0) return;
+    const inBand = new Set<string>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) inBand.add(e.target.id);
+          else inBand.delete(e.target.id);
+        });
+        // The section currently in the band, or none — so scrolling back up to
+        // the banner clears the highlight instead of leaving კურსები selected.
+        setActiveSection(SECTION_IDS.find((id) => inBand.has(id)) ?? "");
+      },
+      // A thin band across the vertical middle of the viewport: whichever
+      // section sits in it is "open".
+      { rootMargin: "-45% 0px -45% 0px", threshold: 0 },
+    );
+    els.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [isHome]);
 
   const navItems: TNavItem[] = [
     {
@@ -51,9 +87,26 @@ function Navbar() {
 
   // Bare anchors only resolve on the homepage, so prefix them with "/" when the
   // nav renders on any other page.
-  const isHome = pathname === "/";
   const resolveHref = (href?: HRef) =>
     href && href.startsWith("#") && !isHome ? (`/${href}` as HRef) : href;
+
+  // A page link is active on its own route; an anchor link (or the dropdown
+  // parent that contains anchors) is active while its section is on screen.
+  const isActive = (item: TNavItem): boolean => {
+    if (item.menuItems) {
+      return (
+        isHome &&
+        item.menuItems.some(
+          (m) => m.href?.startsWith("#") && m.href.slice(1) === activeSection,
+        )
+      );
+    }
+    if (!item.href) return false;
+    if (item.href.startsWith("#")) {
+      return isHome && item.href.slice(1) === activeSection;
+    }
+    return pathname === item.href;
+  };
 
   return (
     <>
@@ -67,6 +120,7 @@ function Navbar() {
               key={item.name}
               name={item.name}
               href={resolveHref(item.href)}
+              active={isActive(item)}
               menuItems={item.menuItems?.map((menuItem) => ({
                 ...menuItem,
                 href: resolveHref(menuItem.href),

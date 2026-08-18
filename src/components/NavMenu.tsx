@@ -26,6 +26,7 @@ function NavMenu({
       anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
       transformOrigin={{ vertical: "top", horizontal: "left" }}
       MenuListProps={{ sx: { py: 0 } }}
+      disableAutoFocusItem
       slotProps={{
         paper: {
           elevation: 0,
@@ -53,12 +54,14 @@ function NavMenu({
             marginBottom: "2px",
             transition: "background-color .2s",
             "&:last-of-type": { marginBottom: 0 },
-            "&:hover": { backgroundColor: "#f2faf5" },
-            "&:hover .nm-ic": {
+            "&:hover, &.Mui-focusVisible": { backgroundColor: "#f2faf5" },
+            "&:hover .nm-ic, &.Mui-focusVisible .nm-ic": {
               background: "linear-gradient(135deg,#3bb85e,#2f9e4d)",
               color: "#fff",
             },
-            "&:hover .nm-title": { color: "#2f9e4d" },
+            "&:hover .nm-title, &.Mui-focusVisible .nm-title": {
+              color: "#2f9e4d",
+            },
           }}
         >
           <Link

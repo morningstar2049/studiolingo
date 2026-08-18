@@ -8,9 +8,9 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import NavMenu from "./NavMenu";
 
-type TNavItemProps = TNavItem;
+type TNavItemProps = TNavItem & { active?: boolean };
 
-function NavItem({ name, href, menuItems }: TNavItemProps) {
+function NavItem({ name, href, menuItems, active = false }: TNavItemProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -24,7 +24,11 @@ function NavItem({ name, href, menuItems }: TNavItemProps) {
     <>
       {href ? (
         <Link href={href} key={name}>
-          <div className="cursor-pointer p-1 rounded hover:text-lingo-green hover:bg-[#fff] transition-all">
+          <div
+            className={`cursor-pointer p-1 rounded transition-all hover:text-lingo-green hover:bg-[#fff] ${
+              active ? "text-lingo-green bg-[#fff]" : ""
+            }`}
+          >
             {name}
           </div>
         </Link>
@@ -32,7 +36,9 @@ function NavItem({ name, href, menuItems }: TNavItemProps) {
         <>
           <div
             key={name}
-            className="flex items-center relative gap-2 cursor-pointer p-1 rounded hover:text-lingo-green hover:bg-[#fff] transition-all"
+            className={`flex items-center relative gap-2 cursor-pointer p-1 rounded transition-all hover:text-lingo-green hover:bg-[#fff] ${
+              active ? "text-lingo-green bg-[#fff]" : ""
+            }`}
             id="basic-button"
             aria-controls={isMenuOpen ? "menu-popover" : undefined}
             aria-haspopup="true"
