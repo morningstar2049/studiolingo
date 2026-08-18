@@ -204,7 +204,7 @@ export default async function BlogPostPage({ params }: Props) {
       <div className="pt-8 mt-12 border-t border-[#e5e7eb]">
         <Link
           href="/#courses"
-          className="flex items-center justify-center gap-2 px-6 py-4 mb-8 font-bold text-center text-[#fff] transition-opacity bg-lingo-green rounded-xl hover:opacity-90"
+          className="flex items-center justify-center gap-2 px-6 py-4 mb-8 font-bold text-center text-[#fff] transition-opacity bg-lingo-green rounded-xl shadow-lg shadow-lingo-green/25 hover:opacity-90"
         >
           <span style={{ fontFeatureSettings: "'case' on" }}>
             გაეცანი სტუდიო ლინგოს კურსებს
