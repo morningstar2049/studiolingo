@@ -40,7 +40,7 @@ const nextLevelLabel: Record<TLevel, string> = {
   "სრულიად დამწყები": "Elementary - (A1)",
   A1: "Elementary (A2)",
   A2: "Intermediate (B1)",
-  B1: "Intermediate + (B2)",
+  B1: "Intermediate + (B1+/B2)",
   "B1+": "Advanced (C1)",
   B2: "Advanced (C1)",
   C1: "Advanced (C1)",

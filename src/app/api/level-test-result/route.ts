@@ -45,8 +45,8 @@ export async function POST(request: Request) {
       ["გვარი", lastName],
       ["ელ. ფოსტა", email],
       ["შედეგი", result],
-      ["უნდა დაიწყოს", String(recommendedLevel ?? "")],
       ["დონე (CEFR)", String(level ?? "")],
+      ["უნდა დაიწყოს", String(recommendedLevel ?? "")],
     ];
 
     const text = rows.map(([k, v]) => `${k}: ${v}`).join("\n");
