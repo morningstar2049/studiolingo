@@ -41,7 +41,7 @@ export default function UserInfoForm({
   };
 
   const inputClass = (field: string) =>
-    `w-full px-4 py-3 text-[15px] text-left border rounded-xl outline-none transition-colors appearance-none focus:border-lingo-green ${
+    `w-full px-4 py-3 text-base text-left border rounded-xl outline-none transition-colors appearance-none focus:border-lingo-green ${
       errors[field] ? "border-[#e24b4a]" : "border-[#eceef2]"
     }`;
 

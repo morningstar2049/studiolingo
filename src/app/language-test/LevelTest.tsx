@@ -34,6 +34,22 @@ const tierIndexMap: Record<TLevel, number> = {
   C1: 3,
 };
 
+// Per-level detail text shown under "დეტალურად ამ დონის შესახებ" on the result
+// screen. B1+ and B2 share the "Intermediate +" copy.
+const intermediatePlus =
+  "მშვენიერი შედეგია! შენ ალბათ თავისუფლად და სპონტანურადაც კი ესაუბრები უცხოელებს და მარტივად იგებ რთულ ტექსტებს. ჩანს, გრამატიკაშიც სერიოზულად ფლობ ბევრ საკითხს და შეიძლება საუბარშიც კი იცოდე გრამატიკის სწორად გამოყენება. შემოგვიერთდი „სტუდიო ლინგოში“ და გახადე შენი ინგლისური კიდევ უფრო სრულყოფილი და პროფესიული.";
+
+const levelDescriptions: Partial<Record<TLevel, string>> = {
+  "სრულიად დამწყები":
+    "ინგლისურთან შეხება ალბათ ჯერ თითქმის არ გქონია და მხოლოდ რამდენიმე სიტყვა იცი. ყველაფერი წინ არის! სრულიად ნულიდანაც გასწავლით ყველაფერს, თუ საჭირო იქნება. შემოგვიერთდი „სტუდიო ლინგოში“ და ერთად დავიწყოთ ეს საინტერესო თავგადასავალი.",
+  A1: "როგორც ჩანს, შენ უკვე შეგიძლია მარტივი, ყოველდღიური ფრაზების რაღაც დონეზე გაგება. გრამატიკის საწყისებიც იცი და შეიძლება საკუთარი თავის საბაზისო დონეზე წარდგენასაც ახერხებ. ახლა კი შეგიძლია ეს ბაზაც განიმტკიცო. დაიწყე სწავლა „სტუდიო ლინგოში“ და თამამად გადადგი ნაბიჯი შემდეგი დონისკენ.",
+  A2: "ჩანს, შენ კარგად გესმის ყოველდღიური ფრაზები და იცი სიტყვები ნაცნობ თემებზე. გრამატიკაშიც გქონია გარკვეული ტიპის ცოდნა. კომუნიკაციაც შეიძლება არ გიჭირდეს თუ ამ ცოდნის სწორად გამოყენება იცი. „სტუდიო ლინგოში“ სიამოვნებით დაგეხმარებით, რომ შენი ინგლისური კიდევ უფრო გამართული და დამაჯერებელი გახდეს.",
+  B1: "ყოჩაღ! შენ უკვე კარგად იცი ყოველდღიური ფრაზები და მოგზაურობის დროსაც ალბათ იყენებ კიდეც. გრამატიკაშიც გაქვს გარკვეული ცოდნა. თუ გინდა ენა უფრო პროფესიულ დონეზე აიყვანო და საუბარშიც უფრო თავდაჯერებული იყო, „სტუდიო ლინგო“ დაგეხმარება, დაძლიო ბარიერები და ისაუბრო სრულიად თავისუფლად!",
+  "B1+": intermediatePlus,
+  B2: intermediatePlus,
+  C1: "ფაქტობრივად, ინგლისურად ფიქრობ! მარტივად იჭერ ქვეტექსტებს და აზრს წამიერად, ბუნებრივად გამოხატავ. შენ უკვე ინგლისურის მაღალ დონეზე მცოდნე ხარ! თუ ენობრივი პრაქტიკის შენარჩუნება ან უნარების კიდევ უფრო დახვეწა გსურს, „სტუდიო ლინგოს“ კარი შენთვის ყოველთვის ღიაა.",
+};
+
 function LevelTest({
   levelTest,
   userInfo,
@@ -46,6 +62,7 @@ function LevelTest({
   );
   const [testResult, setTestResult] = useState<TLevel>();
   const [isLoading, setIsLoading] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
 
   const isTestFinished =
     incorrectAnswersCounter.reduce((prev, curr) => {
@@ -225,9 +242,26 @@ function LevelTest({
             </div>
           </div>
 
+          <button
+            type="button"
+            onClick={() => setShowDetails((v) => !v)}
+            className="w-full py-3 mt-7 font-bold transition-all rounded-xl text-lingo-green ring-1 ring-lingo-green hover:bg-lingo-green/5"
+          >
+            {showDetails ? "დამალვა" : "დეტალურად ამ დონის შესახებ"}
+          </button>
+          {showDetails && (
+            <div
+              style={{ fontFeatureSettings: "normal" }}
+              className="p-4 mt-3 text-sm leading-relaxed text-left rounded-xl text-[#4b5563] bg-[#f6f8f7] whitespace-pre-line"
+            >
+              {levelDescriptions[testResult as TLevel] ||
+                "ამ დონის დეტალური აღწერა მალე დაემატება."}
+            </div>
+          )}
+
           <a
             href="/#courses"
-            className="block py-3.5 mt-7 font-bold text-[#fff] transition-all rounded-xl bg-lingo-green shadow-lg shadow-lingo-green/25 hover:bg-[#2f904d] hover:scale-[1.02]"
+            className="block py-3.5 mt-4 font-bold text-[#fff] transition-all rounded-xl bg-lingo-green shadow-lg shadow-lingo-green/25 hover:bg-[#2f904d] hover:scale-[1.02]"
           >
             დაიწყე შესაბამისი კურსი →
           </a>
@@ -320,7 +354,7 @@ function LevelTest({
                     value={value}
                     onChange={handleChange}
                     placeholder="შენი პასუხი…"
-                    className="w-full px-4 py-3 mt-4 text-[15px] border border-[#eceef2] rounded-xl outline-none transition-colors appearance-none focus:border-lingo-green"
+                    className="w-full px-4 py-3 mt-4 text-base border border-[#eceef2] rounded-xl outline-none transition-colors appearance-none focus:border-lingo-green"
                   />
                 </div>
               )}
