@@ -1,7 +1,13 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
-type Props = { label: string; accent: string; href: string; index?: number };
+type Props = {
+  label: string;
+  sub?: string;
+  accent: string;
+  href: string;
+  index?: number;
+};
 
 function hexToRgba(hex: string, a: number) {
   const h = hex.replace("#", "");
@@ -11,7 +17,7 @@ function hexToRgba(hex: string, a: number) {
   return `rgba(${r},${g},${b},${a})`;
 }
 
-function PdfWrapper({ label, accent, href, index = 0 }: Props) {
+function PdfWrapper({ label, sub, accent, href, index = 0 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -100,6 +106,11 @@ function PdfWrapper({ label, accent, href, index = 0 }: Props) {
               <div className="mt-1 text-[19px] font-bold leading-tight text-lingo-black">
                 {label}
               </div>
+              {sub && (
+                <div className="mt-0.5 text-[13px] font-semibold text-[#6b7280]">
+                  {sub}
+                </div>
+              )}
               <div
                 className="mt-2.5 h-[3px] w-9 rounded"
                 style={{ background: accent }}
