@@ -61,18 +61,35 @@ function getYoutubeId(url?: string): string | null {
   return match ? match[1] : null;
 }
 
-const components: PortableTextComponents = {
+// Only these two original articles keep their in-text heading reveal
+// animation; every later article (and all future ones) renders headings
+// statically.
+const ANIMATED_HEADING_SLUGS = ["english-with-movies", "5-habits-for-english"];
+
+const getComponents = (
+  animateHeadings: boolean,
+): PortableTextComponents => ({
   block: {
-    h2: ({ children }) => (
-      <RevealOnScroll className="mt-8 mb-3">
-        <h2 className="text-2xl font-bold text-lingo-black">{children}</h2>
-      </RevealOnScroll>
-    ),
-    h3: ({ children }) => (
-      <RevealOnScroll className="mt-6 mb-2">
-        <h3 className="text-xl font-bold text-lingo-black">{children}</h3>
-      </RevealOnScroll>
-    ),
+    h2: ({ children }) =>
+      animateHeadings ? (
+        <RevealOnScroll className="mt-8 mb-3">
+          <h2 className="text-2xl font-bold text-lingo-black">{children}</h2>
+        </RevealOnScroll>
+      ) : (
+        <h2 className="mt-8 mb-3 text-2xl font-bold text-lingo-black">
+          {children}
+        </h2>
+      ),
+    h3: ({ children }) =>
+      animateHeadings ? (
+        <RevealOnScroll className="mt-6 mb-2">
+          <h3 className="text-xl font-bold text-lingo-black">{children}</h3>
+        </RevealOnScroll>
+      ) : (
+        <h3 className="mt-6 mb-2 text-xl font-bold text-lingo-black">
+          {children}
+        </h3>
+      ),
     blockquote: ({ children }) => (
       <blockquote className="pl-4 my-6 italic border-l-4 border-lingo-green">
         {children}
@@ -128,7 +145,7 @@ const components: PortableTextComponents = {
       );
     },
   },
-};
+});
 
 function formatDate(value: string) {
   return new Date(value).toLocaleDateString("ka-GE", {
@@ -223,7 +240,10 @@ export default async function BlogPostPage({ params }: Props) {
       )}
 
       <article>
-        <PortableText value={post.body} components={components} />
+        <PortableText
+          value={post.body}
+          components={getComponents(ANIMATED_HEADING_SLUGS.includes(post.slug))}
+        />
       </article>
 
       <div className="pt-8 mt-12 border-t border-[#e5e7eb]">
