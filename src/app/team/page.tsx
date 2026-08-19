@@ -10,8 +10,13 @@ export const metadata: Metadata = {
   title,
   description,
   alternates: { canonical: "/team" },
-  openGraph: { title, description, type: "website" },
-  twitter: { card: "summary_large_image", title, description },
+  openGraph: { title, description, type: "website", images: ["/og-logo.png"] },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    images: ["/og-logo.png"],
+  },
 };
 
 export default function TeamPage() {

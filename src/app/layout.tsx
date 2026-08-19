@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "სტუდიო ლინგო - ინგლისური ენების სკოლა",
     description: "ისწავლეთ ინგლისური სტუდიო ლინგოში!",
-    images: ["/og-image.png"],
+    images: ["/og-logo.png"],
   },
 };
 

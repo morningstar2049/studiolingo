@@ -371,7 +371,7 @@ export const positionData: TPositionData = {
     time: "3 თვე",
     salaryType: "უფასო კურსი",
     googleFormLink: "https://forms.gle/izvqRGjCB5pwU4T1A",
-    metaImageUrl: "https://www.studiolingo.ge/og-image.png",
+    metaImageUrl: "https://www.studiolingo.ge/og-logo.png",
     intro:
       "Studio Lingo-ს მასწავლებელთა აკადემია მიზნად ისახავს წარმატებული კურსდამთავრებულების ჩვენს სკოლაში დასაქმებას.",
     sections: [

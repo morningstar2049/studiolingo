@@ -15,8 +15,14 @@ export const metadata: Metadata = {
   title,
   description,
   alternates: { canonical: "/blog" },
-  openGraph: { title, description, type: "website" },
-  twitter: { card: "summary_large_image", title, description },
+  // Blog keeps the tagline share image; the rest of the site uses the logo.
+  openGraph: { title, description, type: "website", images: ["/og-image.png"] },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    images: ["/og-image.png"],
+  },
 };
 
 export const revalidate = 60;

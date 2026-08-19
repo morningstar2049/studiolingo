@@ -9,12 +9,12 @@ export const metadata: Metadata = {
   title,
   description,
   alternates: { canonical: "/materials" },
-  openGraph: { title, description, images: ["/og-image.png"] },
+  openGraph: { title, description, images: ["/og-logo.png"] },
   twitter: {
     card: "summary_large_image",
     title,
     description,
-    images: ["/og-image.png"],
+    images: ["/og-logo.png"],
   },
 };
 

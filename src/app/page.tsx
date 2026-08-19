@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 const title = "ინგლისური ენის კურსები თბილისში და ონლაინ | Studio Lingo";
 const description =
   "ინგლისურის კურსები ზრდასრულთათვის და მოზარდებისთვის — საბურთალოზე და ონლაინ. A1-C1 დონეები, მცირე ჯგუფები, პრაქტიკული მეთოდები. გაიარეთ ონლაინ ენის ტესტი.";
-const image = "/og-image.png";
+const image = "/og-logo.png";
 
 export const metadata: Metadata = {
   title,
