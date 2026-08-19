@@ -24,8 +24,8 @@ const fadeUp = {
 
 const stats = [
   { Icon: FaRegListAlt, value: "48", label: "კითხვა" },
-  { Icon: FaRegClock, value: "40–60წ", label: "კითხვაზე" },
-  { Icon: FaBrain, value: "ადაპტიური", label: "ჩერდება დონეზე" },
+  { Icon: FaRegClock, value: "40–60 წამი", label: "კითხვაზე" },
+  { Icon: FaBrain, value: "მორგებული", label: "ჩერდება დონეზე" },
   { Icon: FaChartBar, value: "A1–C1", label: "დონეები" },
 ];
 
@@ -68,7 +68,7 @@ export default function LevelTestWrapper({ levelTest }: TLevelTest) {
         custom={2}
         className="mt-3 text-sm sm:text-base text-[#6b7280]"
       >
-        ადაპტიური ტესტი — A1-დან C1-მდე, რამდენიმე წუთში
+        მორგებული ტესტი — A1-დან C1-მდე, რამდენიმე წუთში
       </motion.p>
 
       <motion.div
@@ -77,9 +77,9 @@ export default function LevelTestWrapper({ levelTest }: TLevelTest) {
         className="grid grid-cols-2 gap-3 mt-7 sm:grid-cols-4"
       >
         {stats.map(({ Icon, value, label }) => (
-          <div key={label} className="px-2 py-3 bg-[#f6f8f7] rounded-xl">
+          <div key={label} className="px-2 py-3 bg-[#f6f8f7] rounded-xl sm:px-1.5">
             <Icon className="mx-auto text-xl text-lingo-green" />
-            <div className="mt-1.5 text-[17px] font-bold text-lingo-black">
+            <div className="mt-1.5 text-[17px] leading-tight font-bold text-lingo-black sm:text-[15px] sm:tracking-tight">
               {value}
             </div>
             <div className="text-[10px] text-[#8a929d]">{label}</div>
@@ -92,11 +92,11 @@ export default function LevelTestWrapper({ levelTest }: TLevelTest) {
         custom={4}
         className="grid grid-cols-1 gap-3 mt-6 sm:grid-cols-2 sm:gap-4 text-[13px] text-[#6b7280]"
       >
-        <span className="flex items-center justify-center gap-1.5 text-center sm:flex-col sm:gap-2">
+        <span className="flex items-center justify-center gap-2 text-center sm:flex-col">
           <FaVolumeUp className="text-base shrink-0 text-lingo-green" />
           მოსასმენი კითხვები — ჩაწერე პასუხი
         </span>
-        <span className="flex items-center justify-center gap-1.5 text-center sm:flex-col sm:gap-2">
+        <span className="flex items-center justify-center gap-2 text-center sm:flex-col">
           <FaMicrophone className="text-base shrink-0 text-lingo-green" />
           ზეპირი შემოწმება მეტი სიზუსტისთვის
         </span>
