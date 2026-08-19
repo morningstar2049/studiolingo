@@ -8,12 +8,29 @@ import { useContext } from "react";
 import { MobileMenuContext } from "@/Context/MobileMenuContext";
 import { usePathname } from "next/navigation";
 
-function Header() {
+function Header({ scrolled = false }: { scrolled?: boolean }) {
   const { isOpen, handleOpen, handleClose } = useContext(MobileMenuContext);
+
+  // Applied inline (not a Tailwind opacity class) so it renders reliably: on
+  // scroll the header is 97% white — almost solid, with just a faint blur.
+  // Apple.com's frosted nav recipe: ~80% white + a heavy blur with a saturation
+  // boost, which is what makes the colours behind glow through the frost.
+  const scrolledStyle = scrolled
+    ? {
+        backgroundColor: "rgba(255,255,255,0.8)",
+        backdropFilter: "saturate(180%) blur(20px)",
+        WebkitBackdropFilter: "saturate(180%) blur(20px)",
+      }
+    : undefined;
 
   return (
     <>
-      <header className="hidden animate-appear bg-[#fff] h-[110px] sm:flex items-center shadow-md">
+      <header
+        style={scrolledStyle}
+        className={`hidden animate-appear h-[110px] sm:flex items-center shadow-md transition-colors duration-300 ${
+          scrolled ? "" : "bg-[#fff]"
+        }`}
+      >
         <div className="ml-[16%]">
           <HeaderLogo height={72} width={72} />
         </div>
@@ -21,7 +38,12 @@ function Header() {
           <SocialLinks circleClass="h-12 w-12 text-xl" />
         </div>
       </header>
-      <header className="flex items-center justify-between px-10 shadow-md bg-[#fffffe] h-11 sm:hidden py-11">
+      <header
+        style={scrolled && !isOpen ? scrolledStyle : undefined}
+        className={`flex items-center justify-between px-10 shadow-md h-11 sm:hidden py-11 transition-colors duration-300 ${
+          scrolled && !isOpen ? "" : "bg-[#fffffe]"
+        }`}
+      >
         <div className="flex items-center justify-between w-full pl-8 animate-appear sm:hidden">
           <HeaderLogo height={48} width={48} />
           {!isOpen ? (
