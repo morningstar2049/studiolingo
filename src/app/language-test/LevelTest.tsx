@@ -34,6 +34,18 @@ const tierIndexMap: Record<TLevel, number> = {
   C1: 3,
 };
 
+// The level a visitor should START at — one step above their result — sent in
+// the result email ("უნდა დაიწყოს"). C1 is already the top.
+const nextLevelLabel: Record<TLevel, string> = {
+  "სრულიად დამწყები": "Elementary - (A1)",
+  A1: "Elementary (A2)",
+  A2: "Intermediate (B1)",
+  B1: "Intermediate + (B2)",
+  "B1+": "Advanced (C1)",
+  B2: "Advanced (C1)",
+  C1: "Advanced (C1)",
+};
+
 // Per-level detail text shown under "დეტალურად ამ დონის შესახებ" on the result
 // screen. B1+ and B2 share the "Intermediate +" copy.
 const intermediatePlus =
@@ -172,6 +184,7 @@ function LevelTest({
         email: userInfo.email,
         result: levelsMap[testResult],
         level: testResult,
+        recommendedLevel: nextLevelLabel[testResult],
       }),
     }).catch(() => {});
   }, [testResult, userInfo]);

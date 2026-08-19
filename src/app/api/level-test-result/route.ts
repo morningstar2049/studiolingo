@@ -17,7 +17,8 @@ const escapeHtml = (s: string) =>
 
 export async function POST(request: Request) {
   try {
-    const { firstName, lastName, email, result, level } = await request.json();
+    const { firstName, lastName, email, result, level, recommendedLevel } =
+      await request.json();
 
     if (!firstName || !lastName || !email || !result) {
       return NextResponse.json(
@@ -44,6 +45,7 @@ export async function POST(request: Request) {
       ["გვარი", lastName],
       ["ელ. ფოსტა", email],
       ["შედეგი", result],
+      ["უნდა დაიწყოს", String(recommendedLevel ?? "")],
       ["დონე (CEFR)", String(level ?? "")],
     ];
 
