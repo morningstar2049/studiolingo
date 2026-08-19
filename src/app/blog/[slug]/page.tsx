@@ -117,6 +117,13 @@ const getComponents = (
       </a>
     ),
   },
+  // Sanity lists carry no marker here (the ❌/✅ emoji is the marker), but they
+  // still need the same vertical rhythm as paragraphs — Tailwind's reset zeroes
+  // <ul>/<ol> margins, which otherwise glues the paragraph after a list to it.
+  list: {
+    bullet: ({ children }) => <ul className="my-4">{children}</ul>,
+    number: ({ children }) => <ol className="my-4">{children}</ol>,
+  },
   types: {
     image: ({ value }) => (
       <span className="relative block w-full my-6 h-80">
