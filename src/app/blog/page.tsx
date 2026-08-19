@@ -15,13 +15,13 @@ export const metadata: Metadata = {
   title,
   description,
   alternates: { canonical: "/blog" },
-  // Blog keeps the tagline share image; the rest of the site uses the logo.
-  openGraph: { title, description, type: "website", images: ["/og-image.png"] },
+  // Blog list uses the logo cover; individual articles keep their post covers.
+  openGraph: { title, description, type: "website", images: ["/og-logo.png"] },
   twitter: {
     card: "summary_large_image",
     title,
     description,
-    images: ["/og-image.png"],
+    images: ["/og-logo.png"],
   },
 };
 
