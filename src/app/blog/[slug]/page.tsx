@@ -51,6 +51,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+// Pull the 11-char video id out of any common YouTube URL (watch, youtu.be,
+// shorts, or an already-embed link).
+function getYoutubeId(url?: string): string | null {
+  if (!url) return null;
+  const match = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/,
+  );
+  return match ? match[1] : null;
+}
+
 const components: PortableTextComponents = {
   block: {
     h2: ({ children }) => (
@@ -102,6 +112,21 @@ const components: PortableTextComponents = {
         />
       </span>
     ),
+    youtube: ({ value }) => {
+      const id = getYoutubeId(value?.url);
+      if (!id) return null;
+      return (
+        <div className="relative w-full my-6 overflow-hidden aspect-video rounded-xl">
+          <iframe
+            src={`https://www.youtube.com/embed/${id}`}
+            title="YouTube video"
+            className="absolute inset-0 w-full h-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+          />
+        </div>
+      );
+    },
   },
 };
 

@@ -100,6 +100,28 @@ export const post = defineType({
           },
         },
         { type: "image", options: { hotspot: true } },
+        {
+          type: "object",
+          name: "youtube",
+          title: "YouTube ვიდეო",
+          fields: [
+            defineField({
+              name: "url",
+              title: "ვიდეოს ბმული (URL)",
+              type: "url",
+              description:
+                "ჩააკოპირე YouTube-ის ბმული, მაგ. https://www.youtube.com/watch?v=… ან https://youtu.be/…",
+              validation: (rule) => rule.required(),
+            }),
+          ],
+          preview: {
+            select: { url: "url" },
+            prepare: ({ url }: { url?: string }) => ({
+              title: "YouTube ვიდეო",
+              subtitle: url,
+            }),
+          },
+        },
       ],
       validation: (rule) => rule.required(),
     }),
