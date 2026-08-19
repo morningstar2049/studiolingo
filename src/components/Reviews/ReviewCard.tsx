@@ -35,6 +35,9 @@ export default function ReviewCard({ review }: { review: ReviewItem }) {
 
   useEffect(() => {
     measure();
+    // ReviewsGrid dispatches a resize when it reveals hidden cards, which lets
+    // this re-measure — hidden cards start display:none, so the initial measure
+    // sees zero height and would otherwise never show the "მეტი" toggle.
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
   }, [measure]);

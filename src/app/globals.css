@@ -9,6 +9,17 @@
   box-sizing: border-box;
 }
 
+/* iOS Safari/Chrome zooms in — and leaves the page zoomed and horizontally
+   scrollable — when you focus a form field whose font-size is under 16px. Keep
+   mobile form controls at 16px so focusing a field never triggers that zoom. */
+@media (max-width: 640px) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
 ::-webkit-scrollbar {
   width: 5px;
 }
@@ -227,4 +238,17 @@
     opacity: 1;
     transform: none;
   }
+}
+
+/* Blog carousel (home): make react-slick slides equal height so every card
+   stretches to the tallest one. Scoped to .blog-slider so other carousels
+   (team, partners) are unaffected. */
+.blog-slider .slick-track {
+  display: flex;
+}
+.blog-slider .slick-slide {
+  height: auto;
+}
+.blog-slider .slick-slide > div {
+  height: 100%;
 }

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReviewCard from "./ReviewCard";
 
 type ReviewItem = { author: string; rating: number; text: string };
@@ -11,6 +11,13 @@ const INITIAL_COUNT = 3;
 // still see every review.
 export default function ReviewsGrid({ reviews }: { reviews: ReviewItem[] }) {
   const [expanded, setExpanded] = useState(false);
+
+  // Revealed cards start display:none, so each ReviewCard's clamp measurement
+  // sees zero height and never shows its "მეტი" toggle. Nudging a resize once
+  // they're visible lets every card re-measure.
+  useEffect(() => {
+    if (expanded) window.dispatchEvent(new Event("resize"));
+  }, [expanded]);
 
   return (
     <>
