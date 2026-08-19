@@ -28,22 +28,22 @@ const pdfs: TPdf[] = [
   {
     label: "Elementary −",
     accent: "#3bb85e",
-    href: "https://drive.google.com/file/d/1kNykkf6b9Uo0iaNkOIE0t2Ju3k-Xn1EL/view?usp=sharing",
+    href: "https://drive.google.com/file/d/1YkO8bJ2Ei4ub6viC1E0_9Q7dkLmjIRSF/view?usp=sharing",
   },
   {
     label: "Elementary",
     accent: "#2f9e4d",
-    href: "https://drive.google.com/file/d/1EwzmMaddbI_zXemi3nDWscUlZKaAzyDh/view?usp=sharing",
+    href: "https://drive.google.com/file/d/1apcBAilHUBrurk_WNkoYunzsa-bgOzIA/view?usp=sharing",
   },
   {
     label: "Intermediate",
     accent: "#1d9e75",
-    href: "https://drive.google.com/file/d/1B3WAsUqMlU_PbIQRtUBDuMtx_03Iop_H/view?usp=sharing",
+    href: "https://drive.google.com/file/d/1aimT85RJteAttw_jKaw3lI07bnLdlgkK/view?usp=sharing",
   },
   {
     label: "Intermediate +",
     accent: "#1e7d3a",
-    href: "https://drive.google.com/file/d/1PvYFgyTVFO3bLZHu8NBdFjJAqUSlylp8/view?usp=sharing",
+    href: "https://drive.google.com/file/d/1xTi8LudWsjTQB986f59-mwTkuWsnpDjZ/view?usp=sharing",
   },
 ];
 
