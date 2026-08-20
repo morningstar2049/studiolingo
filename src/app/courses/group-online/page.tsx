@@ -4,6 +4,7 @@ import CourseDetails from "@/components/Courses/CourseDetails";
 import CourseVideo from "@/components/Courses/CourseVideo";
 import CourseReviews from "@/components/Courses/CourseReviews";
 import { courses } from "@/components/Courses/coursesData";
+import { courseSchema } from "@/lib/schema";
 
 const course = courses.find((c) => c.slug === "/courses/group-online")!;
 
@@ -85,6 +86,19 @@ const groupOnlineDescription = (
 export default function GroupOnlinePage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            courseSchema({
+              name: course.title,
+              description,
+              path: "/courses/group-online",
+              mode: "online",
+            }),
+          ),
+        }}
+      />
       <CourseHero
         title={course.title}
         subtitle="ისწავლე პატარა ჯგუფში, სახლიდან — ცოცხალი კომუნიკაცია, თანაგუნდელებთან პრაქტიკა და ხელმისაწვდომი ფასი."

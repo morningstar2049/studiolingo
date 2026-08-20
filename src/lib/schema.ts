@@ -129,6 +129,31 @@ export const coursesSchema = [
   },
 ];
 
+// Per-page Course structured data for the dedicated course detail pages.
+export function courseSchema(opts: {
+  name: string;
+  description: string;
+  path: string;
+  mode: "online" | "onsite" | "both";
+}) {
+  const instances =
+    opts.mode === "online"
+      ? [{ "@type": "CourseInstance", courseMode: "online" }]
+      : opts.mode === "onsite"
+        ? [courseInstances[0]]
+        : courseInstances;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: opts.name,
+    description: opts.description,
+    url: `${SITE_URL}${opts.path}`,
+    inLanguage: "ka",
+    provider: { "@id": `${SITE_URL}/#organization` },
+    hasCourseInstance: instances,
+  };
+}
+
 export const siteSchemas = [
   organizationSchema,
   localBusinessSchema,

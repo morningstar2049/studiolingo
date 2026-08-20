@@ -1,7 +1,8 @@
 "use client";
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { MobileMenuContext } from "@/Context/MobileMenuContext";
 import { TNavItem } from "./Navbar";
 import Link from "next/link";
 
@@ -12,6 +13,13 @@ type TProps = {
 
 function MobileNavMenuItemAccordion({ menuItems, onClick }: TProps) {
   const [expanded, setExpanded] = useState<string | false>(false);
+  const { isOpen } = useContext(MobileMenuContext);
+
+  // Collapse the dropdown whenever the mobile menu closes, so it isn't still
+  // open the next time the menu is reopened.
+  useEffect(() => {
+    if (!isOpen) setExpanded(false);
+  }, [isOpen]);
 
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
