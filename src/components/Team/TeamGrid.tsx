@@ -44,7 +44,11 @@ function TeamCard({ member }: { member: TeamMember }) {
         <div
           ref={picRef}
           onClick={revealOnTouch}
-          className="relative w-full overflow-hidden transition-all duration-300 aspect-[4/5] rounded-[22px] ring-1 ring-[#ffffff1f] shadow-[0_18px_40px_-20px_rgba(10,14,24,0.7)] group-hover:-translate-y-1.5 group-hover:shadow-[0_30px_56px_-22px_rgba(10,14,24,0.8)]"
+          className={`relative w-full overflow-hidden transition-all duration-300 aspect-[4/5] rounded-[22px] ring-1 ring-[#ffffff1f] shadow-[0_18px_40px_-20px_rgba(10,14,24,0.7)] sm:group-hover:-translate-y-1.5 sm:group-hover:shadow-[0_30px_56px_-22px_rgba(10,14,24,0.8)] ${
+            revealed
+              ? "-translate-y-1.5 shadow-[0_30px_56px_-22px_rgba(10,14,24,0.8)]"
+              : ""
+          }`}
           style={{
             background:
               "linear-gradient(160deg,#1b2540 0%,#141d33 50%,#0d1322 100%)",
@@ -58,7 +62,9 @@ function TeamCard({ member }: { member: TeamMember }) {
             alt={member.alt}
             fill
             sizes="(max-width:640px) 45vw, 300px"
-            className="relative object-contain object-bottom transition-transform duration-500 group-hover:scale-[1.045]"
+            className={`relative object-contain object-bottom transition-transform duration-500 sm:group-hover:scale-[1.045] ${
+              revealed ? "scale-[1.045]" : ""
+            }`}
           />
 
           {member.videoUrl && (
