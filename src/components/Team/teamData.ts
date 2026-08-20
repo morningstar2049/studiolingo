@@ -1,61 +1,49 @@
-import { TImageWrapperProps } from "../ImageWrapper";
-
-type Team = {
+export type TeamMember = {
   videoUrl: string;
-} & TImageWrapperProps;
+  src: string;
+  alt: string;
+  name: string;
+  role: string;
+};
 
-export const team: Team[] = [
+export const team: TeamMember[] = [
   {
     videoUrl: "",
-    src: "/teacher-1.png",
-    alt: "teacher1",
-    fill: true,
-    objectFit: "contain",
-  },
-  {
-    videoUrl:
-      "https://drive.google.com/file/d/1EmzoeTtoNogA9Z70H63am98-dfdSeCtT/view?usp=drive_link",
-    src: "/teacher-4.png",
-    alt: "teacher4",
-    fill: true,
-    objectFit: "contain",
-  },
-  {
-    videoUrl:
-      "https://drive.google.com/file/d/10BDKLlu4MuxbIfOcbcSJAHASuriZQ8ZI/view?usp=drive_link",
-    src: "/teacher-5.png",
-    alt: "teacher5",
-    fill: true,
-    objectFit: "contain",
-  },
-  {
-    videoUrl: "https://www.youtube.com/shorts/zpsfc4bdiok",
-    src: "/teacher-7.png",
-    alt: "teacher7",
-    fill: true,
-    objectFit: "contain",
+    src: "/team/iliko.webp",
+    alt: "ილიკო",
+    name: "ილიკო",
+    role: "დამფუძნებელი",
   },
   {
     videoUrl:
       "https://drive.google.com/file/d/1_ReKo9yYlq_WaTqteywBDROPXDoA4vX7/view?usp=drive_link",
-    src: "/teacher-8.png",
-    alt: "teacher8",
-    fill: true,
-    objectFit: "contain",
+    src: "/team/tato.webp",
+    alt: "ტატო",
+    name: "ტატო",
+    role: "ინგლისურის მასწავლებელი",
+  },
+  {
+    videoUrl:
+      "https://drive.google.com/file/d/10BDKLlu4MuxbIfOcbcSJAHASuriZQ8ZI/view?usp=drive_link",
+    src: "/team/lika.webp",
+    alt: "ლიკა",
+    name: "ლიკა",
+    role: "ინგლისურის მასწავლებელი",
+  },
+  {
+    videoUrl:
+      "https://drive.google.com/file/d/1EmzoeTtoNogA9Z70H63am98-dfdSeCtT/view?usp=drive_link",
+    src: "/team/giorgi.webp",
+    alt: "გიორგი",
+    name: "გიორგი",
+    role: "ინგლისურის მასწავლებელი",
   },
   {
     videoUrl:
       "https://drive.google.com/file/d/1mhII_ne7WEhwmfvd9n5uLyFIFRoJTntH/view?usp=drive_link",
-    src: "/teacher-15.png",
-    alt: "teacher15",
-    fill: true,
-    objectFit: "contain",
-  },
-  {
-    videoUrl: "",
-    src: "/teacher-16.png",
-    alt: "teacher16",
-    fill: true,
-    objectFit: "contain",
+    src: "/team/nini.webp",
+    alt: "ნინი",
+    name: "ნინი",
+    role: "ინგლისურის მასწავლებელი",
   },
 ];

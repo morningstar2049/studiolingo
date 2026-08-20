@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function TeamPage() {
   return (
-    <main className="pt-6 pb-24">
+    <main className="pt-4 sm:pt-10 pb-24 bg-[#eef7f1] -mb-20">
       <Team />
     </main>
   );

@@ -11,7 +11,7 @@ export default function RevealOnScroll({
   delay = 0,
   stable = false,
 }: {
-  children: ReactNode;
+  children?: ReactNode;
   className?: string;
   revealClass?: string;
   delay?: number;

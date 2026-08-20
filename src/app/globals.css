@@ -212,6 +212,35 @@ body {
   animation: review-rise 1.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
+/* Team header: the accent line extends horizontally, the writing rises slowly. */
+@keyframes team-line {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+.team-line {
+  transform-origin: center;
+  animation: team-line 1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes team-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(42px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+.team-rise {
+  animation: team-rise 2.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
 /* Messenger button: pop in, then pulse bigger 5 times to draw attention */
 @keyframes msgr-pop {
   0% {
@@ -255,7 +284,9 @@ body {
   .blog-rise,
   .blog-rise-2,
   .blog-bar,
-  .review-rise {
+  .review-rise,
+  .team-line,
+  .team-rise {
     animation: none;
     opacity: 1;
     transform: none;
