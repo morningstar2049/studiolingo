@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import PdfWrapper from "./components/PdfWrapper";
+import MaterialsBrowser from "./components/MaterialsBrowser";
 
 const title = "სასწავლო მასალები — ინგლისურის რესურსები | Studio Lingo";
 const description =
@@ -18,45 +18,6 @@ export const metadata: Metadata = {
   },
 };
 
-type TPdf = {
-  label: string;
-  sub?: string;
-  accent: string;
-  href: string;
-};
-
-const pdfs: TPdf[] = [
-  {
-    label: "Elementary −",
-    sub: "სიტყვები",
-    accent: "#3bb85e",
-    href: "https://drive.google.com/file/d/1YkO8bJ2Ei4ub6viC1E0_9Q7dkLmjIRSF/view?usp=sharing",
-  },
-  {
-    label: "Elementary",
-    sub: "სიტყვები",
-    accent: "#2f9e4d",
-    href: "https://drive.google.com/file/d/1apcBAilHUBrurk_WNkoYunzsa-bgOzIA/view?usp=sharing",
-  },
-  {
-    label: "Intermediate",
-    sub: "სიტყვები",
-    accent: "#1d9e75",
-    href: "https://drive.google.com/file/d/1aimT85RJteAttw_jKaw3lI07bnLdlgkK/view?usp=sharing",
-  },
-  {
-    label: "Intermediate +",
-    sub: "სიტყვები",
-    accent: "#1e7d3a",
-    href: "https://drive.google.com/file/d/1xTi8LudWsjTQB986f59-mwTkuWsnpDjZ/view?usp=sharing",
-  },
-  {
-    label: "არაწესიერი ზმნები",
-    accent: "#155e34",
-    href: "https://drive.google.com/file/d/1PTcnUW8gJv2uKD_0K2K-KClTdcVdiyG5/view?usp=sharing",
-  },
-];
-
 function MaterialsPage() {
   return (
     <main
@@ -73,18 +34,7 @@ function MaterialsPage() {
         <div className="w-16 h-1 mx-auto mt-5 rounded blog-bar bg-lingo-green" />
       </div>
 
-      <div className="grid grid-cols-1 gap-8 justify-items-center sm:grid-cols-2 lg:grid-cols-4">
-        {pdfs.map((pdf, i) => (
-          <PdfWrapper
-            key={pdf.label}
-            label={pdf.label}
-            sub={pdf.sub}
-            accent={pdf.accent}
-            href={pdf.href}
-            index={i}
-          />
-        ))}
-      </div>
+      <MaterialsBrowser />
     </main>
   );
 }
