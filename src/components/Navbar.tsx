@@ -58,7 +58,7 @@ function Navbar() {
       menuItems: [
         {
           name: "სტანდარტული კურსები",
-          href: "#courses",
+          href: "/courses",
           description: "ზრდასრულებისა და მოზარდებისთვის",
           icon: <FaBookOpen size={18} />,
         },

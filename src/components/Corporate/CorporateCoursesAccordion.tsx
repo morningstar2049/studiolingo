@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -81,6 +81,12 @@ function scrollToOnExpand(el: HTMLElement | null) {
 
 export default function CorporateCoursesAccordion() {
   const ref = useRef<HTMLDivElement>(null);
+  // Open by default (matches SSR / desktop); collapse on mobile after mount.
+  const [expanded, setExpanded] = useState(true);
+
+  useEffect(() => {
+    if (window.innerWidth < 640) setExpanded(false);
+  }, []);
 
   return (
     <div
@@ -91,10 +97,11 @@ export default function CorporateCoursesAccordion() {
         ref={ref}
         disableGutters
         elevation={0}
-        defaultExpanded
+        expanded={expanded}
         sx={accordionSx}
-        onChange={(_, expanded) => {
-          if (expanded) scrollToOnExpand(ref.current);
+        onChange={(_, isExpanded) => {
+          setExpanded(isExpanded);
+          if (isExpanded) scrollToOnExpand(ref.current);
         }}
       >
         <AccordionSummary

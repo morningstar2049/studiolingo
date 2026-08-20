@@ -1,11 +1,18 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
+import { AiOutlineArrowRight, AiOutlineCalculator } from "react-icons/ai";
 import useCalculatePrice from "@/hooks/useCalculatePrice";
 import CourseRadioInput from "./CourseRadioInput";
 import Button from "../Button";
 
 type CourseDetailsProps = {
   courseTitle: "english" | "german" | "englishForTeens";
+  // When true, the price calculator is hidden behind a "გაიგე კურსის ფასი"
+  // button until the visitor opens it (used on the course detail pages).
+  gatedCalculator?: boolean;
+  // Optional per-page copy that replaces the built-in course description while
+  // keeping the same pricing (driven by courseTitle).
+  description?: ReactNode;
 };
 
 const courseUrls: { [key in CourseDetailsProps["courseTitle"]]: string } = {
@@ -43,7 +50,7 @@ const courseDescriptions: {
       <p>
         კურსის{" "}
         <span className="text-lingo-green font-bold">ძირითადი მასალები</span>{" "}
-        შედგება უახლესი სახელმძღვანელოებისგან, სადაც შედის აუდიოები როგორც
+        შედგება Cambridge-ის უახლესი სახელმძღვანელოებისგან, სადაც შედის აუდიოები როგორც
         ამერიკული, ასევე ბრიტანული აქცენტით; ორიგინალური ციფრული სავარჯიშოებიანი
         სასწავლო პლატფორმა, ძალიან დიდი რესურსის სასწავლო ვიდეოთეკა და გასართობი
         სამაგიდო თამაშის აქტივობებიც კი.
@@ -102,7 +109,7 @@ const courseDescriptions: {
       <p>
         კურსის{" "}
         <span className="text-lingo-green font-bold">ძირითადი მასალები</span>{" "}
-        შედგება უახლესი სახელმძღვანელოებისგან, ძალიან დიდი რესურსის სასწავლო
+        შედგება Cambridge-ის უახლესი სახელმძღვანელოებისგან, ძალიან დიდი რესურსის სასწავლო
         ვიდეოთეკისგან, სპეციალური სასწავლო ონლაინ პლატფორმისგან ორიგინალური
         ციფრული სავარჯიშოებითა და უახლესი ვიდეო-აუდიო მასალებით.
       </p>
@@ -205,6 +212,7 @@ const courseDescriptions: {
 };
 
 export default function CourseDetails(props: CourseDetailsProps) {
+  const [showCalc, setShowCalc] = useState(false);
   const [selectedItems, setSelectedItems] = useState({
     "გაკვეთილის ტიპი": "",
     "გაკვეთილის სიხშირე": "კვირაში 2-ჯერ",
@@ -231,9 +239,8 @@ export default function CourseDetails(props: CourseDetailsProps) {
     }
   }, [selectedItems, initialLessonTypeChoices]);
 
-  return (
-    <div className="flex flex-col gap-5">
-      {courseDescriptions[props.courseTitle]}
+  const calculator = (
+    <>
       {props.courseTitle !== "englishForTeens" && (
         <strong className="text-lingo-green">
           სწავლის მინიმალური პერიოდი - 4 თვე
@@ -300,9 +307,54 @@ export default function CourseDetails(props: CourseDetailsProps) {
           )}
         </ul>
       </section>
-      <a href={courseUrls[props.courseTitle]} target="_blank">
-        <Button extraStyles="w-full lg:w-[50%]">შემოგვიერთდი</Button>
-      </a>
+    </>
+  );
+
+  const registerLink = (
+    <a href={courseUrls[props.courseTitle]} target="_blank" rel="noreferrer">
+      <Button extraStyles="w-full lg:w-[50%]">შემოგვიერთდი</Button>
+    </a>
+  );
+
+  if (!props.gatedCalculator) {
+    return (
+      <div className="flex flex-col gap-5">
+        {props.description ?? courseDescriptions[props.courseTitle]}
+        {calculator}
+        {registerLink}
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-5">
+      {props.description ?? courseDescriptions[props.courseTitle]}
+
+      <div
+        style={{ fontFeatureSettings: "'case' on" }}
+        className="flex flex-col gap-3 sm:flex-row"
+      >
+        <button
+          onClick={() => setShowCalc((v) => !v)}
+          className="inline-flex items-center justify-center gap-2 px-6 py-3.5 text-[15px] font-bold text-[#fff] transition-colors bg-lingo-black rounded-xl shadow-[0_12px_26px_-12px_rgba(41,49,66,0.7)] hover:bg-[#1f2733] sm:flex-1"
+        >
+          <AiOutlineCalculator className="text-lg" />
+          გაიგე კურსის ფასი
+        </button>
+        <a
+          href={courseUrls[props.courseTitle]}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center justify-center gap-2 px-6 py-3.5 text-[15px] font-bold text-[#fff] transition-colors bg-lingo-green rounded-xl shadow-[0_12px_26px_-12px_rgba(47,158,77,0.75)] hover:bg-[#2b904a] sm:flex-1"
+        >
+          შემოგვიერთდი
+          <AiOutlineArrowRight />
+        </a>
+      </div>
+
+      {showCalc && (
+        <div className="flex flex-col gap-5 pt-4 calc-reveal">{calculator}</div>
+      )}
     </div>
   );
 }

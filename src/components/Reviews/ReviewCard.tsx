@@ -70,8 +70,10 @@ export default function ReviewCard({ review }: { review: ReviewItem }) {
         <div className="flex items-center justify-center w-11 h-11 text-lg font-bold rounded-full bg-lingo-green text-[#fff] shrink-0">
           {review.author.trim().charAt(0)}
         </div>
-        <div>
-          <div className="font-bold text-lingo-black">{review.author}</div>
+        <div className="min-w-0">
+          <div className="font-bold break-words text-lingo-black">
+            {review.author}
+          </div>
           <div className="flex items-center gap-1.5 mt-0.5">
             <Stars rating={review.rating} />
             <span className="text-xs text-[#6b7280]">· Google-ზე</span>
@@ -81,6 +83,7 @@ export default function ReviewCard({ review }: { review: ReviewItem }) {
 
       <p
         ref={textRef}
+        style={{ fontFeatureSettings: "normal" }}
         className={`text-[15px] leading-relaxed text-lingo-black whitespace-pre-line ${
           expanded ? "" : "line-clamp-5"
         }`}
