@@ -11,8 +11,6 @@ import { usePathname } from "next/navigation";
 function Header({ scrolled = false }: { scrolled?: boolean }) {
   const { isOpen, handleOpen, handleClose } = useContext(MobileMenuContext);
 
-  // Applied inline (not a Tailwind opacity class) so it renders reliably: on
-  // scroll the header is 97% white — almost solid, with just a faint blur.
   // Apple.com's frosted nav recipe: ~80% white + a heavy blur with a saturation
   // boost, which is what makes the colours behind glow through the frost.
   const scrolledStyle = scrolled
@@ -22,6 +20,18 @@ function Header({ scrolled = false }: { scrolled?: boolean }) {
         WebkitBackdropFilter: "saturate(180%) blur(20px)",
       }
     : undefined;
+
+  // Mobile has no solid navbar under the header, so a dark hero (e.g. course
+  // pages) would show through the 80% frost. Keep the blur but make it nearly
+  // opaque so nothing bleeds through.
+  const scrolledStyleMobile =
+    scrolled && !isOpen
+      ? {
+          backgroundColor: "rgba(255,255,255,0.96)",
+          backdropFilter: "saturate(180%) blur(20px)",
+          WebkitBackdropFilter: "saturate(180%) blur(20px)",
+        }
+      : undefined;
 
   return (
     <>
@@ -39,7 +49,7 @@ function Header({ scrolled = false }: { scrolled?: boolean }) {
         </div>
       </header>
       <header
-        style={scrolled && !isOpen ? scrolledStyle : undefined}
+        style={scrolledStyleMobile}
         className={`flex items-center justify-between px-10 shadow-md h-11 sm:hidden py-11 transition-colors duration-300 ${
           scrolled && !isOpen ? "" : "bg-[#fffffe]"
         }`}

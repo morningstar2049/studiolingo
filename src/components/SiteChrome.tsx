@@ -26,7 +26,7 @@ export default function SiteChrome() {
 
   return (
     <>
-      <div className="sticky top-[-2px] z-10">
+      <div className="sticky top-[-2px] z-30">
         <Header scrolled={scrolled} />
         <Navbar />
       </div>
