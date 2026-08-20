@@ -1,7 +1,10 @@
+import { AiOutlineArrowRight } from "react-icons/ai";
 import { getReviews, type Review } from "@/sanity/queries";
 import { fallbackReviews } from "@/components/Reviews/reviewsData";
 import ReviewCard from "@/components/Reviews/ReviewCard";
 import RevealOnScroll from "@/components/RevealOnScroll";
+
+const GOOGLE_REVIEWS_URL = "https://maps.app.goo.gl/jjNmMYDcq6hFzN1VA";
 
 type ReviewItem = Pick<Review, "author" | "rating" | "text">;
 
@@ -36,6 +39,17 @@ export default async function CourseReviews({ authors }: { authors: string[] }) 
         {picked.map((review, i) => (
           <ReviewCard key={`${review.author}-${i}`} review={review} />
         ))}
+      </div>
+      <div className="flex justify-center mt-10">
+        <a
+          href={GOOGLE_REVIEWS_URL}
+          target="_blank"
+          rel="noreferrer noopener"
+          className="inline-flex items-center gap-2 px-6 py-3 font-bold transition-opacity rounded-xl text-lingo-green ring-1 ring-lingo-green hover:opacity-80"
+        >
+          ნახე ყველა შეფასება Google-ზე
+          <AiOutlineArrowRight className="shrink-0" />
+        </a>
       </div>
     </section>
   );
