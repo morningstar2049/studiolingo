@@ -51,7 +51,7 @@ export default function BlogCarousel({ posts }: { posts: PostListItem[] }) {
           <div key={post._id} className="h-full px-2 pb-2">
             <Link
               href={`/blog/${post.slug}`}
-              className="flex flex-col h-full overflow-hidden bg-[#fff] group rounded-xl transition-all duration-300 shadow-[0_10px_24px_-8px_rgba(41,49,66,0.22)] hover:shadow-[0_22px_40px_-12px_rgba(47,158,77,0.28)] hover:-translate-y-[3px]"
+              className="flex flex-col h-full overflow-hidden bg-[#f3f4f6] group rounded-xl transition-all duration-300 shadow-[0_10px_24px_-8px_rgba(41,49,66,0.22)] hover:shadow-[0_22px_40px_-12px_rgba(47,158,77,0.28)] hover:-translate-y-[3px]"
             >
               {post.coverImage?.asset && (
                 <div className="relative w-full h-44">

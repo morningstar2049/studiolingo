@@ -61,8 +61,8 @@ function Footer() {
                 <span className="text-lingo-green">lingo</span>
               </div>
               <p className="mt-4 text-sm leading-relaxed text-[#9aa5b4]">
-                ინგლისურის სკოლა თბილისში და ონლაინ — თანამედროვე, პრაქტიკული
-                სწავლება.
+                N1 ინგლისურის სკოლა, რომელიც გთავაზობთ ინგლისურის გაკვეთილებს
+                თბილისში და ონლაინ პრაქტიკული სწავლებითა და რეიტინგული კონტენტით
               </p>
               <div className="flex justify-center gap-3 mt-5 md:justify-start">
                 {socials.map((s) => (
@@ -83,7 +83,7 @@ function Footer() {
             <div className="flex flex-col items-center gap-3 md:items-start">
               <h3
                 style={{ fontFeatureSettings: "'case' on" }}
-                className="text-sm font-bold tracking-[0.08em]"
+                className="text-base font-bold tracking-[0.08em]"
               >
                 კონტაქტი
               </h3>
@@ -115,7 +115,7 @@ function Footer() {
             <div className="flex flex-col items-center gap-2.5 md:items-start">
               <h3
                 style={{ fontFeatureSettings: "'case' on" }}
-                className="mb-0.5 text-sm font-bold tracking-[0.08em]"
+                className="mb-0.5 text-base font-bold tracking-[0.08em]"
               >
                 ბმულები
               </h3>

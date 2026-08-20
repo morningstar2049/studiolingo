@@ -39,8 +39,10 @@ export default async function BlogPage() {
   const posts = await getPosts();
 
   return (
-    <main className="max-w-5xl px-5 pt-10 pb-20 mx-auto">
-      <BlogHeader />
+    // -mb-20 cancels the global footer's mt-20 so the green runs flush to it.
+    <div className="bg-[#eef7f1] -mb-20">
+      <main className="max-w-5xl px-5 pt-10 pb-20 mx-auto">
+        <BlogHeader />
 
       {posts.length === 0 ? (
         <p className="text-center text-lingo-black">
@@ -52,7 +54,7 @@ export default async function BlogPage() {
             <Link
               key={post._id}
               href={`/blog/${post.slug}`}
-              className="flex flex-col h-full overflow-hidden bg-[#fff] group rounded-xl transition-all duration-300 shadow-[0_10px_24px_-8px_rgba(41,49,66,0.22)] hover:shadow-[0_22px_40px_-12px_rgba(47,158,77,0.28)] hover:-translate-y-[3px]"
+              className="flex flex-col h-full overflow-hidden bg-[#f3f4f6] group rounded-xl transition-all duration-300 shadow-[0_10px_24px_-8px_rgba(41,49,66,0.22)] hover:shadow-[0_22px_40px_-12px_rgba(47,158,77,0.28)] hover:-translate-y-[3px]"
             >
               {post.coverImage?.asset && (
                 <div className="relative w-full h-48">
@@ -85,6 +87,7 @@ export default async function BlogPage() {
           ))}
         </div>
       )}
-    </main>
+      </main>
+    </div>
   );
 }

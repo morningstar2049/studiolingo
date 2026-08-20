@@ -7,8 +7,9 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 
 import { SITE_URL } from "@/lib/schema";
 import { urlForImage } from "@/sanity/client";
-import { getPost, getPostSlugs } from "@/sanity/queries";
+import { getPost, getPostSlugs, getPosts } from "@/sanity/queries";
 import ArticleShare from "@/components/blog/ArticleShare";
+import BlogCarousel from "@/components/HomeBlog/BlogCarousel";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 
@@ -168,6 +169,9 @@ export default async function BlogPostPage({ params }: Props) {
 
   if (!post) notFound();
 
+  // Other published articles for the "similar articles" carousel.
+  const relatedPosts = (await getPosts()).filter((p) => p.slug !== slug);
+
   const image = post.coverImage?.asset
     ? urlForImage(post.coverImage).width(1200).url()
     : undefined;
@@ -269,6 +273,20 @@ export default async function BlogPostPage({ params }: Props) {
           title={post.title}
         />
       </div>
+
+      {relatedPosts.length > 0 && (
+        <section className="pt-10 mt-12 border-t border-[#e5e7eb]">
+          <h2
+            style={{ fontFeatureSettings: "'case' on" }}
+            className="mb-8 text-2xl font-bold text-center text-lingo-black"
+          >
+            მსგავსი <span className="text-lingo-green">სტატიები</span>
+          </h2>
+          <div className="-mx-5">
+            <BlogCarousel posts={relatedPosts} />
+          </div>
+        </section>
+      )}
 
       <ScrollToTopButton />
     </main>
