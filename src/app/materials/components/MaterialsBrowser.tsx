@@ -63,7 +63,7 @@ const pdfs: TPdf[] = [
     label: "Make თუ Do",
     accent: "#3bb85e",
     category: "grammar",
-    href: "https://drive.google.com/file/d/1qzvYtAgQbQ09dW772-oSC_no87ivkd3i/view?usp=sharing",
+    href: "https://drive.google.com/file/d/12qxfEDoSdzPl5sPCZksMwHTfBV75j1ab/view?usp=sharing",
   },
   {
     label: "Make & Let",
