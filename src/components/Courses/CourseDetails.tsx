@@ -243,7 +243,8 @@ export default function CourseDetails(props: CourseDetailsProps) {
     <>
       {props.courseTitle !== "englishForTeens" && (
         <strong className="text-lingo-green">
-          სწავლის მინიმალური პერიოდი - 4 თვე
+          სწავლის მინიმალური პერიოდი -{" "}
+          {selectedItems["კურსის ფორმატი"] === "ოფისში" ? "3 თვე" : "4 თვე"}
         </strong>
       )}
       <strong className="text-lingo-black">
