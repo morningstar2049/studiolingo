@@ -38,9 +38,9 @@ export default function MobileNavMenu() {
     { name: "ჩვენი გუნდი", href: "/team" },
     { name: "კონტენტი", href: "/content" },
     { name: "ბლოგი", href: "/blog" },
+    { name: "ენის ტესტი", href: "/language-test" },
     { name: "კარიერა", href: "/career" },
     { name: "მასალები", href: "/materials" },
-    { name: "ენის ტესტი", href: "/language-test" },
     { name: "განვადება", href: "/buy-course" },
   ];
 
