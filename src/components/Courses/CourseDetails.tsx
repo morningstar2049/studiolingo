@@ -285,7 +285,7 @@ export default function CourseDetails(props: CourseDetailsProps) {
           {price
             ? "ფასი : " +
               price +
-              " ლარი " +
+              " ₾ " +
               `${
                 selectedItems["კურსის ფორმატი"] === "ოფისში"
                   ? "(3 თვის)"
@@ -298,14 +298,11 @@ export default function CourseDetails(props: CourseDetailsProps) {
         <h3 className="font-bold text-lingo-green">გადახდის მეთოდები :</h3>
         <ul className="px-5 list-decimal">
           {selectedItems["კურსის ფორმატი"] === "ოფისში" ? (
-            <>
-              <li>3 თვის წინასწარ ერთიანად</li>
-            </>
+            <li>3 თვის წინასწარ ერთიანად</li>
           ) : (
-            <>
-              <li>4 თვის წინასწარ ერთიანად</li>
-            </>
+            <li>4 თვის წინასწარ ერთიანად</li>
           )}
+          <li>საქ. ბანკის უპროცენტო განვადება</li>
         </ul>
       </section>
     </>
