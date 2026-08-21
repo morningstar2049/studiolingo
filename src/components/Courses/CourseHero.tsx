@@ -69,7 +69,12 @@ export default function CourseHero({ title, subtitle, art, from, to }: Props) {
               visible ? "blog-rise" : "opacity-0"
             }`}
           >
-            {title}
+            {title.split("ინგლისური").map((part, i) => (
+              <span key={i}>
+                {i > 0 && <span className="text-lingo-green">ინგლისური</span>}
+                {part}
+              </span>
+            ))}
           </h1>
           <p
             style={{ color: "rgba(255,255,255,0.9)" }}
