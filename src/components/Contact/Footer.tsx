@@ -9,6 +9,7 @@ import {
   FaLinkedinIn,
 } from "react-icons/fa";
 import { useState } from "react";
+import Link from "next/link";
 import Modal from "../Modal";
 
 const socials = [
@@ -43,7 +44,6 @@ function Footer() {
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const [isConfidentialityModalOpen, setIsConfidentialityModalOpen] =
     useState(false);
-  const [isReturnPolicyModalOpen, setIsReturnPolicyModalOpen] = useState(false);
   return (
     <>
       <footer id="contact" className="mt-20 bg-lingo-black text-[#fff]">
@@ -126,17 +126,17 @@ function Footer() {
                 კონფიდენციალურობის პოლიტიკა
               </button>
               <button
-                onClick={() => setIsReturnPolicyModalOpen(true)}
-                className="text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
-              >
-                დაბრუნების პოლიტიკა
-              </button>
-              <button
                 onClick={() => setIsTermsModalOpen(true)}
                 className="text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
               >
                 წესები და პირობები
               </button>
+              <Link
+                href="/faq"
+                className="text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
+              >
+                ხშირი კითხვები
+              </Link>
             </div>
           </div>
 
@@ -330,50 +330,6 @@ function Footer() {
         დაცვის პოლიტიკა. ინფორმაციის დაცვის პოლიტიკაში განხორციელებული
         ნებისმიერი ცვლილება დაუყოვნებლივ გამოქვეყნდება ინფორმაციის დაცვის
         გვერდზე
-      </Modal>
-      <Modal
-        open={isReturnPolicyModalOpen}
-        setOpen={setIsReturnPolicyModalOpen}
-        title="დაბრუნების პოლიტიკა"
-      >
-        <p className="font-bold underline">კურსების შეძენა ხდება ორი გზით:</p>
-        <p>
-          <span className="font-bold underline">1. ერთიანად გადახდით</span> -
-          კურსის დაწყებამდე მოსწავლესთან გასაუბრებისა და გრაფიკის შეთანხმების
-          შემდეგ მოსწავლე იხდის კურსის მთლიან საფასურს ერთიანად.
-        </p>
-        <p>
-          <span className="font-bold underline">
-            2. ბანკის უპროცენტო განვადებით
-          </span>{" "}
-          - კურსის დაწყებამდე მოსწავლესთან გასაუბრებისა და გრაფიკის შეთანხმების
-          შემდეგ მოსწავლე იხდის ბანკის უპროცენტო განვადებით, რომლითაც შეუძლია
-          კურსის საფასურის გადახდა 4 ნაწილად ყოველ თვე.
-        </p>
-        <br />
-        <p className="font-bold underline">
-          კურსის თანხის დაბრუნება ხდება 3 გზით:
-        </p>
-        <p className="font-bold">
-          1. გრაფიკის შეთანხმდებამდე გადახდის შემთხვევაში, თუკი ჩვენი სკოლა
-          მოსწავლეს ვერ სთავაზობს მოსწავლისთვის მისაღებ გრაფიკს.
-        </p>
-        <p className="font-bold">
-          2. ჯგუფური გაკვეთილების შემთხვევაში, თუკი თანხის გადახდიდან 2 კვირის
-          განმავლობაში ჯგუფი ვერ შედგება და მოსწავლეს არ სურს 2 კვირაზე მეტი
-          ლოდინი. მოსწავლის მოთხოვნისამებრ კომპანია მოსწავლეს უბრუნებს გადახდილ
-          თანხას.
-        </p>
-        <p className="font-bold">
-          3. უპროცენტო განვადების შემთხვევაში გადახდის შეთანხმების გაფორმებიდან
-          14 კალენდარული დღის განმავლობაში საქართველოს კანონმდებლობის
-          შესაბამისად.
-        </p>
-        <br />
-        სხვა შემთხვევებში გადახდილი თანხა დაბრუნებას არ ექვემდებარება.
-        ნებისმიერი უკმაყოფილების შემთხვევაში სკოლის ადმინისტრაცია და ხარისხის
-        შეფასების ჯგუფი მოსწავლესთან გაივლის კონსულტაციას და შესთავაზებს ყველა
-        შესაძლო ალტერნატივას.
       </Modal>
     </>
   );

@@ -3,6 +3,9 @@ import CourseHero from "@/components/Courses/CourseHero";
 import CourseDetails from "@/components/Courses/CourseDetails";
 import CourseVideo from "@/components/Courses/CourseVideo";
 import CourseReviews from "@/components/Courses/CourseReviews";
+import CourseSubhead from "@/components/Courses/CourseSubhead";
+import CourseToolsSection from "@/components/Courses/CourseToolsSection";
+import CourseHomeworkSection from "@/components/Courses/CourseHomeworkSection";
 import { courses } from "@/components/Courses/coursesData";
 import { courseSchema } from "@/lib/schema";
 
@@ -56,11 +59,14 @@ const individualOnlineDescription = (
     <p>
       ონლაინ ინგლისურის კურსი მოიცავს ენის{" "}
       <span className="font-bold text-lingo-green">ყველა კომპონენტს</span>:
-      speaking, listening, reading, writing, grammar და vocabulary. სწავლება
-      სრულად მორგებულია ქართველ მოსწავლეზე და ითვალისწინებს დონეებს A1-დან
-      C1-მდე.
+      speaking, listening, reading, writing, grammar და vocabulary.{" "}
+      <span className="font-bold text-lingo-green">განსაკუთრებული აქცენტი</span>{" "}
+      speaking-ზეა — ჩვენს კურსებზე ყველაზე მეტ დროს სწორედ საუბრის უნარის
+      განვითარებას ვუთმობთ, რადგან თავისუფალი მეტყველება ენის ცოდნის მთავარი
+      მაჩვენებელია. სწავლება სრულად მორგებულია ქართველ მოსწავლეზე და
+      ითვალისწინებს დონეებს A1-დან C1-მდე.
     </p>
-    <br />
+    <CourseSubhead>მასალები</CourseSubhead>
     <p>
       კურსის{" "}
       <span className="font-bold text-lingo-green">ძირითადი მასალები</span>{" "}
@@ -70,13 +76,8 @@ const individualOnlineDescription = (
       ინტერესებსა და მიზნებზე მორგებით.
     </p>
     <CourseVideo />
-    <br />
-    <p>
-      <span className="font-bold text-lingo-green">საშინაო დავალებები</span>{" "}
-      მორგებულია ნასწავლის პრაქტიკაში გამოყენებაზე და ითვალისწინებს დატვირთულ
-      გრაფიკსაც, ხოლო შემაჯამებელი გაკვეთილები უზრუნველყოფს განვლილი მასალის
-      განმტკიცებას. სწავლის მინიმალური პერიოდია 4 თვე.
-    </p>
+    <CourseToolsSection />
+    <CourseHomeworkSection />
     <br />
     <p>
       შემოგვიერთდი „სტუდიო ლინგოს“ ინდივიდუალურ ონლაინ კურსზე და ისწავლე

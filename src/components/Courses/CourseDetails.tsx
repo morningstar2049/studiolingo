@@ -4,6 +4,7 @@ import { AiOutlineArrowRight, AiOutlineCalculator } from "react-icons/ai";
 import useCalculatePrice from "@/hooks/useCalculatePrice";
 import CourseRadioInput from "./CourseRadioInput";
 import Button from "../Button";
+import FaqButton from "../FAQ/FaqButton";
 
 type CourseDetailsProps = {
   courseTitle: "english" | "german" | "englishForTeens";
@@ -82,8 +83,8 @@ const courseDescriptions: {
       </p>
       <br />
       <p>
-        კურსის ხანგრძლივობა ინდივიდუალურია, ხოლო მინიმალური პერიოდია 4 თვე და
-        ვასწავლით A1-C1 დონეებს. მოსწავლეების მინიმალური ასაკია 17.
+        კურსის ხანგრძლივობა ინდივიდუალურია და ვასწავლით A1-C1 დონეებს.
+        მოსწავლეების მინიმალური ასაკია 17.
       </p>
     </div>
   ),
@@ -144,8 +145,8 @@ const courseDescriptions: {
       <br />
 
       <p>
-        კურსის ხანგრძლივობა ინდივიდუალურია, ხოლო მინიმალური პერიოდია 4 თვე და
-        ვასწავლით A1-C1 დონეებს. მოსწავლეების მინიმალური ასაკია 17.
+        კურსის ხანგრძლივობა ინდივიდუალურია და ვასწავლით A1-C1 დონეებს.
+        მოსწავლეების მინიმალური ასაკია 17.
       </p>
     </div>
   ),
@@ -327,6 +328,8 @@ export default function CourseDetails(props: CourseDetailsProps) {
   return (
     <div className="flex flex-col gap-5">
       {props.description ?? courseDescriptions[props.courseTitle]}
+
+      <FaqButton />
 
       <div
         style={{ fontFeatureSettings: "'case' on" }}

@@ -3,6 +3,9 @@ import CourseHero from "@/components/Courses/CourseHero";
 import CourseDetails from "@/components/Courses/CourseDetails";
 import CourseVideo from "@/components/Courses/CourseVideo";
 import CourseReviews from "@/components/Courses/CourseReviews";
+import CourseSubhead from "@/components/Courses/CourseSubhead";
+import CourseToolsSection from "@/components/Courses/CourseToolsSection";
+import CourseHomeworkSection from "@/components/Courses/CourseHomeworkSection";
 import { courses } from "@/components/Courses/coursesData";
 import { courseSchema } from "@/lib/schema";
 
@@ -57,11 +60,14 @@ const teenagersDescription = (
     <p>
       კურსი მოიცავს ინგლისური ენის{" "}
       <span className="font-bold text-lingo-green">ყველა კომპონენტს</span>:
-      speaking, listening, reading, writing, grammar და vocabulary. მასწავლებელი
-      მუდმივად კონცენტრირდება გრამატიკულ წესებზე, მდიდარი ლექსიკის შესწავლასა და
-      მათ სწორ გამოყენებაზე.
+      speaking, listening, reading, writing, grammar და vocabulary.{" "}
+      <span className="font-bold text-lingo-green">განსაკუთრებული აქცენტი</span>{" "}
+      speaking-ზეა — მოზარდი გაკვეთილზევე ბევრს საუბრობს, რადგან თავისუფალი
+      მეტყველება ენის ცოდნის მთავარი მაჩვენებელია. მასწავლებელი მუდმივად
+      კონცენტრირდება გრამატიკულ წესებზე, მდიდარი ლექსიკის შესწავლასა და მათ სწორ
+      გამოყენებაზე.
     </p>
-    <br />
+    <CourseSubhead>მასალები</CourseSubhead>
     <p>
       კურსის{" "}
       <span className="font-bold text-lingo-green">ძირითადი მასალები</span>{" "}
@@ -71,6 +77,8 @@ const teenagersDescription = (
       გასაუმჯობესებლად.
     </p>
     <CourseVideo />
+    <CourseToolsSection />
+    <CourseHomeworkSection />
     <br />
     <p>
       კურსი ქმნის მოსწავლეებისთვის{" "}
