@@ -1,6 +1,7 @@
 import Corporate from "./Corporate/Corporate";
 import Courses from "./Courses/Courses";
 import HomeContent from "./Content/HomeContent";
+import HomeLevelTest from "./LevelTest/HomeLevelTest";
 import HomeBlog from "./HomeBlog/HomeBlog";
 import MainBanner from "./MainBanner";
 import Reviews from "./Reviews/Reviews";
@@ -12,6 +13,7 @@ function MainContent() {
         <MainBanner />
       </div>
       <Courses />
+      <HomeLevelTest />
       <Corporate />
       <HomeContent />
       <HomeBlog />

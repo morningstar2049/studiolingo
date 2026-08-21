@@ -29,10 +29,10 @@ function useCountUp(target: number, run: boolean, ms = 1800) {
 }
 
 const chips = [
-  { icon: <FaYoutube />, color: "#ff3d33", cls: "top-[14%] left-[8%]" },
-  { icon: <FaInstagram />, color: "#ff5fa2", cls: "top-[62%] left-[12%]" },
-  { icon: <FaTiktok />, color: "#eaeef6", cls: "top-[20%] right-[10%]" },
-  { icon: <FaFacebookF />, color: "#4293f5", cls: "top-[66%] right-[9%]" },
+  { icon: <FaYoutube />, color: "#ff3d33", cls: "top-[20%] left-[14%] sm:left-[20%]" },
+  { icon: <FaInstagram />, color: "#ff5fa2", cls: "bottom-[16%] left-[10%] sm:left-[24%]" },
+  { icon: <FaTiktok />, color: "#eaeef6", cls: "top-[22%] right-[14%] sm:right-[22%]" },
+  { icon: <FaFacebookF />, color: "#4293f5", cls: "bottom-[18%] right-[10%] sm:right-[20%]" },
 ];
 
 export default function ContentHero() {
@@ -76,7 +76,7 @@ export default function ContentHero() {
       {chips.map((c, i) => (
         <div
           key={i}
-          className={`absolute ${c.cls} hidden lg:flex items-center justify-center w-14 h-14 rounded-2xl text-2xl backdrop-blur-md content-float`}
+          className={`absolute ${c.cls} z-0 flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl text-xl sm:text-2xl backdrop-blur-md content-float`}
           style={{
             color: c.color,
             background: "rgba(255,255,255,0.06)",
