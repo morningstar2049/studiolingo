@@ -271,6 +271,192 @@ body {
   animation: content-float 5s ease-in-out infinite;
 }
 
+/* Fast fly-in from each side, then the element floats (nested transforms). */
+@keyframes fly-in-l {
+  0% {
+    opacity: 0;
+    transform: translateX(-100vw);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fly-in-r {
+  0% {
+    opacity: 0;
+    transform: translateX(100vw);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fly-in-t {
+  0% {
+    opacity: 0;
+    transform: translateY(-360px);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fly-in-b {
+  0% {
+    opacity: 0;
+    transform: translateY(360px);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Animated "subscribed" tick shown beside the გამოგვყევი heading: a brand-green
+   badge pops in, a checkmark draws itself, and a ring ripples outward — looping
+   to illustrate the act of subscribing. */
+@keyframes sub-tick-pop {
+  0%,
+  6% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  20% {
+    transform: scale(1.14);
+    opacity: 1;
+  }
+  28%,
+  80% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  92%,
+  100% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+}
+@keyframes sub-tick-draw {
+  0%,
+  16% {
+    stroke-dashoffset: 17;
+  }
+  38%,
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes sub-tick-ring {
+  0%,
+  22% {
+    transform: scale(0.7);
+    opacity: 0.5;
+  }
+  70%,
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+.sub-tick {
+  display: inline-flex;
+  vertical-align: -0.16em;
+  margin: 0 0.16em;
+}
+.sub-tick svg {
+  width: 1.05em;
+  height: 1.05em;
+  overflow: visible;
+  transform-origin: center;
+  animation: sub-tick-pop 3s ease-in-out infinite;
+}
+.sub-tick-check {
+  stroke-dasharray: 17;
+  animation: sub-tick-draw 3s ease-in-out infinite;
+}
+.sub-tick-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sub-tick-ring 3s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sub-tick svg,
+  .sub-tick-check,
+  .sub-tick-ring {
+    animation: none;
+  }
+  .sub-tick-check {
+    stroke-dashoffset: 0;
+  }
+  .sub-tick-ring {
+    opacity: 0;
+  }
+}
+
+/* Icons fly in from the sides, then travel a circle around the central logo.
+   offset-path drives the circular motion; offset-rotate:0 keeps each icon
+   upright; a one-time transform entrance brings them in from the screen edges. */
+@keyframes orbit-move {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+@keyframes orbit-enter {
+  from {
+    transform: translate(var(--ex, 0), var(--ey, 0));
+    opacity: 0;
+  }
+  55% {
+    opacity: 1;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+.orbit-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  --r: 140px;
+  --spin: 12s;
+  --phase: 0;
+  offset-path: circle(var(--r) at 50% 50%);
+  offset-rotate: 0deg;
+  animation: orbit-move var(--spin) linear infinite,
+    orbit-enter 1.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  /* delay scales with the period so the icons stay evenly spaced at any speed */
+  animation-delay: calc(var(--spin) * var(--phase)), var(--enter-delay, 0s);
+}
+@media (min-width: 640px) {
+  .orbit-icon {
+    --r: 224px;
+    --spin: 19s; /* slower revolution on desktop */
+  }
+}
+
+.fly-in-l {
+  animation: fly-in-l 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.fly-in-r {
+  animation: fly-in-r 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.fly-in-t {
+  animation: fly-in-t 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.fly-in-b {
+  animation: fly-in-b 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 /* Messenger button: pop in, then pulse bigger 5 times to draw attention */
 @keyframes msgr-pop {
   0% {
@@ -322,6 +508,12 @@ body {
     transform: none;
   }
   .calc-reveal {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  /* Icons stop moving but stay spread along the circle at their start point. */
+  .orbit-icon {
     animation: none;
     opacity: 1;
     transform: none;

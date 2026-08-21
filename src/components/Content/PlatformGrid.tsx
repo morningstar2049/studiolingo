@@ -1,54 +1,128 @@
-import { AiOutlineArrowRight } from "react-icons/ai";
+"use client";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+import Image from "next/image";
 import RevealOnScroll from "../RevealOnScroll";
 import { platforms } from "./contentData";
 
-export default function PlatformGrid() {
-  return (
-    <section className="max-w-6xl px-5 mx-auto mt-16 sm:mt-20">
-      <RevealOnScroll revealClass="blog-rise" className="mb-8 text-center">
-        <h2
-          style={{ fontFeatureSettings: "'case' on" }}
-          className="text-2xl font-bold sm:text-3xl text-lingo-black"
-        >
-          გამოგვყევი <span className="text-lingo-green">ყველგან</span>
-        </h2>
-        <p className="max-w-xl mx-auto mt-3 text-[15px] text-[#6b7280]">
-          სადაც არ უნდა იყო, ჩვენი ინგლისური კონტენტი შენთანაა — აირჩიე
-          პლატფორმა და შემოგვიერთდი.
-        </p>
-      </RevealOnScroll>
+// Each icon flies in from a different screen edge before joining the circle.
+const enterFrom: CSSProperties[] = [
+  { "--ey": "-460px" } as CSSProperties, // from the top
+  { "--ex": "100vw" } as CSSProperties, // from the right
+  { "--ey": "460px" } as CSSProperties, // from the bottom
+  { "--ex": "-100vw" } as CSSProperties, // from the left
+];
 
-      <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+export default function PlatformGrid() {
+  const n = platforms.length;
+  const ref = useRef<HTMLDivElement>(null);
+  // Bumped each time the ring scrolls into view so the fly-in replays (it would
+  // otherwise finish before the user — especially on mobile — scrolls down to it).
+  const [cycle, setCycle] = useState(0);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    let inside = false;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !inside) {
+          inside = true;
+          setCycle((c) => c + 1);
+        } else if (!entry.isIntersecting) {
+          inside = false;
+        }
+      },
+      { threshold: 0.25 },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <section className="mt-16 sm:mt-20">
+      <div className="max-w-6xl px-5 mx-auto">
+        <RevealOnScroll revealClass="blog-rise" className="mb-8 text-center">
+          <h2
+            style={{ fontFeatureSettings: "'case' on" }}
+            className="text-2xl font-bold sm:text-3xl text-lingo-black"
+          >
+            გამოგვყევი
+            <span className="sub-tick" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <circle
+                  className="sub-tick-ring"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="#2f9e4d"
+                  strokeWidth="2"
+                />
+                <circle cx="12" cy="12" r="10" fill="#2f9e4d" />
+                <path
+                  className="sub-tick-check"
+                  d="M7.2 12.4 L10.6 15.7 L17 8.6"
+                  stroke="#fff"
+                  strokeWidth="2.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>{" "}
+            ყველგან
+          </h2>
+          <p className="max-w-xl mx-auto mt-3 text-[15px] text-[#6b7280]">
+            სადაც არ უნდა იყო, ჩვენი ინგლისური კონტენტი შენთანაა — დააჭირე
+            პლატფორმას და შემოგვიერთდი.
+          </p>
+        </RevealOnScroll>
+      </div>
+
+      {/* full-width so the icons can fly in from the actual screen edges */}
+      <div
+        ref={ref}
+        className="relative w-full h-[440px] sm:h-[640px] mt-2 overflow-hidden"
+      >
+        {/* big central Studio Lingo bubble */}
+        <div className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+          <Image
+            src="/lingo-icon.svg"
+            alt="Studio Lingo"
+            width={240}
+            height={240}
+            className="w-32 h-32 sm:w-60 sm:h-60 drop-shadow-[0_20px_38px_rgba(20,26,44,0.3)]"
+            priority
+          />
+        </div>
+
+        {/* social icons circle the logo, evenly spaced */}
         {platforms.map((p, i) => (
-          <RevealOnScroll key={p.name} revealClass="review-rise" delay={i * 90}>
-            <a
-              href={p.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="relative flex flex-col h-full p-5 overflow-hidden transition-all duration-300 group rounded-3xl bg-[#fff] border border-[#eceef2] shadow-[0_14px_34px_-18px_rgba(41,49,66,0.28)] hover:-translate-y-1.5 hover:shadow-[0_26px_50px_-20px_rgba(41,49,66,0.36)]"
+          <a
+            key={`${p.name}-${cycle}`}
+            href={p.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${p.name} — ${p.handle}`}
+            className="orbit-icon"
+            style={
+              {
+                ...enterFrom[i % enterFrom.length],
+                offsetDistance: `${(i / n) * 100}%`,
+                "--phase": -i / n,
+                "--enter-delay": `${i * 0.12}s`,
+              } as CSSProperties
+            }
+          >
+            <span
+              className="flex items-center justify-center text-3xl text-[#fff] transition-transform duration-300 w-16 h-16 sm:w-24 sm:h-24 sm:text-[42px] rounded-[20px] sm:rounded-[24px] hover:scale-110"
+              style={{
+                background:
+                  p.gradient ?? `linear-gradient(135deg, ${p.from}, ${p.to})`,
+                boxShadow: `0 16px 34px -10px ${p.from}c0`,
+              }}
             >
-              <span
-                className="inline-flex items-center justify-center mb-4 text-2xl text-[#fff] transition-transform duration-300 w-14 h-14 rounded-2xl shrink-0 group-hover:scale-110"
-                style={{
-                  background:
-                    p.gradient ?? `linear-gradient(135deg, ${p.from}, ${p.to})`,
-                }}
-              >
-                {p.icon}
-              </span>
-              <div className="text-lg font-bold text-lingo-black">{p.name}</div>
-              <div className="text-[13px] font-semibold text-lingo-green">
-                {p.handle}
-              </div>
-              <p className="mt-2 text-[13px] leading-snug text-[#6b7280] flex-1">
-                {p.blurb}
-              </p>
-              <span className="inline-flex items-center gap-1.5 mt-4 text-sm font-bold text-lingo-black transition-colors group-hover:text-lingo-green">
-                გამოგვყევი
-                <AiOutlineArrowRight className="transition-transform group-hover:translate-x-1" />
-              </span>
-            </a>
-          </RevealOnScroll>
+              {p.icon}
+            </span>
+          </a>
         ))}
       </div>
     </section>
