@@ -81,7 +81,7 @@ function Navbar() {
     { name: "კარიერა", href: "/career" },
     { name: "მასალები", href: "/materials" },
     { name: "ენის ტესტი", href: "/language-test" },
-    { name: "კონტაქტი", href: "#contact" },
+    { name: "კონტენტი", href: "/content" },
     { name: "განვადება", href: "/buy-course" },
   ];
 

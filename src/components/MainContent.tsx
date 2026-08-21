@@ -1,5 +1,6 @@
 import Corporate from "./Corporate/Corporate";
 import Courses from "./Courses/Courses";
+import HomeContent from "./Content/HomeContent";
 import HomeBlog from "./HomeBlog/HomeBlog";
 import MainBanner from "./MainBanner";
 import Reviews from "./Reviews/Reviews";
@@ -12,6 +13,7 @@ function MainContent() {
       </div>
       <Courses />
       <Corporate />
+      <HomeContent />
       <HomeBlog />
       <Reviews />
     </div>

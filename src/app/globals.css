@@ -241,6 +241,36 @@ body {
   animation: team-rise 2.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
+/* Content page: hero entrance + gently floating platform chips. */
+@keyframes content-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+.content-rise {
+  animation: content-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.content-rise-2 {
+  animation: content-rise 0.9s 0.25s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes content-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+.content-float {
+  animation: content-float 5s ease-in-out infinite;
+}
+
 /* Messenger button: pop in, then pulse bigger 5 times to draw attention */
 @keyframes msgr-pop {
   0% {
