@@ -29,7 +29,10 @@ export default function PlatformGrid() {
             >
               <span
                 className="inline-flex items-center justify-center mb-4 text-2xl text-[#fff] transition-transform duration-300 w-14 h-14 rounded-2xl shrink-0 group-hover:scale-110"
-                style={{ background: `linear-gradient(135deg, ${p.from}, ${p.to})` }}
+                style={{
+                  background:
+                    p.gradient ?? `linear-gradient(135deg, ${p.from}, ${p.to})`,
+                }}
               >
                 {p.icon}
               </span>
