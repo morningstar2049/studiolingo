@@ -1,6 +1,5 @@
 "use client";
-import { AiOutlineMail, AiOutlinePhone } from "react-icons/ai";
-import { CiLocationOn } from "react-icons/ci";
+import { FiPhone, FiMail, FiMapPin } from "react-icons/fi";
 import {
   FaFacebookF,
   FaInstagram,
@@ -91,14 +90,14 @@ function Footer() {
                 href="tel:+995322114623"
                 className="flex items-center gap-2 text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
               >
-                <AiOutlinePhone className="text-lg text-lingo-green" />
+                <FiPhone className="text-lg text-lingo-green" strokeWidth={2.6} />
                 +995 32 2 114 623
               </a>
               <a
                 href="mailto:info@studiolingo.ge"
                 className="flex items-center gap-2 text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
               >
-                <AiOutlineMail className="text-lg text-lingo-green" />
+                <FiMail className="text-lg text-lingo-green" strokeWidth={2.6} />
                 info@studiolingo.ge
               </a>
               <a
@@ -107,7 +106,7 @@ function Footer() {
                 rel="noreferrer"
                 className="flex items-center gap-2 text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
               >
-                <CiLocationOn className="text-lg text-lingo-green" />
+                <FiMapPin className="text-lg text-lingo-green" strokeWidth={2.6} />
                 წერეთლის 116, თბილისი
               </a>
             </div>

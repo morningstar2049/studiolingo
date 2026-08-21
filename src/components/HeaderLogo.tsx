@@ -38,7 +38,7 @@ function HeaderLogo({ height, width }: THeaderLogoProps) {
         className="font-bold leading-none"
         style={{ fontSize: Math.round(height * 0.36) }}
       >
-        <span className="text-lingo-black">studio</span>
+        <span className="text-[#131a2e]">studio</span>
         <span className="text-lingo-green">lingo</span>
       </span>
     </div>
