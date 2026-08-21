@@ -7,7 +7,7 @@ import CourseSubhead from "@/components/Courses/CourseSubhead";
 import CourseToolsSection from "@/components/Courses/CourseToolsSection";
 import CourseHomeworkSection from "@/components/Courses/CourseHomeworkSection";
 import { courses } from "@/components/Courses/coursesData";
-import { courseSchema } from "@/lib/schema";
+import { courseSchema, breadcrumbSchema } from "@/lib/schema";
 
 const course = courses.find((c) => c.slug === "/courses/teenagers")!;
 
@@ -103,14 +103,19 @@ export default function TeenagersPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
+          __html: JSON.stringify([
             courseSchema({
               name: course.title,
               description,
               path: "/courses/teenagers",
               mode: "online",
             }),
-          ),
+            breadcrumbSchema([
+              { name: "მთავარი", path: "/" },
+              { name: "კურსები", path: "/courses" },
+              { name: course.title, path: "/courses/teenagers" },
+            ]),
+          ]),
         }}
       />
       <CourseHero

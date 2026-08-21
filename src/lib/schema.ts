@@ -154,6 +154,35 @@ export function courseSchema(opts: {
   };
 }
 
+// BreadcrumbList for nested pages (course details, etc.) — shows the trail in
+// Google's SERP. `items` are ordered from the site root to the current page.
+export function breadcrumbSchema(items: { name: string; path: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      item: `${SITE_URL}${item.path}`,
+    })),
+  };
+}
+
+// FAQPage structured data — eligible for FAQ rich results. Answer text must
+// match what's visible on the page.
+export function faqSchema(items: { q: string; plain: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.plain },
+    })),
+  };
+}
+
 export const siteSchemas = [
   organizationSchema,
   localBusinessSchema,
