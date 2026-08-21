@@ -80,9 +80,9 @@ function Navbar() {
     { name: "კონტენტი", href: "/content" },
     { name: "ბლოგი", href: "/blog" },
     { name: "ენის ტესტი", href: "/language-test" },
-    { name: "კარიერა", href: "/career" },
     { name: "მასალები", href: "/materials" },
     { name: "განვადება", href: "/buy-course" },
+    { name: "კარიერა", href: "/career" },
   ];
 
   // Bare anchors only resolve on the homepage, so prefix them with "/" when the

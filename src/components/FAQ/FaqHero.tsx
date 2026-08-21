@@ -38,7 +38,7 @@ export default function FaqHero() {
           style={{ fontFeatureSettings: "'case' on" }}
           className="text-2xl font-bold text-[#fff] sm:text-[30px] blog-rise"
         >
-          ხშირად დასმული <span className="text-[#5fd07f]">კითხვები</span>
+          ხშირად დასმული <span className="text-lingo-green">კითხვები</span>
         </h1>
         <p className="mt-3 max-w-xl text-[15px] text-[#c3c9d4] blog-rise-2">
           ყველაზე ხშირი კითხვები სტუდიო ლინგოს კურსების, მეთოდებისა და
