@@ -2,11 +2,18 @@ import Link from "next/link";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import type { Course } from "./coursesData";
 
-export default function CourseCard({ course: c }: { course: Course }) {
+export default function CourseCard({
+  course: c,
+  index = 0,
+}: {
+  course: Course;
+  index?: number;
+}) {
   return (
     <Link
       href={c.slug}
-      className="flex flex-col h-full overflow-hidden bg-[#fff] border border-[#e7ecea] rounded-[22px] shadow-[0_18px_40px_-20px_rgba(41,49,66,0.35)] transition-all duration-300 group hover:-translate-y-2 hover:shadow-[0_30px_60px_-22px_rgba(47,158,77,0.4)]"
+      style={{ animationDelay: `${index * 0.28}s` }}
+      className="course-rise flex flex-col h-full overflow-hidden bg-[#fff] border border-[#e7ecea] rounded-[22px] shadow-[0_18px_40px_-20px_rgba(41,49,66,0.35)] transition-all duration-300 group hover:-translate-y-2 hover:shadow-[0_30px_60px_-22px_rgba(47,158,77,0.4)]"
     >
       <div
         className="h-[184px] flex items-center justify-center"

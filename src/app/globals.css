@@ -318,6 +318,25 @@ body {
     transform: none;
   }
 }
+/* Course cards rise up from below, one after another — desktop only. */
+@keyframes course-rise {
+  from {
+    opacity: 0;
+    transform: translateY(48px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (min-width: 1024px) {
+  .course-rise {
+    /* "backwards" (not "both") so the finished animation stops overriding the
+       card's transform — otherwise the hover lift is suppressed. */
+    animation: course-rise 1.5s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  }
+}
+
 /* Animated "subscribed" tick shown beside the გამოგვყევი heading: a brand-green
    badge pops in, a checkmark draws itself, and a ring ripples outward — looping
    to illustrate the act of subscribing. */
@@ -507,7 +526,8 @@ body {
     opacity: 1;
     transform: none;
   }
-  .calc-reveal {
+  .calc-reveal,
+  .course-rise {
     animation: none;
     opacity: 1;
     transform: none;
