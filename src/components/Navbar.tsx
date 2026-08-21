@@ -77,11 +77,11 @@ function Navbar() {
       ],
     },
     { name: "ჩვენი გუნდი", href: "/team" },
+    { name: "კონტენტი", href: "/content" },
     { name: "ბლოგი", href: "/blog" },
     { name: "კარიერა", href: "/career" },
     { name: "მასალები", href: "/materials" },
     { name: "ენის ტესტი", href: "/language-test" },
-    { name: "კონტენტი", href: "/content" },
     { name: "განვადება", href: "/buy-course" },
   ];
 
