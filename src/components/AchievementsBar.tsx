@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { FaUserGraduate, FaGoogle } from "react-icons/fa";
+import { FaUserGraduate, FaPlayCircle } from "react-icons/fa";
 import { HiUsers } from "react-icons/hi";
 import type { IconType } from "react-icons";
 
@@ -35,13 +35,13 @@ const stats: Stat[] = [
     label: "გამომწერი",
   },
   {
-    icon: FaGoogle,
+    icon: FaPlayCircle,
     iconClass: "text-base sm:text-3xl",
-    value: 5,
-    decimals: 1,
+    value: 2000,
+    decimals: 0,
     group: false,
-    suffix: "",
-    label: "Google შეფასება",
+    suffix: "+",
+    label: "ვიდეოგაკვეთილი",
   },
 ];
 
@@ -140,7 +140,10 @@ export default function AchievementsBar() {
             suffix={suffix}
             inView={inView}
           />
-          <span className="mt-1.5 sm:mt-2.5 text-[11px] sm:text-lg text-[#ffffffcc] whitespace-nowrap">
+          <span
+            style={{ fontFeatureSettings: "'case' on" }}
+            className="mt-1.5 sm:mt-2.5 text-[11px] sm:text-xl font-bold text-[#ffffffcc] whitespace-nowrap"
+          >
             {label}
           </span>
         </div>

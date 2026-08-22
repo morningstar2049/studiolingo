@@ -19,6 +19,12 @@ export default function PlatformGrid() {
   // otherwise finish before the user — especially on mobile — scrolls down to it).
   const [cycle, setCycle] = useState(0);
 
+  // Count-up stat under the headline. Initial value is the target so SSR/no-JS
+  // shows the real number; it resets to 0 and counts up whenever it's in view.
+  const statRef = useRef<HTMLDivElement>(null);
+  const [videoCount, setVideoCount] = useState(2000);
+  const [statInView, setStatInView] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
@@ -38,10 +44,48 @@ export default function PlatformGrid() {
     return () => obs.disconnect();
   }, []);
 
+  useEffect(() => {
+    const el = statRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") {
+      setStatInView(true);
+      return;
+    }
+    const obs = new IntersectionObserver(
+      ([entry]) => setStatInView(entry.isIntersecting),
+      { threshold: 0.5 },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!statInView) {
+      setVideoCount(0);
+      return;
+    }
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+      setVideoCount(2000);
+      return;
+    }
+    const target = 2000;
+    const duration = 1400;
+    const start = performance.now();
+    let raf = 0;
+    const tick = (now: number) => {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setVideoCount(Math.round(target * eased));
+      if (p < 1) raf = requestAnimationFrame(tick);
+      else setVideoCount(target);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [statInView]);
+
   return (
     <section className="mt-16 sm:mt-20">
       <div className="max-w-6xl px-5 mx-auto">
-        <RevealOnScroll revealClass="blog-rise" className="mb-8 text-center">
+        <RevealOnScroll revealClass="blog-rise" className="mb-6 text-center">
           <h2
             style={{ fontFeatureSettings: "'case' on" }}
             className="text-2xl font-bold sm:text-3xl text-lingo-black"
@@ -75,6 +119,22 @@ export default function PlatformGrid() {
             პლატფორმას და შემოგვიერთდი.
           </p>
         </RevealOnScroll>
+
+        {/* count-up: total video lessons */}
+        <div ref={statRef} className="text-center">
+          <span
+            style={{ fontFeatureSettings: "'case' on" }}
+            className="text-5xl font-bold sm:text-7xl text-lingo-green tabular-nums"
+          >
+            {videoCount}+
+          </span>
+          <span
+            style={{ fontFeatureSettings: "'case' on" }}
+            className="block mt-1.5 text-base font-bold sm:text-xl text-lingo-black"
+          >
+            ვიდეოგაკვეთილი
+          </span>
+        </div>
       </div>
 
       {/* full-width so the icons can fly in from the actual screen edges */}
