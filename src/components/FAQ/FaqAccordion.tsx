@@ -11,7 +11,7 @@ const accordionSx = {
   background: "transparent",
   boxShadow: "none",
   marginBottom: "14px",
-  fontFamily: "'FiraGO', sans-serif",
+  fontFamily: "var(--font-firago), sans-serif",
   "&:before": { display: "none" },
   "&.Mui-expanded": { margin: "0 0 14px 0" },
 };
@@ -61,7 +61,7 @@ const detailsSx = {
   borderBottomLeftRadius: "16px",
   borderBottomRightRadius: "16px",
   color: "#3a4657",
-  fontFamily: "'FiraGO', sans-serif",
+  fontFamily: "var(--font-firago), sans-serif",
   fontSize: "15px",
 };
 

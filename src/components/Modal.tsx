@@ -25,7 +25,7 @@ function Modal({ children, title, open, setOpen, sx }: TCustomModalProps) {
       <DialogTitle
         id="alert-dialog-title"
         sx={{
-          fontFamily: "'FiraGO', sans-serif",
+          fontFamily: "var(--font-firago), sans-serif",
         }}
       >
         {title}
@@ -37,7 +37,7 @@ function Modal({ children, title, open, setOpen, sx }: TCustomModalProps) {
           flexDirection="column"
           gap={2}
           sx={{
-            fontFamily: "'FiraGO', sans-serif",
+            fontFamily: "var(--font-firago), sans-serif",
             ...sx,
           }}
         >

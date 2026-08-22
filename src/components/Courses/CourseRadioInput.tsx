@@ -72,7 +72,7 @@ export default function CourseRadioInput({
             label={item}
             variant="plain"
             sx={{
-              fontFamily: "'FiraGO', sans-serif",
+              fontFamily: "var(--font-firago), sans-serif",
               px: 2,
               py: 1,
               alignItems: "center",

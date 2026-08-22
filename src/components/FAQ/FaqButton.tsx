@@ -41,7 +41,7 @@ export default function FaqButton() {
       >
         <DialogTitle
           sx={{
-            fontFamily: "'FiraGO', sans-serif",
+            fontFamily: "var(--font-firago), sans-serif",
             fontWeight: 700,
             fontFeatureSettings: "'case' on",
             pr: 6,
@@ -59,7 +59,7 @@ export default function FaqButton() {
         </DialogTitle>
         <DialogContent
           dividers
-          sx={{ fontFamily: "'FiraGO', sans-serif", borderColor: "#dbe6df" }}
+          sx={{ fontFamily: "var(--font-firago), sans-serif", borderColor: "#dbe6df" }}
         >
           <div className="pt-2">
             <FaqAccordion />
