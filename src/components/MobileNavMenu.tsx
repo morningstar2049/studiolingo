@@ -23,7 +23,7 @@ export default function MobileNavMenu() {
         },
         {
           name: "კურსები კომპანიებისთვის",
-          href: "/#corporate",
+          href: "/corporate",
           description: "ბიზნეს-ინგლისური",
           icon: <FaBuilding size={20} />,
         },

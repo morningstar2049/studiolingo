@@ -5,7 +5,7 @@ import { FaBookOpen, FaBuilding, FaStar } from "react-icons/fa6";
 import NavItem from "./NavItem";
 
 // Homepage in-page sections the nav links to (anchor hrefs above).
-const SECTION_IDS = ["courses", "corporate", "reviews", "contact"];
+const SECTION_IDS = ["courses", "reviews", "contact"];
 
 type HRef = `#${string}` | `/${string}`;
 
@@ -64,7 +64,7 @@ function Navbar() {
         },
         {
           name: "კურსები კომპანიებისთვის",
-          href: "#corporate",
+          href: "/corporate",
           description: "ბიზნეს-ინგლისური",
           icon: <FaBuilding size={18} />,
         },
