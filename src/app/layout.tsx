@@ -4,7 +4,6 @@ import localFont from "next/font/local";
 import { Noto_Sans_Georgian } from "next/font/google";
 import SiteChrome from "@/components/SiteChrome";
 import SiteFooter from "@/components/SiteFooter";
-import StyleRestoreGuard from "@/components/StyleRestoreGuard";
 import { MobileMenuContextProvider } from "@/Context/MobileMenuContext";
 import { Analytics } from "@vercel/analytics/react";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -75,7 +74,6 @@ export default function RootLayout({
             dangerouslySetInnerHTML={{ __html: JSON.stringify(siteSchemas) }}
           />
           <Analytics />
-          <StyleRestoreGuard />
           <MobileMenuContextProvider>
             <SiteChrome />
             {children}
