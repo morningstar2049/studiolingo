@@ -21,7 +21,9 @@ function PdfWrapper({ label, sub, accent, href, index = 0 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
-  // Staggered slow reveal that re-runs each time a card scrolls into view.
+  // Staggered slow reveal on the card's first appearance only (it does not
+  // re-run when the card scrolls back into view). Switching category remounts
+  // the cards, so they still animate again on a filter change.
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -30,7 +32,12 @@ function PdfWrapper({ label, sub, accent, href, index = 0 }: Props) {
       return;
     }
     const observer = new IntersectionObserver(
-      ([entry]) => setVisible(entry.isIntersecting),
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
       { threshold: 0.15, rootMargin: "0px 0px -50px 0px" }
     );
     observer.observe(el);

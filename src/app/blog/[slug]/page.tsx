@@ -127,6 +127,9 @@ const getComponents = (
     number: ({ children }) => <ol className="my-4">{children}</ol>,
   },
   types: {
+    divider: () => (
+      <hr className="my-9 h-px border-0 bg-[#e5e7eb]" />
+    ),
     image: ({ value }) => (
       <span className="relative block w-full my-6 h-80">
         <Image

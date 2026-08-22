@@ -122,6 +122,30 @@ export const post = defineType({
             }),
           },
         },
+        {
+          type: "object",
+          name: "divider",
+          title: "ჰორიზონტალური ხაზი",
+          // No settings needed — insert it to add a horizontal line. The hidden
+          // field only satisfies Sanity's "objects must have a field" rule.
+          fields: [
+            {
+              name: "style",
+              type: "string",
+              hidden: true,
+              initialValue: "line",
+            },
+          ],
+          icon: () =>
+            React.createElement(
+              "span",
+              { style: { fontWeight: 700, fontSize: "1.1em" } },
+              "―"
+            ),
+          preview: {
+            prepare: () => ({ title: "ჰორიზონტალური ხაზი ———" }),
+          },
+        },
       ],
       validation: (rule) => rule.required(),
     }),
