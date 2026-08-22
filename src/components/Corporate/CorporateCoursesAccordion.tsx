@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -81,12 +81,8 @@ function scrollToOnExpand(el: HTMLElement | null) {
 
 export default function CorporateCoursesAccordion() {
   const ref = useRef<HTMLDivElement>(null);
-  // Open by default (matches SSR / desktop); collapse on mobile after mount.
+  // Open by default on every screen size.
   const [expanded, setExpanded] = useState(true);
-
-  useEffect(() => {
-    if (window.innerWidth < 640) setExpanded(false);
-  }, []);
 
   return (
     <div
@@ -122,7 +118,7 @@ export default function CorporateCoursesAccordion() {
           </span>
           <span className="flex-1">
             <span className="block font-bold text-lingo-black text-[17px] sm:text-lg">
-              კორპორაციული ინგლისური
+              აირჩიეთ კურსი
             </span>
             <span className="block mt-1 text-[11px] tracking-[0.09em] uppercase text-[#9aa2ad]">
               ბიზნესისთვის · A1–C1

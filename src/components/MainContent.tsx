@@ -1,4 +1,4 @@
-import Corporate from "./Corporate/Corporate";
+import HomeCorporate from "./Corporate/HomeCorporate";
 import Courses from "./Courses/Courses";
 import HomeContent from "./Content/HomeContent";
 import HomeLevelTest from "./LevelTest/HomeLevelTest";
@@ -14,7 +14,7 @@ function MainContent() {
       </div>
       <Courses />
       <HomeLevelTest />
-      <Corporate />
+      <HomeCorporate />
       <HomeContent />
       <HomeBlog />
       <Reviews />
