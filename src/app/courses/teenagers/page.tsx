@@ -60,9 +60,10 @@ const teenagersDescription = (
     <p>
       კურსი მოიცავს ინგლისური ენის{" "}
       <span className="font-bold text-lingo-green">ყველა კომპონენტს</span>:
-      speaking, listening, reading, writing, grammar და vocabulary.{" "}
+      Speaking (საუბარი), Listening (მოსმენა), Reading (კითხვა), Writing
+      (წერა), Grammar (გრამატიკა) და Vocabulary (ლექსიკა).{" "}
       <span className="font-bold text-lingo-green">განსაკუთრებული აქცენტი</span>{" "}
-      speaking-ზეა — მოზარდი გაკვეთილზევე ბევრს საუბრობს, რადგან თავისუფალი
+      საუბარზეა — მოზარდი გაკვეთილზევე ბევრს საუბრობს, რადგან თავისუფალი
       მეტყველება ენის ცოდნის მთავარი მაჩვენებელია. მასწავლებელი მუდმივად
       კონცენტრირდება გრამატიკულ წესებზე, მდიდარი ლექსიკის შესწავლასა და მათ სწორ
       გამოყენებაზე.

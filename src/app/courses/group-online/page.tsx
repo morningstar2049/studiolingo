@@ -59,9 +59,10 @@ const groupOnlineDescription = (
     <p>
       ონლაინ ინგლისურის კურსი მოიცავს ენის{" "}
       <span className="font-bold text-lingo-green">ყველა კომპონენტს</span>:
-      speaking, listening, reading, writing, grammar და vocabulary.{" "}
+      Speaking (საუბარი), Listening (მოსმენა), Reading (კითხვა), Writing
+      (წერა), Grammar (გრამატიკა) და Vocabulary (ლექსიკა).{" "}
       <span className="font-bold text-lingo-green">განსაკუთრებული აქცენტი</span>{" "}
-      speaking-ზეა — ჯგუფურ კურსზე ყველაზე მეტ დროს სწორედ საუბარსა და ცოცხალ
+      საუბარზეა — ჯგუფურ კურსზე ყველაზე მეტ დროს სწორედ საუბარსა და ცოცხალ
       კომუნიკაციას ვუთმობთ, რადგან თავისუფალი მეტყველება ენის ცოდნის მთავარი
       მაჩვენებელია. სწავლება სრულად მორგებულია ქართველ მოსწავლეზე და
       ითვალისწინებს დონეებს A1-დან C1-მდე.

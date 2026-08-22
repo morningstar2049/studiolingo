@@ -89,7 +89,7 @@ export default function PlatformGrid() {
             alt="Studio Lingo"
             width={240}
             height={240}
-            className="w-32 h-32 sm:w-60 sm:h-60 drop-shadow-[0_20px_38px_rgba(20,26,44,0.3)]"
+            className="w-32 h-32 sm:w-44 sm:h-44 drop-shadow-[0_20px_38px_rgba(20,26,44,0.3)]"
             priority
           />
         </div>
