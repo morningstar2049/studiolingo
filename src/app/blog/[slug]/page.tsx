@@ -9,6 +9,7 @@ import { SITE_URL } from "@/lib/schema";
 import { urlForImage } from "@/sanity/client";
 import { getPost, getPostSlugs, getPosts } from "@/sanity/queries";
 import ArticleShare from "@/components/blog/ArticleShare";
+import BlogCoursesCard from "@/components/blog/BlogCoursesCard";
 import BlogCarousel from "@/components/HomeBlog/BlogCarousel";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
@@ -73,7 +74,7 @@ const getComponents = (
   block: {
     h2: ({ children }) =>
       animateHeadings ? (
-        <RevealOnScroll className="mt-8 mb-3">
+        <RevealOnScroll className="mt-8 mb-3" once>
           <h2 className="text-2xl font-bold text-lingo-black">{children}</h2>
         </RevealOnScroll>
       ) : (
@@ -83,7 +84,7 @@ const getComponents = (
       ),
     h3: ({ children }) =>
       animateHeadings ? (
-        <RevealOnScroll className="mt-6 mb-2">
+        <RevealOnScroll className="mt-6 mb-2" once>
           <h3 className="text-xl font-bold text-lingo-black">{children}</h3>
         </RevealOnScroll>
       ) : (
@@ -210,7 +211,7 @@ export default async function BlogPostPage({ params }: Props) {
   };
 
   return (
-    <main className="max-w-3xl px-5 pt-10 pb-20 mx-auto">
+    <main className="pb-20">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -218,64 +219,99 @@ export default async function BlogPostPage({ params }: Props) {
         }}
       />
 
-      <Link
-        href="/blog"
-        className="text-sm font-bold text-lingo-green hover:underline"
+      {/* Full-width navy headline band (desktop + mobile) */}
+      <div
+        className="relative w-full overflow-hidden"
+        style={{ background: "linear-gradient(120deg, #2a375c, #181f33)" }}
       >
-        ← ყველა სტატია
-      </Link>
-
-      <RevealOnScroll className="mt-4 mb-3">
-        <h1
-          style={{ fontFeatureSettings: "'case' on" }}
-          className="text-3xl font-bold sm:text-4xl text-lingo-black"
-        >
-          {post.title}
-        </h1>
-      </RevealOnScroll>
-      <time className="block mb-8 text-sm text-[#6b7280]" dateTime={post.publishedAt}>
-        {formatDate(post.publishedAt)}
-      </time>
-
-      {image && (
-        <div className="relative w-full mb-8 h-64 sm:h-96">
-          <Image
-            src={image}
-            alt={post.coverImage?.alt || post.title}
-            fill
-            sizes="(max-width: 768px) 100vw, 768px"
-            className="object-cover rounded-xl"
-            priority
-          />
+        <div className="max-w-6xl px-5 mx-auto py-5 sm:py-7">
+          <Link
+            href="/blog"
+            className="text-sm font-bold transition-colors text-lingo-green hover:text-[#5fd07f]"
+          >
+            ← ყველა სტატია
+          </Link>
+          <h1
+            style={{ fontFeatureSettings: "'case' on" }}
+            className="mt-3 text-xl font-bold leading-snug text-[#fff] sm:text-2xl lg:text-[26px] max-w-3xl blog-rise"
+          >
+            {post.title}
+          </h1>
+          <time
+            className="block mt-2.5 text-[13px] text-[#c3c9d4]"
+            dateTime={post.publishedAt}
+          >
+            {formatDate(post.publishedAt)}
+          </time>
         </div>
-      )}
+      </div>
 
-      <article>
-        <PortableText
-          value={post.body}
-          components={getComponents(ANIMATED_HEADING_SLUGS.includes(post.slug))}
-        />
-      </article>
+      {/* Body: article on the left, sticky courses card on the right (desktop) */}
+      <div className="max-w-6xl px-5 mx-auto mt-10 lg:mt-12 lg:grid lg:grid-cols-[minmax(0,1fr)_384px] lg:gap-12">
+        <div className="min-w-0">
+          {image && (
+            <div className="relative w-full mb-8 h-64 sm:h-96">
+              <Image
+                src={image}
+                alt={post.coverImage?.alt || post.title}
+                fill
+                sizes="(max-width: 1024px) 100vw, 760px"
+                className="object-cover rounded-xl"
+                priority
+              />
+            </div>
+          )}
 
-      <div className="pt-8 mt-12 border-t border-[#e5e7eb]">
-        <Link
-          href="/courses"
-          className="flex items-center justify-center gap-2 px-6 py-4 mb-8 font-bold text-center text-[#fff] transition-opacity bg-lingo-green rounded-xl shadow-lg shadow-lingo-green/25 hover:opacity-90"
-        >
-          <span style={{ fontFeatureSettings: "'case' on" }}>
-            გაეცანი სტუდიო ლინგოს კურსებს
-          </span>
-          <AiOutlineArrowRight className="shrink-0" />
-        </Link>
+          <article>
+            <PortableText
+              value={post.body}
+              components={getComponents(
+                ANIMATED_HEADING_SLUGS.includes(post.slug),
+              )}
+            />
+          </article>
 
-        <ArticleShare
-          url={`${SITE_URL}/blog/${post.slug}`}
-          title={post.title}
-        />
+          {/* CTA + share — mobile only (desktop shows them in the sidebar) */}
+          <div className="pt-8 mt-12 border-t border-[#e5e7eb] lg:hidden">
+            <Link
+              href="/courses"
+              className="flex items-center justify-center gap-2 px-6 py-4 mb-8 font-bold text-center text-[#fff] transition-opacity bg-lingo-green rounded-xl shadow-lg shadow-lingo-green/25 hover:opacity-90"
+            >
+              <span style={{ fontFeatureSettings: "'case' on" }}>
+                გაეცანი სტუდიო ლინგოს კურსებს
+              </span>
+              <AiOutlineArrowRight className="shrink-0" />
+            </Link>
+
+            <div className="p-5 bg-[#fff] border border-[#e7ecea] rounded-[20px] shadow-[0_14px_30px_-22px_rgba(41,49,66,0.3)]">
+              <ArticleShare
+                url={`${SITE_URL}/blog/${post.slug}`}
+                title={post.title}
+                hideLabel
+                spread
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* right column — courses card + share, pinned, desktop only */}
+        <aside className="hidden lg:block">
+          <div className="sticky top-[168px]">
+            <BlogCoursesCard />
+            <div className="p-5 mt-5 bg-[#fff] border border-[#e7ecea] rounded-[20px] shadow-[0_14px_30px_-22px_rgba(41,49,66,0.3)]">
+              <ArticleShare
+                url={`${SITE_URL}/blog/${post.slug}`}
+                title={post.title}
+                hideLabel
+                spread
+              />
+            </div>
+          </div>
+        </aside>
       </div>
 
       {relatedPosts.length > 0 && (
-        <section className="pt-10 mt-12 border-t border-[#e5e7eb]">
+        <section className="max-w-6xl px-5 mx-auto pt-10 mt-12 border-t border-[#e5e7eb]">
           <h2
             style={{ fontFeatureSettings: "'case' on" }}
             className="mb-8 text-2xl font-bold text-center text-lingo-black"

@@ -10,12 +10,16 @@ export default function RevealOnScroll({
   revealClass = "review-rise",
   delay = 0,
   stable = false,
+  once = false,
 }: {
   children?: ReactNode;
   className?: string;
   revealClass?: string;
   delay?: number;
   stable?: boolean;
+  // Reveal only on the first time it scrolls into view, then stay — instead of
+  // re-running the animation every time it re-enters the viewport.
+  once?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -28,7 +32,14 @@ export default function RevealOnScroll({
       return;
     }
     const observer = new IntersectionObserver(
-      ([entry]) => setVisible(entry.isIntersecting),
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          if (once) observer.disconnect();
+        } else if (!once) {
+          setVisible(false);
+        }
+      },
       // `stable` is for elements at the very bottom of the page (e.g. a final
       // CTA): a plain edge trigger, with no 0.2 ratio boundary or bottom
       // margin, avoids the flicker that restarts the animation on mobile as
@@ -39,7 +50,7 @@ export default function RevealOnScroll({
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, [stable]);
+  }, [stable, once]);
 
   return (
     <div

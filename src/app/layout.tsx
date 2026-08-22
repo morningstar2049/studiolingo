@@ -17,6 +17,8 @@ export const metadata: Metadata = {
   description: "ინგლისური ენის კურსები. ისწავლეთ ინგლისური სტუდიო ლინგოში!",
   icons: {
     icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/apple-touch-icon.png",
   },
   openGraph: {
     title: "სტუდიო ლინგო - ინგლისური ენების სკოლა",

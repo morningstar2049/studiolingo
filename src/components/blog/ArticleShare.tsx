@@ -9,7 +9,13 @@ import {
 } from "react-icons/fa";
 import { FiLink, FiCheck } from "react-icons/fi";
 
-type Props = { url: string; title: string };
+type Props = {
+  url: string;
+  title: string;
+  hideLabel?: boolean;
+  // Distribute the buttons evenly across the full width (for the sidebar box).
+  spread?: boolean;
+};
 
 // Official X (formerly Twitter) mark. Inlined because this react-icons
 // version predates FaXTwitter.
@@ -25,7 +31,12 @@ const XIcon = () => (
   </svg>
 );
 
-export default function ArticleShare({ url, title }: Props) {
+export default function ArticleShare({
+  url,
+  title,
+  hideLabel,
+  spread,
+}: Props) {
   const [copied, setCopied] = useState(false);
   const e = encodeURIComponent;
 
@@ -73,8 +84,18 @@ export default function ArticleShare({ url, title }: Props) {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      <span className="mr-1 text-sm font-bold text-lingo-black">გააზიარე:</span>
+    <div
+      className={
+        spread
+          ? "flex items-center justify-between w-full"
+          : "flex flex-wrap items-center gap-3"
+      }
+    >
+      {!hideLabel && (
+        <span className="mr-1 text-sm font-bold text-lingo-black">
+          გააზიარე:
+        </span>
+      )}
       {channels.map((c) => (
         <a
           key={c.name}

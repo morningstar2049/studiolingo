@@ -4,7 +4,7 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 import RevealOnScroll from "../RevealOnScroll";
 
 const features = [
-  "48 ადაპტიური კითხვა — ჩერდება შენს დონეზე",
+  "48 ადაპტირებული კითხვა — ჩერდება შენს დონეზე",
   "მოსმენისა და მართლწერის შემოწმება",
   "შედეგს მაშინვე იღებ — დონე A1-დან C1-მდე",
 ];
@@ -22,9 +22,9 @@ export default function HomeLevelTest() {
     <section className="max-w-6xl px-5 mx-auto my-16 sm:my-20">
       <RevealOnScroll revealClass="blog-rise">
         <div
-          className="relative grid overflow-hidden lg:grid-cols-2 rounded-[28px] shadow-[0_30px_64px_-28px_rgba(10,14,24,0.7)]"
+          className="relative grid overflow-hidden lg:grid-cols-2 rounded-[28px] border border-[#d3ebdc] shadow-[0_30px_64px_-30px_rgba(47,158,77,0.32)]"
           style={{
-            background: "linear-gradient(135deg,#1e2a48 0%,#151d33 55%,#0d1322 100%)",
+            background: "linear-gradient(135deg,#ffffff 0%,#f0f8f3 55%,#e8f5ed 100%)",
             fontFeatureSettings: "'case' on",
           }}
         >
@@ -34,30 +34,30 @@ export default function HomeLevelTest() {
             className="absolute inset-0 pointer-events-none"
             style={{
               backgroundImage:
-                "radial-gradient(520px 260px at 100% 0%, rgba(47,158,77,0.35), transparent 60%), radial-gradient(420px 240px at 0% 100%, rgba(47,158,77,0.14), transparent 60%)",
+                "radial-gradient(520px 260px at 100% 0%, rgba(47,158,77,0.14), transparent 60%), radial-gradient(420px 240px at 0% 100%, rgba(47,158,77,0.08), transparent 60%)",
             }}
           />
 
           {/* Left: copy + CTA */}
           <div className="relative z-10 p-7 sm:p-11">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 text-xs font-bold rounded-full sm:text-sm text-[#5fd07f] bg-[#2f9e4d1f] border border-[#2f9e4d40]">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 text-xs font-bold rounded-full sm:text-sm text-lingo-green bg-[#eaf6ee] border border-[#bfe6cb]">
               <FaLanguage className="text-base" />
               ინგლისურის დონის ტესტი
             </span>
 
-            <h2 className="mt-5 text-2xl font-bold leading-tight text-[#fff] sm:text-4xl">
+            <h2 className="mt-5 text-2xl font-bold leading-tight text-lingo-black sm:text-4xl">
               შეამოწმე შენი ინგლისურის დონე{" "}
               <span className="text-lingo-green">უფასოდ</span>
             </h2>
 
-            <p className="mt-3 text-[15px] leading-relaxed text-[#aab2c2] sm:text-base">
+            <p className="mt-3 text-[15px] leading-relaxed text-[#59636d] sm:text-base">
               მორგებული ტესტი, რომელიც შენს დონეზე ჩერდება — სულ რამდენიმე წუთში
-              გაიგებ, სად ხარ ინგლისურის სკალაზე.
+              გაიგებ, დაახლოებით რა დონეზე ხარ.
             </p>
 
             <ul className="flex flex-col gap-3 mt-6">
               {features.map((f) => (
-                <li key={f} className="flex items-start gap-3 text-[14px] text-[#dfe4ec]">
+                <li key={f} className="flex items-start gap-3 text-[14px] text-[#3f4a52]">
                   <span className="flex items-center justify-center w-5 h-5 mt-0.5 text-[10px] rounded-full shrink-0 bg-lingo-green text-[#fff]">
                     <FaCheck />
                   </span>
@@ -77,9 +77,9 @@ export default function HomeLevelTest() {
 
           {/* Right: CEFR level ladder (desktop only) */}
           <div className="relative z-10 items-center justify-center hidden p-11 lg:flex">
-            <div className="w-full max-w-sm p-6 rounded-2xl bg-[#ffffff0d] border border-[#ffffff1f] backdrop-blur-sm">
+            <div className="w-full max-w-sm p-6 rounded-2xl bg-[#f5faf7] border border-[#d9ebe0]">
               <div className="flex items-center justify-between mb-6">
-                <span className="text-sm font-bold text-[#eaeef6]">
+                <span className="text-sm font-bold text-lingo-black">
                   ინგლისურის დონეები
                 </span>
                 <span className="px-2.5 py-1 text-[11px] font-bold rounded-full text-[#fff] bg-lingo-green">
@@ -102,7 +102,7 @@ export default function HomeLevelTest() {
                         }}
                       />
                     </div>
-                    <span className="mt-2 text-[12px] font-bold text-[#c3c9d4]">
+                    <span className="mt-2 text-[12px] font-bold text-[#5f6b74]">
                       {lv.l}
                     </span>
                   </div>

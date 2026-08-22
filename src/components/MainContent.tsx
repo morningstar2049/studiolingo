@@ -13,8 +13,8 @@ function MainContent() {
         <MainBanner />
       </div>
       <Courses />
-      <HomeLevelTest />
       <HomeCorporate />
+      <HomeLevelTest />
       <HomeContent />
       <HomeBlog />
       <Reviews />

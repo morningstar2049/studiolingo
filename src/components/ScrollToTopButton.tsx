@@ -76,8 +76,8 @@ export default function ScrollToTopButton() {
         />
       </svg>
       {/* inner button */}
-      <span className="absolute inset-[5px] flex items-center justify-center rounded-full bg-[#fff] text-lingo-green shadow-[0_6px_16px_-4px_rgba(41,49,66,0.28)] ring-1 ring-[#eef1f4] transition-all duration-300 group-hover:-translate-y-0.5 group-hover:bg-gradient-to-br group-hover:from-[#43c667] group-hover:to-[#1e7d3a] group-hover:text-[#fff] group-hover:shadow-[0_10px_22px_-6px_rgba(47,158,77,0.6)]">
-        <FaArrowUp className="text-base transition-transform duration-300 group-hover:-translate-y-0.5" />
+      <span className="absolute inset-[5px] flex items-center justify-center rounded-full bg-transparent text-lingo-green group-hover:bg-lingo-green group-hover:text-[#fff] group-active:bg-lingo-green group-active:text-[#fff]">
+        <FaArrowUp className="text-base" />
       </span>
     </button>
   );
