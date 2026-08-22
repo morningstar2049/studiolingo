@@ -4,25 +4,35 @@ import { useEffect } from "react";
 
 /**
  * iOS Safari sometimes restores a backgrounded/purged tab with the page's
- * stylesheets not re-applied — fonts fall back to serif, layout breaks — and
+ * stylesheet not applied — fonts fall back to serif, layout collapses — and
  * keeps it that way until the user manually refreshes. This detects that
- * unstyled restore and hard-reloads once to get a clean render.
+ * unstyled state and hard-reloads once to recover.
  *
- * The check is conservative: it only reloads when the app CSS is verifiably
- * absent (the next/font `--font-firago` variable, set on <html>, is empty), so
- * healthy loads (and every other browser) are never reloaded. A sessionStorage
- * latch guarantees at most one automatic reload, preventing any loop.
+ * Detection probes an actual Tailwind utility (`hidden` → `display:none`). If
+ * the app stylesheet is applied the probe is `none`; if it's missing the probe
+ * is the default `block`. This tests the exact stylesheet that goes missing —
+ * unlike the next/font `--font-firago` variable, which is injected separately
+ * and can still resolve on an otherwise-unstyled page.
+ *
+ * A sessionStorage latch caps it at one automatic reload, so there is never a
+ * loop; the latch clears as soon as a styled page is seen.
  */
 export default function StyleRestoreGuard() {
   useEffect(() => {
     const KEY = "sl-style-reload";
 
-    const check = () => {
-      const styled = !!getComputedStyle(document.documentElement)
-        .getPropertyValue("--font-firago")
-        .trim();
+    const isStyled = () => {
+      const probe = document.createElement("div");
+      probe.className = "hidden";
+      probe.setAttribute("aria-hidden", "true");
+      document.body.appendChild(probe);
+      const applied = getComputedStyle(probe).display === "none";
+      probe.remove();
+      return applied;
+    };
 
-      if (styled) {
+    const recover = () => {
+      if (isStyled()) {
         sessionStorage.removeItem(KEY);
         return;
       }
@@ -32,10 +42,21 @@ export default function StyleRestoreGuard() {
       }
     };
 
-    // Runs on the initial load and, crucially, on every bfcache/tab restore.
-    const onShow = () => requestAnimationFrame(check);
-    window.addEventListener("pageshow", onShow);
-    return () => window.removeEventListener("pageshow", onShow);
+    // Defer briefly so a normal load's stylesheet has applied before we judge.
+    const check = () => window.setTimeout(recover, 300);
+
+    check(); // covers a broken first paint
+    const onPageShow = () => check();
+    const onVisible = () => {
+      if (document.visibilityState === "visible") check();
+    };
+
+    window.addEventListener("pageshow", onPageShow);
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      window.removeEventListener("pageshow", onPageShow);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
   }, []);
 
   return null;
