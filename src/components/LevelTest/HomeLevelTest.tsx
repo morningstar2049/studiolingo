@@ -20,7 +20,7 @@ const levels = [
 export default function HomeLevelTest() {
   return (
     <section className="max-w-6xl px-5 mx-auto my-16 sm:my-20">
-      <RevealOnScroll revealClass="blog-rise">
+      <RevealOnScroll revealClass="blog-rise" once>
         <div
           className="relative grid overflow-hidden lg:grid-cols-2 rounded-[28px] border border-[#d3ebdc] shadow-[0_30px_64px_-30px_rgba(47,158,77,0.32)]"
           style={{
