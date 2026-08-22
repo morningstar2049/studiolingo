@@ -8,12 +8,28 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 import { urlForImage } from "@/sanity/client";
 import type { PostListItem } from "@/sanity/queries";
 
+// Georgian month names, hardcoded so the date renders identically on the server
+// and in the browser (relying on each runtime's ka-GE locale data caused a
+// hydration mismatch — the two could format the same date differently).
+const KA_MONTHS = [
+  "იანვარი",
+  "თებერვალი",
+  "მარტი",
+  "აპრილი",
+  "მაისი",
+  "ივნისი",
+  "ივლისი",
+  "აგვისტო",
+  "სექტემბერი",
+  "ოქტომბერი",
+  "ნოემბერი",
+  "დეკემბერი",
+];
+
 function formatDate(value: string) {
-  return new Date(value).toLocaleDateString("ka-GE", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "";
+  return `${d.getDate()} ${KA_MONTHS[d.getMonth()]} ${d.getFullYear()}`;
 }
 
 export default function BlogCarousel({ posts }: { posts: PostListItem[] }) {
