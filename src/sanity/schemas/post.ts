@@ -142,9 +142,19 @@ export const post = defineType({
               { style: { fontWeight: 700, fontSize: "1.1em" } },
               "―"
             ),
-          preview: {
-            prepare: () => ({ title: "ჰორიზონტალური ხაზი ———" }),
+          // Render the inserted block as a plain horizontal line in the editor
+          // (no label text) — matches how it looks in the published article.
+          components: {
+            preview: () =>
+              React.createElement("hr", {
+                style: {
+                  border: 0,
+                  borderTop: "2px solid #c7ccd6",
+                  margin: "10px 0",
+                },
+              }),
           },
+          preview: { prepare: () => ({ title: "" }) },
         },
       ],
       validation: (rule) => rule.required(),

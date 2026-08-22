@@ -128,6 +128,11 @@ function Page() {
   if (!isSignedIn) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[90vh] px-4 bg-gray-50">
+        <img
+          src="/nawil-nawil.png"
+          alt="ნაწილ-ნაწილ — უპროცენტო განვადება"
+          className="w-40 sm:w-44 h-auto mb-12 -mt-28"
+        />
         <div
           style={{ fontFeatureSettings: "'case' on" }}
           className="w-full max-w-sm rounded-[24px] bg-[#fff] border border-[#eceef2] shadow-[0_24px_54px_-22px_rgba(41,49,66,0.3)] p-8 text-center"
