@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AiOutlineArrowLeft } from "react-icons/ai";
 import { FaBriefcase } from "react-icons/fa";
+import { FiExternalLink } from "react-icons/fi";
 
 // Full-width navy cover for the corporate page — same language as the FAQ /
 // materials heroes.
@@ -36,6 +37,15 @@ export default function CorporateHero() {
           ინგლისური კომპანიებისა და გუნდებისთვის — ბიზნესის საჭიროებებზე
           მორგებული სწავლება.
         </p>
+        <a
+          href="https://canva.link/aqs6m3c09y16opf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-6 py-3 mt-6 text-[15px] font-bold transition-transform rounded-xl text-[#fff] bg-lingo-green shadow-[0_16px_36px_-14px_rgba(47,158,77,0.7)] hover:scale-[1.03]"
+        >
+          ნახე ჩვენი შეთავაზება
+          <FiExternalLink className="shrink-0" />
+        </a>
       </div>
     </div>
   );

@@ -26,15 +26,13 @@ async function page({
   const isPositionOpen = !!vacancies.filter((item) => item.route === positionId)
     .length;
 
-  return (
+  return isPositionOpen ? (
+    <PositionDetails positionKey={positionId} />
+  ) : (
     <div className="flex justify-center p-5 sm:p-9">
-      {isPositionOpen ? (
-        <PositionDetails positionKey={positionId} />
-      ) : (
-        <h1 className="text-lingo-green font-bold text-xl text-center h-[calc(100vh-200px)] flex items-center justify-center">
-          ამჟამად მიმდინარე ვაკანსია დახურულია
-        </h1>
-      )}
+      <h1 className="text-lingo-green font-bold text-xl text-center h-[calc(100vh-200px)] flex items-center justify-center">
+        ამჟამად მიმდინარე ვაკანსია დახურულია
+      </h1>
     </div>
   );
 }
