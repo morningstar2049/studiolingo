@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import CoursesHeader from "@/components/Courses/CoursesHeader";
 import CourseTypeCards from "@/components/Courses/CourseTypeCards";
+import CoursesAbout from "@/components/Courses/CoursesAbout";
 
 const title = "ინგლისურის კურსები — ინდივიდუალური და ჯგუფური | Studio Lingo";
 const description =
@@ -24,6 +25,7 @@ export default function CoursesPage() {
     <main className="max-w-6xl px-5 pt-10 pb-20 mx-auto">
       <CoursesHeader />
       <CourseTypeCards />
+      <CoursesAbout />
     </main>
   );
 }

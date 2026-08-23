@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -65,12 +65,16 @@ const detailsSx = {
   fontSize: "15px",
 };
 
-export default function FaqAccordion() {
+export default function FaqAccordion({
+  items = faqs,
+}: {
+  items?: { q: string; a: ReactNode }[];
+}) {
   const [open, setOpen] = useState<number | false>(false);
 
   return (
     <div className="w-full">
-      {faqs.map((faq, i) => (
+      {items.map((faq, i) => (
         <Accordion
           key={faq.q}
           disableGutters

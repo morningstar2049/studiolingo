@@ -5,9 +5,12 @@ import type { Course } from "./coursesData";
 export default function CourseCard({
   course: c,
   index = 0,
+  headingTag: Heading = "h3",
 }: {
   course: Course;
   index?: number;
+  // h2 on the /courses grid (clean H1→H2), h3 in the homepage carousel.
+  headingTag?: "h2" | "h3";
 }) {
   return (
     <Link
@@ -34,12 +37,12 @@ export default function CourseCard({
             </span>
           ))}
         </div>
-        <h3
+        <Heading
           style={{ fontFeatureSettings: "'case' on" }}
           className="mt-4 text-[19px] font-bold leading-snug text-lingo-black"
         >
           {c.title}
-        </h3>
+        </Heading>
         <p className="mt-[11px] text-[13.5px] leading-relaxed text-[#5f6b74]">
           {c.desc}
         </p>
