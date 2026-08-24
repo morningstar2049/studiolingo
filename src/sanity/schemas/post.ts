@@ -149,7 +149,7 @@ export const post = defineType({
               React.createElement("hr", {
                 style: {
                   border: 0,
-                  borderTop: "2px solid #c7ccd6",
+                  borderTop: "2px solid #111111",
                   margin: "10px 0",
                 },
               }),

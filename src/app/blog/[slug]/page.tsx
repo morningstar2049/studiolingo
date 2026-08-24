@@ -128,7 +128,7 @@ const getComponents = (
   },
   types: {
     divider: () => (
-      <hr className="my-9 h-px border-0 bg-[#e5e7eb]" />
+      <hr className="my-9 h-px border-0 bg-[#111111]" />
     ),
     image: ({ value }) => (
       <span className="relative block w-full my-6 h-80">
