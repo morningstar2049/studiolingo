@@ -273,7 +273,7 @@ function LevelTest({
           )}
 
           <a
-            href="/#courses"
+            href="/courses"
             className="block py-3.5 mt-4 font-bold text-[#fff] transition-all rounded-xl bg-lingo-green shadow-lg shadow-lingo-green/25 hover:bg-[#2f904d] hover:scale-[1.02]"
           >
             დაიწყე შესაბამისი კურსი →
