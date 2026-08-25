@@ -124,7 +124,25 @@ export default function RegistrationForm({
     };
   }, [isModal, open, onClose]);
 
+  // After a successful submit the success view is shorter than the form, so the
+  // page shrinks and (on mobile) can be left scrolled down near the footer. Run
+  // this once the shorter view has committed, and jump instantly: a smooth scroll
+  // would animate while the page is still shrinking and get clamped to the new
+  // bottom (the footer). We force scroll-behavior:auto for the jump so the global
+  // html { scroll-behavior: smooth } can't turn it into an animation.
   if (isModal && !open) return null;
+
+  // Scroll the card to the top of the viewport with the global smooth behavior
+  // temporarily disabled (so it's an instant jump, not an animation).
+  const scrollCardToTop = () => {
+    const el = cardRef.current;
+    if (!el) return;
+    const root = document.documentElement;
+    const prev = root.style.scrollBehavior;
+    root.style.scrollBehavior = "auto";
+    el.scrollIntoView({ block: "start" });
+    root.style.scrollBehavior = prev;
+  };
 
   const set = (id: string, v: string) => {
     setValues((p) => ({ ...p, [id]: v }));
@@ -161,13 +179,12 @@ export default function RegistrationForm({
     } catch {
       // no-cors: response is opaque; treat a completed request as sent
     }
+    // Scroll to the card top BEFORE swapping in the shorter success view. Doing it
+    // while the tall form is still mounted lands us near the page top, so the
+    // shrink can't strand the view down at the footer (a post-shrink scroll gets
+    // overridden by the browser's scroll clamp/anchoring).
+    scrollCardToTop();
     setStatus("success");
-    // On the /register/teens page the success view is shorter than the form, so the
-    // window can be left scrolled down near the footer. Bring the card back into
-    // view so the confirmation is visible without scrolling up.
-    requestAnimationFrame(() =>
-      cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
-    );
   };
 
   return (
