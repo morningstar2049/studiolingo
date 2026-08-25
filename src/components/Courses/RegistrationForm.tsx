@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AiOutlineClose, AiOutlineArrowRight } from "react-icons/ai";
 import { FaCheck } from "react-icons/fa";
 import TermsModal from "./TermsModal";
@@ -99,10 +99,11 @@ export default function RegistrationForm({
 }: {
   open?: boolean;
   onClose?: () => void;
-  // "modal" — overlay opened from a button; "page" — rendered inline on /register
+  // "modal" — overlay opened from a button; "page" — inline on /register/teens
   variant?: "modal" | "page";
 }) {
   const isModal = variant === "modal";
+  const cardRef = useRef<HTMLDivElement>(null);
   const [values, setValues] = useState<Record<string, string>>({});
   const [agreed, setAgreed] = useState(false);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
@@ -161,6 +162,12 @@ export default function RegistrationForm({
       // no-cors: response is opaque; treat a completed request as sent
     }
     setStatus("success");
+    // On the /register/teens page the success view is shorter than the form, so the
+    // window can be left scrolled down near the footer. Bring the card back into
+    // view so the confirmation is visible without scrolling up.
+    requestAnimationFrame(() =>
+      cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
+    );
   };
 
   return (
@@ -174,6 +181,7 @@ export default function RegistrationForm({
         onClick={isModal && onClose ? onClose : undefined}
       >
       <div
+        ref={cardRef}
         style={{ fontFeatureSettings: "normal" }}
         onClick={isModal ? (e) => e.stopPropagation() : undefined}
         className={`w-full max-w-lg bg-[#fff] rounded-[24px] ${

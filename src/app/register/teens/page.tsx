@@ -8,11 +8,11 @@ const description =
 export const metadata: Metadata = {
   title,
   description,
-  alternates: { canonical: "/register" },
+  alternates: { canonical: "/register/teens" },
   openGraph: { title, description, images: ["/og-logo.png"] },
 };
 
-export default function RegisterPage() {
+export default function TeensRegisterPage() {
   return (
     <>
       <div

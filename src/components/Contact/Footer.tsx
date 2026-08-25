@@ -9,7 +9,7 @@ import {
 } from "react-icons/fa";
 import { useState } from "react";
 import Link from "next/link";
-import Modal from "../Modal";
+import InfoModal from "../InfoModal";
 
 const socials = [
   {
@@ -144,9 +144,9 @@ function Footer() {
           </div>
         </div>
       </footer>
-      <Modal
+      <InfoModal
         open={isTermsModalOpen}
-        setOpen={setIsTermsModalOpen}
+        onClose={() => setIsTermsModalOpen(false)}
         title="წესები და პირობები"
       >
         <p>
@@ -284,10 +284,10 @@ function Footer() {
           წესები პერიოდულად ექვემდებარება განახლებას, რომლის შესახებ თქვენ
           წინასწარ მეილით იქნებით ინფორმირებულნი.
         </p>
-      </Modal>
-      <Modal
+      </InfoModal>
+      <InfoModal
         open={isConfidentialityModalOpen}
-        setOpen={setIsConfidentialityModalOpen}
+        onClose={() => setIsConfidentialityModalOpen(false)}
         title="კონფიდენციალურობის პოლიტიკა"
       >
         მოცემული კონფიდენციალურობის დაცვის პოლიტიკა განმარტავს თუ როგორ და რა
@@ -329,7 +329,7 @@ function Footer() {
         დაცვის პოლიტიკა. ინფორმაციის დაცვის პოლიტიკაში განხორციელებული
         ნებისმიერი ცვლილება დაუყოვნებლივ გამოქვეყნდება ინფორმაციის დაცვის
         გვერდზე
-      </Modal>
+      </InfoModal>
     </>
   );
 }

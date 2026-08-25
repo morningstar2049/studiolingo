@@ -214,8 +214,8 @@ const courseDescriptions: {
 
 export default function CourseDetails(props: CourseDetailsProps) {
   const [showCalc, setShowCalc] = useState(false);
-  // The teenagers course sends visitors to the native /register page (which posts
-  // into its Google Form); other courses still open their Google Form directly.
+  // The teenagers course sends visitors to the native /register/teens page (which
+  // posts into its Google Form); other courses still open their Google Form directly.
   const useNativeForm = props.courseTitle === "englishForTeens";
   const [selectedItems, setSelectedItems] = useState({
     "გაკვეთილის ტიპი": "",
@@ -346,7 +346,7 @@ export default function CourseDetails(props: CourseDetailsProps) {
           გაიგე კურსის ფასი
         </button>
         <a
-          href={useNativeForm ? "/register" : courseUrls[props.courseTitle]}
+          href={useNativeForm ? "/register/teens" : courseUrls[props.courseTitle]}
           {...(useNativeForm
             ? {}
             : { target: "_blank", rel: "noreferrer" })}
