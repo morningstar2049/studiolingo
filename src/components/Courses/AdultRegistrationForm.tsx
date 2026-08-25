@@ -108,7 +108,7 @@ const finalFields: Field[] = [
     label: "საიდან შეიტყვეთ სტუდიო ლინგოზე?",
     type: "select",
     options: [
-      "www.studiolingo.ge",
+      "Google",
       "Facebook",
       "Instagram",
       "Tiktok",
