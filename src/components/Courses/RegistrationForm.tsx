@@ -132,15 +132,16 @@ export default function RegistrationForm({
   // html { scroll-behavior: smooth } can't turn it into an animation.
   if (isModal && !open) return null;
 
-  // Scroll the card to the top of the viewport with the global smooth behavior
-  // temporarily disabled (so it's an instant jump, not an animation).
-  const scrollCardToTop = () => {
-    const el = cardRef.current;
-    if (!el) return;
+  // Bring the confirmation into view with the global smooth behavior temporarily
+  // disabled (instant jump, not an animation). On the /register/teens page scroll
+  // the whole window to the very top so the hero stays visible above the card; in
+  // the modal there's no page hero, so just align the card to the top.
+  const scrollToTop = () => {
     const root = document.documentElement;
     const prev = root.style.scrollBehavior;
     root.style.scrollBehavior = "auto";
-    el.scrollIntoView({ block: "start" });
+    if (isModal) cardRef.current?.scrollIntoView({ block: "start" });
+    else window.scrollTo({ top: 0 });
     root.style.scrollBehavior = prev;
   };
 
@@ -179,11 +180,11 @@ export default function RegistrationForm({
     } catch {
       // no-cors: response is opaque; treat a completed request as sent
     }
-    // Scroll to the card top BEFORE swapping in the shorter success view. Doing it
-    // while the tall form is still mounted lands us near the page top, so the
-    // shrink can't strand the view down at the footer (a post-shrink scroll gets
+    // Scroll to the top BEFORE swapping in the shorter success view. Doing it
+    // while the tall form is still mounted lands us at the page top, so the shrink
+    // can't strand the view down at the footer (a post-shrink scroll gets
     // overridden by the browser's scroll clamp/anchoring).
-    scrollCardToTop();
+    scrollToTop();
     setStatus("success");
   };
 
