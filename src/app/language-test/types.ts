@@ -37,4 +37,7 @@ type TUserInfo = {
   firstName: string;
   lastName: string;
   email: string;
+  phone: string;
+  age: string;
+  contactMe: boolean;
 };

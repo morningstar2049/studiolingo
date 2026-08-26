@@ -17,8 +17,17 @@ const escapeHtml = (s: string) =>
 
 export async function POST(request: Request) {
   try {
-    const { firstName, lastName, email, result, level, recommendedLevel } =
-      await request.json();
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      age,
+      contactMe,
+      result,
+      level,
+      recommendedLevel,
+    } = await request.json();
 
     if (!firstName || !lastName || !email || !result) {
       return NextResponse.json(
@@ -44,9 +53,12 @@ export async function POST(request: Request) {
       ["სახელი", firstName],
       ["გვარი", lastName],
       ["ელ. ფოსტა", email],
+      ["ტელეფონი", String(phone ?? "")],
+      ["ასაკი", String(age ?? "")],
       ["შედეგი", result],
       ["დონე (CEFR)", String(level ?? "")],
       ["უნდა დაიწყოს", String(recommendedLevel ?? "")],
+      ["დამიკავშირდით და გამაცანით კურსები", contactMe ? "კი" : "არა"],
     ];
 
     const text = rows.map(([k, v]) => `${k}: ${v}`).join("\n");

@@ -22,6 +22,9 @@ export default function UserInfoForm({
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [age, setAge] = useState("");
+  const [contactMe, setContactMe] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -31,12 +34,17 @@ export default function UserInfoForm({
     if (!lastName.trim()) next.lastName = "შეავსეთ გვარი";
     if (!email.trim()) next.email = "შეავსეთ ელ. ფოსტა";
     else if (!isValidEmail(email.trim())) next.email = "არასწორი ელ. ფოსტა";
+    if (!phone.trim()) next.phone = "შეავსეთ ტელეფონის ნომერი";
+    if (!age.trim()) next.age = "შეავსეთ ასაკი";
     setErrors(next);
     if (Object.keys(next).length > 0) return;
     onSubmit({
       firstName: firstName.trim(),
       lastName: lastName.trim(),
       email: email.trim(),
+      phone: phone.trim(),
+      age: age.trim(),
+      contactMe,
     });
   };
 
@@ -116,6 +124,44 @@ export default function UserInfoForm({
             <p className="mt-1 text-[12px] text-[#e24b4a]">{errors.email}</p>
           )}
         </div>
+        <div className="text-left">
+          <input
+            type="tel"
+            inputMode="numeric"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="ტელეფონის ნომერი"
+            aria-label="ტელეფონის ნომერი"
+            className={inputClass("phone")}
+          />
+          {errors.phone && (
+            <p className="mt-1 text-[12px] text-[#e24b4a]">{errors.phone}</p>
+          )}
+        </div>
+        <div className="text-left">
+          <input
+            inputMode="numeric"
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+            placeholder="ასაკი"
+            aria-label="ასაკი"
+            className={inputClass("age")}
+          />
+          {errors.age && (
+            <p className="mt-1 text-[12px] text-[#e24b4a]">{errors.age}</p>
+          )}
+        </div>
+        <label className="flex items-start gap-2.5 text-left cursor-pointer">
+          <input
+            type="checkbox"
+            checked={contactMe}
+            onChange={(e) => setContactMe(e.target.checked)}
+            className="mt-0.5 w-5 h-5 accent-lingo-green shrink-0"
+          />
+          <span className="text-[13px] leading-relaxed text-[#4b5563]">
+            დამიკავშირდით და გამაცანით კურსები
+          </span>
+        </label>
       </motion.div>
 
       <motion.button
