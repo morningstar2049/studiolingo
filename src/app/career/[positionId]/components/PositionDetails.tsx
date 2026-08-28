@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import type { ReactNode } from "react";
 import {
   FaLocationDot,
@@ -12,7 +11,6 @@ import {
   FaCircleCheck,
 } from "react-icons/fa6";
 import { positionData } from "../positionData";
-import RevealOnScroll from "@/components/RevealOnScroll";
 
 export type TPositionKey =
   | "englishTeacher"
@@ -27,6 +25,12 @@ type TPositionDetailsProps = {
 };
 
 const caseOn = { fontFeatureSettings: "'case' on" } as const;
+
+// YouTube video ids shown above the description on specific position pages.
+const positionVideos: Partial<Record<TPositionKey, string>> = {
+  academyInternship: "6p0IdTn5QFQ",
+  englishTeacher: "qWe4SpOVzuQ",
+};
 
 // A titled block: icon chip + heading, then check-marked items.
 function Section({
@@ -159,6 +163,19 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
 
       {/* Body */}
       <div className="max-w-3xl px-5 mx-auto py-12 sm:py-16 flex flex-col gap-10">
+        {positionVideos[positionKey] && (
+          <div className="overflow-hidden rounded-[22px] shadow-[0_24px_54px_-24px_rgba(41,49,66,0.35)]">
+            <iframe
+              src={`https://www.youtube.com/embed/${positionVideos[positionKey]}`}
+              title={position.title}
+              className="w-full aspect-video"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          </div>
+        )}
+
         {position.intro && (
           <p className="text-[17px] leading-relaxed text-lingo-black sm:text-lg">
             {position.intro}
@@ -213,14 +230,6 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
                 items={position.requirements}
               />
             )}
-
-            <RevealOnScroll once className="justify-center hidden sm:flex">
-              <img
-                src="/career-pic.jpeg"
-                alt="Studio Lingo-ს გუნდი"
-                className="object-cover w-full rounded-[22px] shadow-[0_24px_54px_-24px_rgba(41,49,66,0.35)]"
-              />
-            </RevealOnScroll>
 
             {position.offer && (
               <Section
