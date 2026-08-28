@@ -1,5 +1,6 @@
 // Shared course video. Defaults to the promo video embedded after the materials
-// paragraph; pass a videoId for a different clip (e.g. the intro video on top).
+// paragraph; pass a videoId for a different clip (e.g. the intro video on top of
+// the description). Its thumbnail is whatever is set on the video in YouTube.
 export default function CourseVideo({
   videoId = "EfRA0MnhFXE",
 }: {
