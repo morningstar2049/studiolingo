@@ -11,6 +11,7 @@ import {
   FaCircleCheck,
 } from "react-icons/fa6";
 import { positionData } from "../positionData";
+import CourseVideo from "@/components/Courses/CourseVideo";
 
 export type TPositionKey =
   | "englishTeacher"
@@ -164,16 +165,10 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
       {/* Body */}
       <div className="max-w-3xl px-5 mx-auto py-12 sm:py-16 flex flex-col gap-10">
         {positionVideos[positionKey] && (
-          <div className="overflow-hidden rounded-[22px] shadow-[0_24px_54px_-24px_rgba(41,49,66,0.35)]">
-            <iframe
-              src={`https://www.youtube.com/embed/${positionVideos[positionKey]}`}
-              title={position.title}
-              className="w-full aspect-video"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            />
-          </div>
+          <CourseVideo
+            videoId={positionVideos[positionKey]!}
+            rounded="rounded-[22px]"
+          />
         )}
 
         {position.intro && (
