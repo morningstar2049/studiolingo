@@ -5,7 +5,7 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 const features = [
   "ინდივიდუალური და ჯგუფური კურსები",
   "ონლაინ და ადგილზე",
-  "დონეები A1-დან C1-მდე",
+  "სასაუბრო და ზოგადი",
 ];
 
 // Courses CTA shown next to blog articles on desktop (pinned by the page).
