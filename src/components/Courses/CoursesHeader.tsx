@@ -8,7 +8,7 @@ type Props = { title?: string; subtitle?: string };
 
 export default function CoursesHeader({
   title = "ინგლისურის კურსები",
-  subtitle = "აირჩიე შენთვის იდეალური ფორმატი — ინდივიდუალური თუ ჯგუფური, ონლაინ თუ ადგილზე",
+  subtitle = "აირჩიე შენთვის იდეალური ფორმატი — ინდივიდუალური თუ ჯგუფური, ონლაინ თუ ადგილზე, სასაუბრო თუ ზოგადი",
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
