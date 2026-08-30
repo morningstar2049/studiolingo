@@ -13,6 +13,8 @@ export type VacanciesListItemProps = {
   // internship uses "პერიოდი" / "გადასახადი" instead of the job defaults).
   timeLabel?: string;
   salaryLabel?: string;
+  // Status pill text — jobs are "ღია ვაკანსია", the academy uses "გახსნილია".
+  badge?: string;
 };
 
 function VacanciesListItem({
@@ -23,6 +25,7 @@ function VacanciesListItem({
   route,
   timeLabel = "განაკვეთი",
   salaryLabel = "ანაზღაურება",
+  badge = "ღია ვაკანსია",
 }: VacanciesListItemProps) {
   const meta = [
     { Icon: IoLocationOutline, label: "ლოკაცია", value: location },
@@ -47,7 +50,7 @@ function VacanciesListItem({
           </h2>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-lingo-green/10 px-3 py-1 text-[11px] font-bold text-lingo-green shrink-0">
             <span className="w-1.5 h-1.5 rounded-full bg-lingo-green" />
-            ღია ვაკანსია
+            {badge}
           </span>
         </div>
 

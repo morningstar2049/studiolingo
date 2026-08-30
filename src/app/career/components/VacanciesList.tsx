@@ -13,8 +13,9 @@ export const vacancies: VacanciesListItemProps[] = [
     location: "თბილისი",
     time: "3 თვე",
     timeLabel: "პერიოდი",
-    salary: "უფასო კურსი",
+    salary: "უფასო",
     salaryLabel: "გადასახადი",
+    badge: "გახსნილია",
     route: "academyInternship",
   },
   // {
