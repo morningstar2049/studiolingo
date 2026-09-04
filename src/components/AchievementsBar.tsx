@@ -93,7 +93,7 @@ function Counter({
   }, [value, inView]);
 
   return (
-    <span className="text-2xl font-bold leading-none sm:text-6xl text-[#fff] tabular-nums whitespace-nowrap">
+    <span className="text-2xl font-bold leading-none sm:text-5xl text-[#fff] tabular-nums whitespace-nowrap">
       {formatNumber(display, decimals, group)}
       {suffix}
     </span>
@@ -122,7 +122,7 @@ export default function AchievementsBar() {
   return (
     <div
       ref={ref}
-      className="grid grid-cols-3 px-1 py-4 mt-8 border sm:mt-0 rounded-2xl sm:rounded-3xl bg-[#ffffff08] backdrop-blur-[2px] border-[#ffffff1f] sm:px-6 sm:py-8"
+      className="grid grid-cols-3 px-1 py-4 mt-8 border sm:mt-0 rounded-2xl sm:rounded-3xl bg-[#ffffff08] backdrop-blur-[2px] border-[#ffffff1f] sm:px-6 sm:py-4"
     >
       {stats.map(
         ({ icon: Icon, iconClass, value, decimals, group, suffix, label }, i) => (
@@ -132,7 +132,7 @@ export default function AchievementsBar() {
               i === 1 ? "px-4 sm:px-16" : "px-2 sm:px-12"
             } ${i > 0 ? "border-l border-[#ffffff1a]" : ""}`}
           >
-            <span className="mb-2 sm:mb-3 flex h-9 w-9 sm:h-16 sm:w-16 items-center justify-center rounded-[14px] sm:rounded-2xl bg-gradient-to-br from-[#43c667] to-[#1e7d3a] shadow-[0_8px_20px_-6px_rgba(47,158,77,0.6)] ring-1 ring-inset ring-[#ffffff40]">
+            <span className="mb-2 sm:mb-2 flex h-9 w-9 sm:h-12 sm:w-12 items-center justify-center rounded-[14px] sm:rounded-2xl bg-gradient-to-br from-[#43c667] to-[#1e7d3a] shadow-[0_8px_20px_-6px_rgba(47,158,77,0.6)] ring-1 ring-inset ring-[#ffffff40]">
               <Icon className={`text-[#fff] ${iconClass}`} />
             </span>
           <Counter
