@@ -76,11 +76,13 @@ function Counter({
       setDisplay(value);
       return;
     }
-    const duration = 1500;
+    const duration = 3500;
     const start = performance.now();
     let raf = 0;
     const tick = (now: number) => {
-      const progress = Math.min((now - start) / duration, 1);
+      // Clamp at 0 too: the first rAF timestamp can precede `start` by a few ms,
+      // which would push the ease-out negative and flash a minus sign.
+      const progress = Math.min(Math.max((now - start) / duration, 0), 1);
       const eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
       setDisplay(value * eased);
       if (progress < 1) raf = requestAnimationFrame(tick);
@@ -120,7 +122,7 @@ export default function AchievementsBar() {
   return (
     <div
       ref={ref}
-      className="grid grid-cols-3 px-1 py-4 mt-8 border shadow-lg sm:mt-0 rounded-2xl sm:rounded-3xl bg-[#ffffff14] backdrop-blur-md border-[#ffffff33] sm:px-6 sm:py-8"
+      className="grid grid-cols-3 px-1 py-4 mt-8 border sm:mt-0 rounded-2xl sm:rounded-3xl bg-[#ffffff08] backdrop-blur-[2px] border-[#ffffff1f] sm:px-6 sm:py-8"
     >
       {stats.map(
         ({ icon: Icon, iconClass, value, decimals, group, suffix, label }, i) => (
@@ -128,7 +130,7 @@ export default function AchievementsBar() {
             key={label}
             className={`flex flex-col items-center justify-center ${
               i === 1 ? "px-4 sm:px-16" : "px-2 sm:px-12"
-            } ${i > 0 ? "border-l border-[#ffffff26]" : ""}`}
+            } ${i > 0 ? "border-l border-[#ffffff1a]" : ""}`}
           >
             <span className="mb-2 sm:mb-3 flex h-9 w-9 sm:h-16 sm:w-16 items-center justify-center rounded-[14px] sm:rounded-2xl bg-gradient-to-br from-[#43c667] to-[#1e7d3a] shadow-[0_8px_20px_-6px_rgba(47,158,77,0.6)] ring-1 ring-inset ring-[#ffffff40]">
               <Icon className={`text-[#fff] ${iconClass}`} />

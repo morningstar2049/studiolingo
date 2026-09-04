@@ -551,3 +551,15 @@ body {
 .blog-slider .slick-slide > div {
   height: 100%;
 }
+
+/* Hero slideshow: slow Ken Burns zoom on the active slide, then it crossfades */
+@keyframes hero-zoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
+}
+.hero-zoom {
+  animation: hero-zoom 7s ease-out forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-zoom { animation: none; }
+}

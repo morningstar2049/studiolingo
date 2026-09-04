@@ -1,6 +1,7 @@
 import Image from "next/image";
 import AchievementsBar from "./AchievementsBar";
 import BannerHeadline from "./BannerHeadline";
+import HeroSlideshow from "./HeroSlideshow";
 import Overlay from "./Overlay";
 
 function MainBanner() {
@@ -13,13 +14,7 @@ function MainBanner() {
         objectFit="cover"
         className="block animate-appear sm:hidden"
       />
-      <Image
-        src="/banner-web.jpg"
-        alt="Studio Lingo — ინგლისურის გაკვეთილი თბილისში"
-        fill={true}
-        priority
-        className="hidden object-cover animate-appear sm:block object-[50%_35%]"
-      />
+      <HeroSlideshow />
       <Overlay />
 
       <div className="absolute inset-0 z-10 flex flex-col items-center px-4 text-center pt-[17%] pb-[9%] sm:pt-[9%] sm:pb-[2%] sm:justify-between">
