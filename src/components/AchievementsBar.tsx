@@ -1,47 +1,26 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { FaUserGraduate, FaPlayCircle } from "react-icons/fa";
-import { HiUsers } from "react-icons/hi";
-import type { IconType } from "react-icons";
 
 type Stat = {
-  icon: IconType;
-  iconClass: string;
   value: number;
   decimals: number;
   group: boolean;
   suffix: string;
   label: string;
+  shortLabel?: string;
 };
 
 const stats: Stat[] = [
+  { value: 3000, decimals: 0, group: false, suffix: "+", label: "მოსწავლე" },
+  { value: 300000, decimals: 0, group: true, suffix: "+", label: "გამომწერი" },
   {
-    icon: FaUserGraduate,
-    iconClass: "text-base sm:text-3xl",
-    value: 3000,
-    decimals: 0,
-    group: false,
-    suffix: "+",
-    label: "მოსწავლე",
-  },
-  {
-    icon: HiUsers,
-    iconClass: "text-xl sm:text-4xl",
-    value: 300000,
-    decimals: 0,
-    group: true,
-    suffix: "+",
-    label: "გამომწერი",
-  },
-  {
-    icon: FaPlayCircle,
-    iconClass: "text-base sm:text-3xl",
     value: 2000,
     decimals: 0,
     group: false,
     suffix: "+",
     label: "ვიდეოგაკვეთილი",
+    shortLabel: "ვიდეო",
   },
 ];
 
@@ -93,7 +72,7 @@ function Counter({
   }, [value, inView]);
 
   return (
-    <span className="text-2xl font-bold leading-none sm:text-5xl text-[#fff] tabular-nums whitespace-nowrap">
+    <span className="text-[28px] tracking-tighter font-bold leading-none sm:text-6xl sm:tracking-normal text-[#fff] tabular-nums whitespace-nowrap">
       {formatNumber(display, decimals, group)}
       {suffix}
     </span>
@@ -119,22 +98,20 @@ export default function AchievementsBar() {
     return () => observer.disconnect();
   }, []);
 
+  // No icons: the vertical padding and larger type are sized so the bar keeps
+  // the same height it had with the icon tiles (~120px mobile, ~176px desktop).
   return (
     <div
       ref={ref}
-      className="grid grid-cols-3 px-1 py-4 mt-8 border sm:mt-0 rounded-2xl sm:rounded-3xl bg-[#ffffff08] backdrop-blur-[2px] border-[#ffffff1f] sm:px-6 sm:py-4"
+      className="grid w-full grid-cols-3 px-0 py-[29px] mt-8 border sm:mt-0 sm:w-auto sm:grid-cols-3 rounded-2xl sm:rounded-3xl bg-[#ffffff08] backdrop-blur-[2px] border-[#ffffff1f] sm:px-6 sm:py-9"
     >
-      {stats.map(
-        ({ icon: Icon, iconClass, value, decimals, group, suffix, label }, i) => (
-          <div
-            key={label}
-            className={`flex flex-col items-center justify-center ${
-              i === 1 ? "px-4 sm:px-16" : "px-2 sm:px-12"
-            } ${i > 0 ? "border-l border-[#ffffff1a]" : ""}`}
-          >
-            <span className="mb-2 sm:mb-2 flex h-9 w-9 sm:h-12 sm:w-12 items-center justify-center rounded-[14px] sm:rounded-2xl bg-gradient-to-br from-[#43c667] to-[#1e7d3a] shadow-[0_8px_20px_-6px_rgba(47,158,77,0.6)] ring-1 ring-inset ring-[#ffffff40]">
-              <Icon className={`text-[#fff] ${iconClass}`} />
-            </span>
+      {stats.map(({ value, decimals, group, suffix, label, shortLabel }, i) => (
+        <div
+          key={label}
+          className={`flex flex-col items-center justify-center ${
+            i === 1 ? "px-0 sm:px-16" : "px-0 sm:px-12"
+          } ${i > 0 ? "border-l border-[#ffffff1a]" : ""}`}
+        >
           <Counter
             value={value}
             decimals={decimals}
@@ -144,9 +121,9 @@ export default function AchievementsBar() {
           />
           <span
             style={{ fontFeatureSettings: "'case' on" }}
-            className="mt-1.5 sm:mt-2.5 text-[11px] sm:text-xl font-bold text-[#ffffffcc] whitespace-nowrap"
+            className="mt-2 sm:mt-3 text-[16px] tracking-tight sm:text-2xl sm:tracking-normal font-bold text-[#ffffffcc] whitespace-nowrap"
           >
-            {label}
+            {shortLabel ? (<><span className="sm:hidden">{shortLabel}</span><span className="hidden sm:inline">{label}</span></>) : label}
           </span>
         </div>
       ))}

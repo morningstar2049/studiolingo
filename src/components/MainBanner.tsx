@@ -17,7 +17,7 @@ function MainBanner() {
       <HeroSlideshow />
       <Overlay />
 
-      <div className="absolute inset-0 z-10 flex flex-col items-center px-4 text-center pt-[17%] pb-[9%] sm:pt-[9%] sm:pb-[2%] sm:justify-between">
+      <div className="absolute inset-0 z-10 flex flex-col items-center px-2 sm:px-4 text-center pt-[17%] pb-[9%] sm:pt-[9%] sm:pb-[2%] sm:justify-between">
         <BannerHeadline />
 
         <AchievementsBar />

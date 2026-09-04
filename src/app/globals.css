@@ -558,7 +558,7 @@ body {
   to { transform: scale(1.1); }
 }
 .hero-zoom {
-  animation: hero-zoom 7s ease-out forwards;
+  animation: hero-zoom 6.5s ease-out forwards;
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-zoom { animation: none; }

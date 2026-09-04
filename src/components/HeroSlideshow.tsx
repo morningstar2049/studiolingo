@@ -39,7 +39,7 @@ export default function HeroSlideshow() {
             sizes="100vw"
             // `hero-zoom` is (re)applied only while active, so the zoom restarts
             // from scale(1) every time a slide comes back around.
-            className={`object-cover ${pos} transition-opacity duration-1000 ease-in-out ${
+            className={`object-cover ${pos} scale-[1.1] transition-opacity duration-1000 ease-in-out ${
               isActive ? "opacity-100 hero-zoom" : "opacity-0"
             }`}
           />
