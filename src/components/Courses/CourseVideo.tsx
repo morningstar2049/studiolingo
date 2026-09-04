@@ -73,7 +73,7 @@ export default function CourseVideo({
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={`https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`}
-          alt=""
+          alt="ვიდეო — ინგლისურის გაკვეთილი სტუდიო ლინგოში"
           className="absolute inset-0 object-cover w-full h-full"
         />
         <span className="absolute inset-0 transition-colors bg-[#0d132226] group-hover:bg-[#0d132240]" />

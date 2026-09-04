@@ -13,7 +13,8 @@ import { SITE_URL, siteSchemas } from "@/lib/schema";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "Studio Lingo - ინგლისური ენის კურსები",
-  description: "ინგლისური ენის კურსები. ისწავლეთ ინგლისური სტუდიო ლინგოში!",
+  description:
+    "ინგლისურის კურსები თბილისში და ონლაინ — ინდივიდუალური და ჯგუფური, ზრდასრულებისა და მოზარდებისთვის. სტუდიო ლინგო — #1 ინგლისურის სკოლა საქართველოში.",
   icons: {
     icon: "/favicon.png",
     shortcut: "/favicon.png",

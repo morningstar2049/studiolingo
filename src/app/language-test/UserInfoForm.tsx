@@ -75,7 +75,7 @@ export default function UserInfoForm({
         custom={1}
         className="mt-5 text-2xl font-bold sm:text-3xl text-lingo-black"
       >
-        დაიწყე ტესტი
+        ინგლისურის დონის ტესტი
       </motion.h1>
 
       <motion.p

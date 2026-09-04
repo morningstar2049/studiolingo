@@ -1,15 +1,13 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/schema";
 import { getPosts } from "@/sanity/queries";
-import { positionData } from "@/app/career/[positionId]/positionData";
+import { vacancies } from "@/app/career/components/VacanciesList";
 
 export const revalidate = 60;
 
 // Public, indexable pages only. Auth, checkout and the Studio are excluded
 // here and disallowed in robots.ts.
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const lastModified = new Date();
-
   // An unreachable dataset must never break the sitemap for the whole site.
   let posts: Awaited<ReturnType<typeof getPosts>> = [];
   try {
@@ -19,10 +17,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   return [
-    { url: `${SITE_URL}/`, lastModified, changeFrequency: "weekly", priority: 1 },
+    { url: `${SITE_URL}/`, changeFrequency: "weekly", priority: 1 },
     {
       url: `${SITE_URL}/courses`,
-      lastModified,
       changeFrequency: "monthly",
       priority: 0.9,
     },
@@ -33,13 +30,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       "teenagers",
     ].map((slug) => ({
       url: `${SITE_URL}/courses/${slug}`,
-      lastModified,
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
     {
       url: `${SITE_URL}/blog`,
-      lastModified,
       changeFrequency: "weekly",
       priority: 0.9,
     },
@@ -51,55 +46,51 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     {
       url: `${SITE_URL}/team`,
-      lastModified,
       changeFrequency: "monthly",
       priority: 0.7,
     },
     {
       url: `${SITE_URL}/faq`,
-      lastModified,
       changeFrequency: "monthly",
       priority: 0.7,
     },
     {
       url: `${SITE_URL}/content`,
-      lastModified,
       changeFrequency: "weekly",
       priority: 0.7,
     },
     {
       url: `${SITE_URL}/language-test`,
-      lastModified,
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${SITE_URL}/materials`,
-      lastModified,
       changeFrequency: "monthly",
       priority: 0.7,
     },
     {
       url: `${SITE_URL}/corporate`,
-      lastModified,
       changeFrequency: "monthly",
       priority: 0.7,
     },
     {
       url: `${SITE_URL}/chat`,
-      lastModified,
       changeFrequency: "monthly",
       priority: 0.6,
     },
+    ...["", "/teens", "/adults"].map((suffix) => ({
+      url: `${SITE_URL}/register${suffix}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
     {
       url: `${SITE_URL}/career`,
-      lastModified,
       changeFrequency: "monthly",
       priority: 0.5,
     },
-    ...Object.keys(positionData).map((positionId) => ({
-      url: `${SITE_URL}/career/${positionId}`,
-      lastModified,
+    ...vacancies.map(({ route }) => ({
+      url: `${SITE_URL}/career/${route}`,
       changeFrequency: "monthly" as const,
       priority: 0.4,
     })),

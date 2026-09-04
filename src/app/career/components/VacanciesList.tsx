@@ -56,9 +56,9 @@ function VacanciesList() {
           <VacanciesListItem key={vacancy.position} {...vacancy} />
         ))
       ) : (
-        <h1 className="text-lingo-green font-bold text-xl text-center h-[calc(100vh-200px)] flex items-center justify-center">
+        <p className="text-lingo-green font-bold text-xl text-center h-[calc(100vh-200px)] flex items-center justify-center">
           ამჟამად ყველა ვაკანსია დახურულია
-        </h1>
+        </p>
       )}
     </div>
   );

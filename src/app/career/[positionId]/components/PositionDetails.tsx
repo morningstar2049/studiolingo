@@ -15,8 +15,6 @@ import CourseVideo from "@/components/Courses/CourseVideo";
 
 export type TPositionKey =
   | "englishTeacher"
-  | "germanTeacher"
-  | "chineseTeacher"
   | "contentCreator"
   | "administrator"
   | "academyInternship";
