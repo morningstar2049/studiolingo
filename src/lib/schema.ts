@@ -19,7 +19,7 @@ export const organizationSchema = {
   url: SITE_URL,
   logo: `${SITE_URL}/lingo-logo-main.png`,
   description:
-    "Studio Lingo — ინგლისური ენის სკოლა თბილისში. ინგლისურის კურსები ზრდასრულთათვის და მოზარდებისთვის, ოფისში და ონლაინ.",
+    "Studio Lingo — ინგლისური ენის სკოლა თბილისში. ინგლისურის კურსები ზრდასრულთათვის და მოზარდებისთვის, ოფისში და ონლაინ. ადგილზე ჯგუფური კურსის მოსწავლეებს თვეში ერთხელ გაკვეთილს უტარებს ბრიტანელი მასწავლებელი (native speaker).",
   sameAs: [
     "https://www.facebook.com/studiolingo",
     "https://www.instagram.com/studio_lingo/",

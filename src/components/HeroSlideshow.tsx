@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 // `pos` is the object-position focal point: photo 1's faces sit low in the
 // frame, so it favours the top to keep them clear of the stats bar.
 const SLIDES = [
-  { src: "/banner-web-1.jpg", pos: "object-[50%_0%]" },
   { src: "/banner-web-3.jpg", pos: "object-[50%_35%]" },
   { src: "/banner-web-4.jpg", pos: "object-[50%_35%]" },
 ];
