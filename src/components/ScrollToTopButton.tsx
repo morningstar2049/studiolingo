@@ -5,8 +5,8 @@ import { FaArrowUp } from "react-icons/fa";
 const R = 21;
 const CIRC = 2 * Math.PI * R;
 
-// Floating "back to top" control. Sits bottom-left so it never collides with
-// the Messenger pill (bottom-right); fades/scales in once the visitor has
+// Floating "back to top" control. Sits bottom-center, between the register
+// pill (bottom-left) and the Messenger pill (bottom-right); fades in once the visitor has
 // scrolled past the first viewport. A green-gradient ring around the button
 // tracks how far down the page the visitor has scrolled.
 export default function ScrollToTopButton() {
@@ -36,7 +36,7 @@ export default function ScrollToTopButton() {
       aria-label="ზემოთ დაბრუნება"
       aria-hidden={!visible}
       tabIndex={visible ? 0 : -1}
-      className={`group fixed bottom-5 left-5 z-40 h-12 w-12 sm:h-[52px] sm:w-[52px] transition-all duration-300 ${
+      className={`group fixed bottom-5 left-1/2 -translate-x-1/2 z-40 h-12 w-12 sm:h-[52px] sm:w-[52px] transition-all duration-300 ${
         visible
           ? "translate-y-0 opacity-100"
           : "pointer-events-none translate-y-3 opacity-0"
