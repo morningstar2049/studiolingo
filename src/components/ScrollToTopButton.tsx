@@ -36,7 +36,7 @@ export default function ScrollToTopButton() {
       aria-label="ზემოთ დაბრუნება"
       aria-hidden={!visible}
       tabIndex={visible ? 0 : -1}
-      className={`group fixed bottom-5 left-1/2 -translate-x-1/2 z-40 h-12 w-12 sm:h-[52px] sm:w-[52px] transition-all duration-300 ${
+      className={`group fixed bottom-5 left-1/2 -translate-x-1/2 z-40 h-11 w-11 sm:h-[52px] sm:w-[52px] transition-all duration-300 ${
         visible
           ? "translate-y-0 opacity-100"
           : "pointer-events-none translate-y-3 opacity-0"

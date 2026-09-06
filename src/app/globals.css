@@ -624,7 +624,7 @@ body {
     rgba(255, 255, 255, 0.28) 50%,
     rgba(255, 255, 255, 0) 100%
   );
-  transform: rotate(12deg) translateX(-120%);
+  transform: rotate(12deg);
   animation: glass-sheen 8s ease-in-out 2s infinite;
   pointer-events: none;
 }
@@ -666,9 +666,50 @@ body {
 }
 
 @keyframes glass-sheen {
-  0%, 70% { transform: rotate(12deg) translateX(-120%); }
-  85%, 100% { transform: rotate(12deg) translateX(420%); }
+  0%, 70% { left: -80%; }
+  85%, 100% { left: 170%; }
 }
 @media (prefers-reduced-motion: reduce) {
   .liquid-glass::after { animation: none; }
+}
+
+/* Reusable light sweep (same as the glass pills) for other glass surfaces,
+   e.g. the hero achievement bar. Content stays above the sweep. */
+.glass-sweep {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.glass-sweep::after {
+  content: "";
+  position: absolute;
+  top: -60%;
+  left: -40%;
+  width: 26%;
+  height: 220%;
+  z-index: -1;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.22) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(12deg);
+  animation: glass-sweep-run 8s ease-in-out 3.5s infinite;
+  pointer-events: none;
+}
+/* `left` is relative to the bar, so the band always crosses the full width */
+@keyframes glass-sweep-run {
+  0%, 66% { left: -60%; }
+  90%, 100% { left: 175%; }
+}
+@media (max-width: 639px) {
+  .glass-sweep::after {
+    width: 34%;
+    top: -80%;
+    height: 260%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .glass-sweep::after { animation: none; }
 }

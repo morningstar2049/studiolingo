@@ -103,7 +103,7 @@ export default function AchievementsBar() {
   return (
     <div
       ref={ref}
-      className="grid w-full grid-cols-3 px-0 py-[29px] mt-8 border sm:mt-0 sm:w-auto sm:grid-cols-3 rounded-2xl sm:rounded-3xl bg-[#ffffff08] backdrop-blur-[2px] border-[#ffffff1f] sm:px-6 sm:py-9"
+      className="glass-sweep grid w-full grid-cols-3 px-0 py-[29px] mt-8 border sm:mt-0 sm:w-auto sm:grid-cols-3 rounded-2xl sm:rounded-3xl bg-[#ffffff08] backdrop-blur-[2px] border-[#ffffff1f] sm:px-6 sm:py-9"
     >
       {stats.map(({ value, decimals, group, suffix, label, shortLabel }, i) => (
         <div
