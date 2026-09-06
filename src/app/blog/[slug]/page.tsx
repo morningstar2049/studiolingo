@@ -9,6 +9,7 @@ import { SITE_URL } from "@/lib/schema";
 import { urlForImage } from "@/sanity/client";
 import { getPost, getPostSlugs, getPosts } from "@/sanity/queries";
 import ArticleShare from "@/components/blog/ArticleShare";
+import YoutubeEmbed from "@/components/YoutubeEmbed";
 import BlogCoursesCard from "@/components/blog/BlogCoursesCard";
 import BlogCarousel from "@/components/HomeBlog/BlogCarousel";
 import RevealOnScroll from "@/components/RevealOnScroll";
@@ -145,15 +146,10 @@ const getComponents = (
       const id = getYoutubeId(value?.url);
       if (!id) return null;
       return (
-        <div className="relative w-full my-6 overflow-hidden aspect-video rounded-xl">
-          <iframe
-            src={`https://www.youtube.com/embed/${id}`}
-            title="YouTube video"
-            className="absolute inset-0 w-full h-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-          />
-        </div>
+        <YoutubeEmbed
+          videoId={id}
+          className="relative w-full my-6 overflow-hidden aspect-video rounded-xl"
+        />
       );
     },
   },

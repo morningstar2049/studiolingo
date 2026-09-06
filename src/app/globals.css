@@ -563,3 +563,112 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .hero-zoom { animation: none; }
 }
+
+/* iOS 26 "liquid glass" pill used by the floating register / messenger
+   buttons. Real glass, not a blur smear: almost no tint, a very light blur so
+   what's behind stays recognisable, boosted saturation, crisp bright rims and
+   light catching only the top/bottom edges. data-tone (set by
+   useAdaptiveGlass) flips it between light-backdrop and dark-backdrop looks. */
+.liquid-glass {
+  position: relative;
+  isolation: isolate;
+  color: #293142;
+  background: rgba(255, 255, 255, 0.03);
+  -webkit-backdrop-filter: blur(1.5px) saturate(175%) contrast(1.06);
+  backdrop-filter: blur(1.5px) saturate(175%) contrast(1.06);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.45),
+    inset 1px 0 0 rgba(255, 255, 255, 0.5),
+    inset -1px 0 0 rgba(255, 255, 255, 0.5),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.22),
+    inset 0 -3px 6px -3px rgba(41, 49, 66, 0.18),
+    inset 0 0 10px rgba(255, 255, 255, 0.06);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+  overflow: hidden;
+  transition:
+    background 0.4s ease,
+    color 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+/* light catching the edges only — centre stays clear */
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.26) 0%,
+    rgba(255, 255, 255, 0) 18%,
+    rgba(255, 255, 255, 0) 82%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  pointer-events: none;
+}
+/* occasional light sweep */
+.liquid-glass::after {
+  content: "";
+  position: absolute;
+  top: -60%;
+  left: -40%;
+  width: 40%;
+  height: 220%;
+  z-index: -1;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.28) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(12deg) translateX(-120%);
+  animation: glass-sheen 8s ease-in-out 2s infinite;
+  pointer-events: none;
+}
+.liquid-glass:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Dark backdrop (hero photo, navy sections, footer): white text, faint smoke */
+[data-tone="dark"] .liquid-glass {
+  color: #ffffff;
+  background: rgba(10, 14, 22, 0.04);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.18),
+    inset 1px 0 0 rgba(255, 255, 255, 0.22),
+    inset -1px 0 0 rgba(255, 255, 255, 0.22),
+    inset 0 -3px 6px -3px rgba(0, 0, 0, 0.35),
+    inset 0 0 10px rgba(255, 255, 255, 0.04);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+}
+[data-tone="dark"] .liquid-glass::before {
+  opacity: 0.6;
+}
+[data-tone="dark"] .liquid-glass:hover {
+  background: rgba(10, 14, 22, 0.12);
+}
+
+/* Desktop on a white page: a hairline navy edge keeps the pill's shape visible */
+@media (min-width: 640px) {
+  .liquid-glass {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(41, 49, 66, 0.3);
+  }
+  [data-tone="dark"] .liquid-glass {
+    background: rgba(10, 14, 22, 0.06);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+}
+
+@keyframes glass-sheen {
+  0%, 70% { transform: rotate(12deg) translateX(-120%); }
+  85%, 100% { transform: rotate(12deg) translateX(420%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .liquid-glass::after { animation: none; }
+}

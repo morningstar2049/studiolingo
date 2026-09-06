@@ -1,4 +1,5 @@
 import { FaYoutube, FaPlay } from "react-icons/fa";
+import YoutubeEmbed from "@/components/YoutubeEmbed";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import RevealOnScroll from "../RevealOnScroll";
 import { featuredVideo, gridVideos, YT_CHANNEL } from "./contentData";
@@ -29,13 +30,11 @@ export default function YoutubeShowcase() {
         {/* Featured video */}
         <RevealOnScroll revealClass="review-rise">
           <div className="relative w-full max-w-4xl mx-auto overflow-hidden shadow-2xl aspect-video rounded-2xl ring-1 ring-[#ffffff1f]">
-            <iframe
-              className="absolute inset-0 w-full h-full"
-              src={`https://www.youtube-nocookie.com/embed/${featuredVideo}`}
+            <YoutubeEmbed
+              videoId={featuredVideo}
               title="Studio Lingo — featured video"
-              loading="lazy"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
+              noCookie
+              className="absolute inset-0"
             />
           </div>
         </RevealOnScroll>

@@ -1,19 +1,23 @@
 "use client";
 import Link from "next/link";
+import { useRef } from "react";
 import { PiNotePencilBold } from "react-icons/pi";
+import { useAdaptiveGlass } from "./useAdaptiveGlass";
 
 // Floating "register" pill, bottom-left — the mirror of the Messenger pill on
-// the right. Leads to the course registration chooser.
+// the right. Liquid glass that adapts to the page behind it.
 export default function RegisterButton() {
+  const ref = useRef<HTMLDivElement>(null);
+  useAdaptiveGlass(ref);
   return (
-    <div className="fixed z-40 bottom-5 left-2 sm:left-5 msgr-anim">
+    <div ref={ref} data-glass className="fixed z-40 bottom-5 left-2 sm:left-5 msgr-anim">
       <Link
         href="/register"
         aria-label="რეგისტრაცია კურსზე"
         style={{ fontFeatureSettings: "'case' on" }}
-        className="flex items-center justify-center gap-1 sm:gap-2 rounded-full bg-lingo-green px-2.5 sm:px-5 py-2.5 sm:py-3 min-w-[130px] sm:min-w-0 font-bold text-[#fff] shadow-lg shadow-lingo-green/40 transition-transform duration-300 hover:scale-105 hover:bg-[#2f904d]"
+        className="flex items-center justify-center gap-1 sm:gap-2 rounded-full liquid-glass px-2.5 sm:px-5 py-2.5 sm:py-3 min-w-[130px] sm:min-w-0 font-bold transition-transform duration-300 hover:scale-105"
       >
-        <PiNotePencilBold className="text-sm sm:text-xl shrink-0" />
+        <PiNotePencilBold className="text-sm sm:text-xl shrink-0 text-lingo-green" />
         <span className="text-[11px] sm:text-base">რეგისტრაცია</span>
       </Link>
     </div>

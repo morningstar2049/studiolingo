@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { FaPlay } from "react-icons/fa6";
 import { AiOutlineClose } from "react-icons/ai";
+import YoutubeEmbed from "@/components/YoutubeEmbed";
 
 // Shared course video. Defaults to the promo video; pass a videoId for a
 // different clip (e.g. the intro video on top of the description). Thumbnails
@@ -49,15 +50,11 @@ export default function CourseVideo({
   // play, with YouTube's native fullscreen button. No pop-up on small screens.
   if (mounted && !isDesktop) {
     return (
-      <div className={`${WRAP} ${rounded}`}>
-        <iframe
-          src={`https://www.youtube.com/embed/${videoId}`}
-          title="Studio Lingo — ინგლისურის კურსი"
-          className="absolute inset-0 w-full h-full"
-          allow={ALLOW}
-          allowFullScreen
-        />
-      </div>
+      <YoutubeEmbed
+        videoId={videoId}
+        title="Studio Lingo — ინგლისურის კურსი"
+        className={`${WRAP} ${rounded}`}
+      />
     );
   }
 
