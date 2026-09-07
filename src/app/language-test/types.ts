@@ -41,3 +41,14 @@ type TUserInfo = {
   age: string;
   contactMe: boolean;
 };
+
+// One answered question, sent with the result email so the school sees
+// exactly what the visitor answered.
+type TAnsweredQuestion = {
+  id: number;
+  level: TLevel;
+  question: string;
+  given: string;
+  correct: string;
+  isCorrect: boolean;
+};

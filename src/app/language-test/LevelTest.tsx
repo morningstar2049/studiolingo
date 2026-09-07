@@ -16,7 +16,7 @@ const levelsMap: Record<TLevel, string> = {
   A2: "Elementary",
   B1: "Intermediate",
   "B1+": "Intermediate +",
-  B2: "Intermediate +",
+  B2: "Upp. Intermediate",
   C1: "Advanced",
 };
 
@@ -40,14 +40,14 @@ const nextLevelLabel: Record<TLevel, string> = {
   "სრულიად დამწყები": "Elementary - (A1)",
   A1: "Elementary (A2)",
   A2: "Intermediate (B1)",
-  B1: "Intermediate + (B1+/B2)",
-  "B1+": "Advanced (C1)",
+  B1: "Intermediate + (B1+)",
+  "B1+": "Upp. Intermediate (B2)",
   B2: "Advanced (C1)",
   C1: "Advanced (C1)",
 };
 
 // Per-level detail text shown under "დეტალურად ამ დონის შესახებ" on the result
-// screen. B1+ and B2 share the "Intermediate +" copy.
+// screen. B1+ (Intermediate +) and B2 (Upp. Intermediate) share the same copy.
 const intermediatePlus =
   "ეს არის საშუალოზე მაღალი დონე. მშვენიერი შედეგია! შენ ალბათ თავისუფლად და სპონტანურადაც კი ესაუბრები უცხოელებს და მარტივად იგებ რთულ ტექსტებს. ჩანს, გრამატიკაშიც სერიოზულად ფლობ ბევრ საკითხს და შეიძლება საუბარშიც კი იცოდე გრამატიკის სწორად გამოყენება. შემოგვიერთდი „სტუდიო ლინგოში“ და გახადე შენი ინგლისური კიდევ უფრო სრულყოფილი და პროფესიული.";
 
@@ -81,9 +81,36 @@ function LevelTest({
       return prev + curr.count;
     }, 0) === 5 || questionNumber === levelTest.length;
 
+  // Every answered question, for the result email.
+  const answersRef = useRef<TAnsweredQuestion[]>([]);
+
+  // The mistake counter is module-level so it survives re-renders; clear it
+  // when a test starts so a retake in the same session starts from zero.
+  useEffect(() => {
+    incorrectAnswersCounter.length = 0;
+    answersRef.current = [];
+  }, []);
+
   const handleNextQuestion = useCallback(
     async (answer: string) => {
       const currentQuestion = levelTest[questionNumber];
+
+      const correctText =
+        currentQuestion.audioFile === null
+          ? currentQuestion.choices[currentQuestion.answer]
+          : currentQuestion.answer;
+      const isCorrect =
+        currentQuestion.audioFile === null
+          ? answer === correctText
+          : answer.trim().toLowerCase() === correctText.toLowerCase();
+      answersRef.current.push({
+        id: currentQuestion.id,
+        level: currentQuestion.level,
+        question: currentQuestion.question,
+        given: answer,
+        correct: correctText,
+        isCorrect,
+      });
 
       if (currentQuestion.audioFile === null) {
         if (answer !== currentQuestion.choices[currentQuestion.answer]) {
@@ -188,6 +215,7 @@ function LevelTest({
         result: levelsMap[testResult],
         level: testResult,
         recommendedLevel: nextLevelLabel[testResult],
+        answers: answersRef.current,
       }),
     }).catch(() => {});
   }, [testResult, userInfo]);

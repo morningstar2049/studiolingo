@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { buildLevelTestEmail, type LevelTestResultPayload } from "./email";
 
 export const runtime = "nodejs";
 
@@ -8,26 +9,10 @@ const RECIPIENT = process.env.LEVEL_TEST_RECIPIENT || "info@studiolingo.ge";
 // verified-domain address via RESEND_FROM once the domain is set up.
 const FROM = process.env.RESEND_FROM || "Studio Lingo <onboarding@resend.dev>";
 
-const escapeHtml = (s: string) =>
-  s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-
 export async function POST(request: Request) {
   try {
-    const {
-      firstName,
-      lastName,
-      email,
-      phone,
-      age,
-      contactMe,
-      result,
-      level,
-      recommendedLevel,
-    } = await request.json();
+    const payload = (await request.json()) as LevelTestResultPayload;
+    const { firstName, lastName, email, result } = payload;
 
     if (!firstName || !lastName || !email || !result) {
       return NextResponse.json(
@@ -46,38 +31,7 @@ export async function POST(request: Request) {
     }
 
     const resend = new Resend(apiKey);
-
-    const fullName = `${firstName} ${lastName}`;
-    const subject = `დონის ტესტის შედეგი — ${fullName} (${result})`;
-    const rows: [string, string][] = [
-      ["სახელი", firstName],
-      ["გვარი", lastName],
-      ["ელ. ფოსტა", email],
-      ["ტელეფონი", String(phone ?? "")],
-      ["ასაკი", String(age ?? "")],
-      ["შედეგი", result],
-      ["დონე (CEFR)", String(level ?? "")],
-      ["უნდა დაიწყოს", String(recommendedLevel ?? "")],
-      ["დამიკავშირდით და გამაცანით კურსები", contactMe ? "კი" : "არა"],
-    ];
-
-    const text = rows.map(([k, v]) => `${k}: ${v}`).join("\n");
-    const html = `
-      <div style="font-family:Arial,sans-serif;font-size:15px;color:#293142">
-        <h2 style="color:#2f9e4d;margin:0 0 12px">დონის ტესტის ახალი შედეგი</h2>
-        <table style="border-collapse:collapse">
-          ${rows
-            .map(
-              ([k, v]) =>
-                `<tr><td style="padding:4px 12px 4px 0;color:#8a929d">${escapeHtml(
-                  k,
-                )}</td><td style="padding:4px 0;font-weight:bold">${escapeHtml(
-                  String(v),
-                )}</td></tr>`,
-            )
-            .join("")}
-        </table>
-      </div>`;
+    const { subject, text, html } = buildLevelTestEmail(payload);
 
     const { error } = await resend.emails.send({
       from: FROM,
