@@ -45,7 +45,7 @@ export default function FaqButton() {
             fontWeight: 700,
             fontFeatureSettings: "'case' on",
             pr: 6,
-            color: "#293142",
+            color: "#2f9e4d",
           }}
         >
           ხშირად დასმული კითხვები

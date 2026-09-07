@@ -5,70 +5,65 @@ export function GET() {
   return NextResponse.json(questions);
 }
 
-const levels: TLevel[] = [
-  "სრულიად დამწყები",
-  "A1",
-  "A2",
-  "B1",
-  "B1+",
-  "B2",
-  "C1",
-];
+// Scoring rule: each level has 7 multiple-choice questions (1 point each) and
+// 1 listening question (2 points) = 9 points. A level is passed when all its
+// questions were answered and at most 2 points were lost. The result is the
+// last passed level in order; failing A1 means "სრულიად დამწყები".
+const LEVELS: TLevel[] = ["A1", "A2", "B1", "B1+", "B2", "C1"];
+const PASS_MAX_LOST = 2;
 
-const mistakesToLevelsMap: { [key: number]: TLevel } = {
-  0: "C1",
-  1: "C1",
-  2: "C1",
-  3: "C1",
-  4: "B2",
-};
+const normalize = (s: string) =>
+  s.trim().toLowerCase().replace(/[’‘`]/g, "'").replace(/\s+/g, " ");
+
+type SubmittedAnswer = { id: number; given: string };
 
 export async function POST(request: Request) {
-  let resultLevel: TLevel;
-  const incorrectAnswers: TIncorrectAnswersCounter = await request.json();
+  const body = (await request.json()) as { answers?: SubmittedAnswer[] };
+  const submitted = Array.isArray(body?.answers) ? body.answers : [];
+  const bank = questions.levelTest as TQuestion[];
 
-  if (incorrectAnswers.length === 5) {
-    resultLevel =
-      incorrectAnswers[Math.floor(incorrectAnswers.length / 2) + 1].level;
-    return NextResponse.json({
-      resultLevel,
-    });
+  // Re-grade every answer against the question bank (the client's verdict is
+  // only used for the live stop rule).
+  const graded = submitted
+    .map((a) => {
+      const q = bank.find((x) => x.id === a.id);
+      if (!q) return null;
+      const listening = q.audioFile !== null;
+      const correct = listening
+        ? normalize(String(a.given ?? "")) === normalize(q.answer as string)
+        : String(a.given ?? "") === q.choices![q.answer as number];
+      return { level: q.level, correct, weight: listening ? 2 : 1 };
+    })
+    .filter((x): x is NonNullable<typeof x> => x !== null);
+
+  const levelScores: TLevelScore[] = LEVELS.map((level) => {
+    const max = bank
+      .filter((q) => q.level === level)
+      .reduce((sum, q) => sum + (q.audioFile !== null ? 2 : 1), 0);
+    const total = bank.filter((q) => q.level === level).length;
+    const got = graded.filter((g) => g.level === level);
+    const points = got.reduce((sum, g) => sum + (g.correct ? g.weight : 0), 0);
+    const lost = got.reduce((sum, g) => sum + (g.correct ? 0 : g.weight), 0);
+    return {
+      level,
+      points,
+      max,
+      answered: got.length,
+      passed: got.length === total && lost <= PASS_MAX_LOST,
+    };
+  });
+
+  let resultLevel: TLevel = "სრულიად დამწყები";
+  for (const score of levelScores) {
+    if (!score.passed) break;
+    resultLevel = score.level;
   }
 
-  const mistakesSum = incorrectAnswers.reduce((prev, curr) => {
-    return prev + curr.count;
-  }, 0);
-
-  if (mistakesSum < 5 || !incorrectAnswers.length) {
-    resultLevel = mistakesToLevelsMap[mistakesSum];
-    return NextResponse.json({
-      resultLevel,
-    });
-  }
-
-  const maxMistakesCount = Math.max(...incorrectAnswers.map((el) => el.count));
-
-  const mostMistakesLevels = incorrectAnswers.filter(
-    (el) => el.count === maxMistakesCount
-  );
-
-  const mostMistakesLevelIndex = levels.findIndex(
-    (el) => el === mostMistakesLevels[0].level
-  );
-
-  if (mostMistakesLevelIndex > 0) {
-    if (mostMistakesLevels.length > 1) {
-      resultLevel = levels[mostMistakesLevelIndex];
-    } else {
-      resultLevel = levels[mostMistakesLevelIndex - 1];
-    }
-    return NextResponse.json({
-      resultLevel,
-    });
-  } else {
-    resultLevel = levels[mostMistakesLevelIndex];
-    return NextResponse.json({
-      resultLevel,
-    });
-  }
+  const result: TTestResult = {
+    resultLevel,
+    levelScores,
+    totalPoints: levelScores.reduce((sum, s) => sum + s.points, 0),
+    totalMax: levelScores.reduce((sum, s) => sum + s.max, 0),
+  };
+  return NextResponse.json(result);
 }

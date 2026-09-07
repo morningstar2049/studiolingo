@@ -8,7 +8,17 @@ import AudioPlayer from "./AudioPlayer";
 const questionTimer = 40;
 const audioQuestionTimer = 60;
 let intervalId: NodeJS.Timer | undefined;
-const incorrectAnswersCounter: TIncorrectAnswersCounter = [];
+
+// Scoring: a multiple-choice answer is worth 1 point, a listening answer 2.
+// A level (7 + 1 questions = 9 points) is passed with at most 2 points lost;
+// the 3rd lost point fails the level and ends the test.
+const CHOICE_POINTS = 1;
+const LISTENING_POINTS = 2;
+const FAIL_AT_LOST_POINTS = 3;
+
+// Typed listening answers: ignore case, surrounding space and apostrophe style.
+const normalize = (s: string) =>
+  s.trim().toLowerCase().replace(/[\u2019\u2018`]/g, "'").replace(/\s+/g, " ");
 
 const levelsMap: Record<TLevel, string> = {
   "სრულიად დამწყები": "Beginner",
@@ -76,33 +86,31 @@ function LevelTest({
   const [isLoading, setIsLoading] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
-  const isTestFinished =
-    incorrectAnswersCounter.reduce((prev, curr) => {
-      return prev + curr.count;
-    }, 0) === 5 || questionNumber === levelTest.length;
+  const [finished, setFinished] = useState(false);
+  const isTestFinished = finished || questionNumber === levelTest.length;
 
-  // Every answered question, for the result email.
+  // Every answered question (with points) — drives the stop rule and is sent
+  // for scoring and the result email.
   const answersRef = useRef<TAnsweredQuestion[]>([]);
+  const scoresRef = useRef<TTestResult | null>(null);
 
-  // The mistake counter is module-level so it survives re-renders; clear it
-  // when a test starts so a retake in the same session starts from zero.
   useEffect(() => {
-    incorrectAnswersCounter.length = 0;
     answersRef.current = [];
+    scoresRef.current = null;
   }, []);
 
   const handleNextQuestion = useCallback(
     async (answer: string) => {
       const currentQuestion = levelTest[questionNumber];
+      const listening = currentQuestion.audioFile !== null;
+      const correctText = listening
+        ? currentQuestion.answer
+        : currentQuestion.choices[currentQuestion.answer];
+      const isCorrect = listening
+        ? normalize(answer) === normalize(correctText)
+        : answer === correctText;
+      const maxPoints = listening ? LISTENING_POINTS : CHOICE_POINTS;
 
-      const correctText =
-        currentQuestion.audioFile === null
-          ? currentQuestion.choices[currentQuestion.answer]
-          : currentQuestion.answer;
-      const isCorrect =
-        currentQuestion.audioFile === null
-          ? answer === correctText
-          : answer.trim().toLowerCase() === correctText.toLowerCase();
       answersRef.current.push({
         id: currentQuestion.id,
         level: currentQuestion.level,
@@ -110,58 +118,31 @@ function LevelTest({
         given: answer,
         correct: correctText,
         isCorrect,
+        listening,
+        points: isCorrect ? maxPoints : 0,
+        maxPoints,
       });
 
-      if (currentQuestion.audioFile === null) {
-        if (answer !== currentQuestion.choices[currentQuestion.answer]) {
-          const sameLevelQuestionIndex = incorrectAnswersCounter.findIndex(
-            (el) => el.level === currentQuestion.level,
-          );
-          if (sameLevelQuestionIndex >= 0) {
-            incorrectAnswersCounter[sameLevelQuestionIndex].count += 1;
-          } else {
-            incorrectAnswersCounter.push({
-              level: currentQuestion.level,
-              count: 1,
-            });
-          }
-        }
-      } else {
-        if (
-          answer.trim().toLowerCase() !== currentQuestion.answer.toLowerCase()
-        ) {
-          const sameLevelQuestionIndex = incorrectAnswersCounter.findIndex(
-            (el) => el.level === currentQuestion.level,
-          );
-          if (sameLevelQuestionIndex >= 0) {
-            incorrectAnswersCounter[sameLevelQuestionIndex].count += 1;
-          } else {
-            incorrectAnswersCounter.push({
-              level: currentQuestion.level,
-              count: 1,
-            });
-          }
-        }
-      }
+      // Points lost so far in the current level; the 3rd lost point ends it.
+      const lostInLevel = answersRef.current
+        .filter((a) => a.level === currentQuestion.level && !a.isCorrect)
+        .reduce((sum, a) => sum + a.maxPoints, 0);
+      const isLastQuestion = questionNumber === levelTest.length - 1;
 
-      if (
-        incorrectAnswersCounter.reduce((prev, curr) => {
-          return prev + curr.count;
-        }, 0) === 5 ||
-        questionNumber === levelTest.length - 1
-      ) {
+      if (lostInLevel >= FAIL_AT_LOST_POINTS || isLastQuestion) {
         setIsLoading(true);
         const postReq = await fetch(`/api/lang-test`, {
           headers: {
             "Content-Type": "application/json",
           },
           method: "POST",
-          body: JSON.stringify(incorrectAnswersCounter),
+          body: JSON.stringify({ answers: answersRef.current }),
         });
 
-        const testResult: TTestResult = await postReq.json();
-
-        setTestResult(testResult.resultLevel);
+        const result: TTestResult = await postReq.json();
+        scoresRef.current = result;
+        setTestResult(result.resultLevel);
+        setFinished(true);
         setIsLoading(false);
       }
 
@@ -216,6 +197,9 @@ function LevelTest({
         level: testResult,
         recommendedLevel: nextLevelLabel[testResult],
         answers: answersRef.current,
+        levelScores: scoresRef.current?.levelScores ?? [],
+        totalPoints: scoresRef.current?.totalPoints ?? 0,
+        totalMax: scoresRef.current?.totalMax ?? 0,
       }),
     }).catch(() => {});
   }, [testResult, userInfo]);

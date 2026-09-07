@@ -409,6 +409,7 @@ export default function AdultRegistrationForm({
                 <button
                   type="submit"
                   disabled={status === "submitting"}
+                  style={{ fontFeatureSettings: "'case' on" }}
                   className="inline-flex items-center justify-center w-full gap-2 px-6 py-4 text-base sm:text-lg font-bold rounded-xl text-[#fff] bg-lingo-green shadow-[0_16px_36px_-14px_rgba(47,158,77,0.7)] transition-all hover:bg-[#2b904a] disabled:opacity-60"
                 >
                   {status === "submitting" ? "იგზავნება…" : "გაგზავნა"}

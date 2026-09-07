@@ -8,6 +8,17 @@ export type LevelTestAnswer = {
   given: string;
   correct: string;
   isCorrect: boolean;
+  listening?: boolean;
+  points?: number;
+  maxPoints?: number;
+};
+
+export type LevelScore = {
+  level: string;
+  points: number;
+  max: number;
+  answered: number;
+  passed: boolean;
 };
 
 export type LevelTestResultPayload = {
@@ -21,6 +32,9 @@ export type LevelTestResultPayload = {
   level?: string;
   recommendedLevel?: string;
   answers?: LevelTestAnswer[];
+  levelScores?: LevelScore[];
+  totalPoints?: number;
+  totalMax?: number;
 };
 
 const escapeHtml = (s: string) =>
@@ -48,8 +62,18 @@ export function buildLevelTestEmail(p: LevelTestResultPayload) {
     ["უნდა დაიწყოს", String(p.recommendedLevel ?? "")],
     ["დამიკავშირდით და გამაცანით კურსები", p.contactMe ? "კი" : "არა"],
   ];
+  const scores = Array.isArray(p.levelScores) ? p.levelScores.filter((s) => s.answered > 0) : [];
   if (answers.length) {
     rows.push(["სწორი პასუხები", `${correctCount} / ${answers.length}`]);
+  }
+  if (scores.length) {
+    rows.push(["ქულა ჯამში", `${p.totalPoints ?? 0} / ${p.totalMax ?? 0}`]);
+    rows.push([
+      "ქულები დონეების მიხედვით",
+      scores
+        .map((s) => `${s.level} ${s.points}/${s.max}${s.answered < 8 ? " (შეწყდა)" : s.passed ? " ✓" : " ✗"}`)
+        .join(", "),
+    ]);
   }
 
   const subject = `დონის ტესტის შედეგი — ${fullName} (${p.result})`;
@@ -73,13 +97,14 @@ export function buildLevelTestEmail(p: LevelTestResultPayload) {
       const given = a.given?.trim() ? a.given : NO_ANSWER;
       const color = a.isCorrect ? "#2f9e4d" : "#e24b4a";
       const mark = a.isCorrect ? "✓" : "✗";
+      const pts = typeof a.maxPoints === "number" ? `${a.isCorrect ? a.maxPoints : 0}/${a.maxPoints}` : "";
       return `<tr style="border-top:1px solid #e5e8ec">
         <td style="padding:8px 10px 8px 0;color:#8a929d;vertical-align:top">${i + 1}</td>
         <td style="padding:8px 10px;color:#8a929d;vertical-align:top;white-space:nowrap">${escapeHtml(a.level)}</td>
         <td style="padding:8px 10px;vertical-align:top">${escapeHtml(a.question)}</td>
         <td style="padding:8px 10px;vertical-align:top;font-weight:bold;color:${color}">${escapeHtml(given)}</td>
         <td style="padding:8px 10px;vertical-align:top;color:#293142">${escapeHtml(a.correct)}</td>
-        <td style="padding:8px 0 8px 10px;vertical-align:top;font-weight:bold;color:${color}">${mark}</td>
+        <td style="padding:8px 0 8px 10px;vertical-align:top;font-weight:bold;color:${color};white-space:nowrap">${mark} ${pts}</td>
       </tr>`;
     })
     .join("");
@@ -97,7 +122,7 @@ export function buildLevelTestEmail(p: LevelTestResultPayload) {
               <th style="padding:4px 10px;font-weight:normal">კითხვა</th>
               <th style="padding:4px 10px;font-weight:normal">პასუხი</th>
               <th style="padding:4px 10px;font-weight:normal">სწორი პასუხი</th>
-              <th style="padding:4px 0 4px 10px;font-weight:normal"></th>
+              <th style="padding:4px 0 4px 10px;font-weight:normal">ქულა</th>
             </tr>
           </thead>
           <tbody>${answerRows}</tbody>

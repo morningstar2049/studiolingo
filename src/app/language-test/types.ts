@@ -29,8 +29,20 @@ type TSubmittedAnswer = {
 
 type TIncorrectAnswersCounter = Array<{ level: TLevel; count: number }>;
 
+// Per-level score: 7 multiple-choice questions x 1 point + 1 listening x 2.
+type TLevelScore = {
+  level: TLevel;
+  points: number;
+  max: number;
+  answered: number;
+  passed: boolean;
+};
+
 type TTestResult = {
   resultLevel: TLevel;
+  levelScores: TLevelScore[];
+  totalPoints: number;
+  totalMax: number;
 };
 
 type TUserInfo = {
@@ -51,4 +63,7 @@ type TAnsweredQuestion = {
   given: string;
   correct: string;
   isCorrect: boolean;
+  listening: boolean;
+  points: number;
+  maxPoints: number;
 };
