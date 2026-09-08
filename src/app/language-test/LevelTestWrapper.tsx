@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import LevelTest from "./LevelTest";
 import UserInfoForm from "./UserInfoForm";
+import { scrollToTop } from "./scrollToTop";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 22 },
@@ -34,7 +35,15 @@ export default function LevelTestWrapper({ levelTest }: TLevelTest) {
   const [startTest, setStartTest] = useState(false);
 
   // Step 1: collect the visitor's details before anything else.
-  if (!userInfo) return <UserInfoForm onSubmit={setUserInfo} />;
+  if (!userInfo)
+    return (
+      <UserInfoForm
+        onSubmit={(info) => {
+          scrollToTop();
+          setUserInfo(info);
+        }}
+      />
+    );
 
   // Step 3: the test itself, once they've read the intro card.
   if (startTest) return <LevelTest levelTest={levelTest} userInfo={userInfo} />;
@@ -105,7 +114,10 @@ export default function LevelTestWrapper({ levelTest }: TLevelTest) {
       <motion.button
         variants={fadeUp}
         custom={5}
-        onClick={() => setStartTest(true)}
+        onClick={() => {
+          scrollToTop();
+          setStartTest(true);
+        }}
         className="w-full py-3.5 mt-8 font-bold text-[#fff] transition-all rounded-xl bg-lingo-green shadow-lg shadow-lingo-green/25 hover:bg-[#2f904d] hover:scale-[1.02] sm:w-auto sm:px-12"
       >
         ტესტის დაწყება

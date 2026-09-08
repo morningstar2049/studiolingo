@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { CircularProgress } from "@mui/material";
 import { FaCheckCircle, FaRegClock, FaVolumeUp } from "react-icons/fa";
 import AudioPlayer from "./AudioPlayer";
+import { scrollToTop } from "./scrollToTop";
 
 const questionTimer = 40;
 const audioQuestionTimer = 60;
@@ -104,6 +105,9 @@ function LevelTest({
 
   const handleNextQuestion = useCallback(
     async (answer: string) => {
+      // Back to the top before the next card renders (the visitor has usually
+      // scrolled down to reach the answer button).
+      scrollToTop();
       const currentQuestion = levelTest[questionNumber];
       const listening = currentQuestion.audioFile !== null;
       const correctText = listening
@@ -183,9 +187,10 @@ function LevelTest({
     }
   }, [remainingTime, handleNextQuestion, value]);
 
+  // Also after each step commits, in case the browser re-anchored the scroll.
   useEffect(() => {
-    typeof window !== undefined && window.scrollTo(0, 0);
-  }, []);
+    scrollToTop();
+  }, [questionNumber, isTestFinished]);
 
   // Email the visitor's details + result to the school once, when the test
   // finishes. Fire-and-forget: a mail failure never blocks the result screen.
