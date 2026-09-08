@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CircularProgress } from "@mui/material";
-import { FaCheckCircle, FaRegClock, FaVolumeUp, FaCheck } from "react-icons/fa";
+import { FaCheckCircle, FaRegClock, FaVolumeUp } from "react-icons/fa";
 import AudioPlayer from "./AudioPlayer";
 
 const questionTimer = 40;
@@ -15,6 +15,9 @@ let intervalId: NodeJS.Timer | undefined;
 const CHOICE_POINTS = 1;
 const LISTENING_POINTS = 2;
 const FAIL_AT_LOST_POINTS = 3;
+// The 3rd listening mistake anywhere in the test also ends it (the level in
+// progress counts as failed, so the result is the previous level).
+const LISTENING_MISTAKES_LIMIT = 3;
 
 // Typed listening answers: ignore case, surrounding space and apostrophe style.
 const normalize = (s: string) =>
@@ -127,9 +130,16 @@ function LevelTest({
       const lostInLevel = answersRef.current
         .filter((a) => a.level === currentQuestion.level && !a.isCorrect)
         .reduce((sum, a) => sum + a.maxPoints, 0);
+      const listeningMistakes = answersRef.current.filter(
+        (a) => a.listening && !a.isCorrect,
+      ).length;
       const isLastQuestion = questionNumber === levelTest.length - 1;
 
-      if (lostInLevel >= FAIL_AT_LOST_POINTS || isLastQuestion) {
+      if (
+        lostInLevel >= FAIL_AT_LOST_POINTS ||
+        listeningMistakes >= LISTENING_MISTAKES_LIMIT ||
+        isLastQuestion
+      ) {
         setIsLoading(true);
         const postReq = await fetch(`/api/lang-test`, {
           headers: {
@@ -200,6 +210,8 @@ function LevelTest({
         levelScores: scoresRef.current?.levelScores ?? [],
         totalPoints: scoresRef.current?.totalPoints ?? 0,
         totalMax: scoresRef.current?.totalMax ?? 0,
+        listeningMistakes: scoresRef.current?.listeningMistakes ?? 0,
+        stoppedByListening: scoresRef.current?.stoppedByListening ?? false,
       }),
     }).catch(() => {});
   }, [testResult, userInfo]);
@@ -365,9 +377,6 @@ function LevelTest({
                         >
                           {item}
                         </span>
-                        {selected && (
-                          <FaCheck className="ml-auto text-lingo-green shrink-0" />
-                        )}
                       </button>
                     );
                   })}

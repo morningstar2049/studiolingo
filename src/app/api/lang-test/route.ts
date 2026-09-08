@@ -9,8 +9,11 @@ export function GET() {
 // 1 listening question (2 points) = 9 points. A level is passed when all its
 // questions were answered and at most 2 points were lost. The result is the
 // last passed level in order; failing A1 means "სრულიად დამწყები".
+// Additionally, the 3rd listening mistake anywhere in the test fails the level
+// in progress, so the result becomes the previous (last passed) level.
 const LEVELS: TLevel[] = ["A1", "A2", "B1", "B1+", "B2", "C1"];
 const PASS_MAX_LOST = 2;
+const LISTENING_MISTAKES_LIMIT = 3;
 
 const normalize = (s: string) =>
   s.trim().toLowerCase().replace(/[’‘`]/g, "'").replace(/\s+/g, " ");
@@ -32,9 +35,21 @@ export async function POST(request: Request) {
       const correct = listening
         ? normalize(String(a.given ?? "")) === normalize(q.answer as string)
         : String(a.given ?? "") === q.choices![q.answer as number];
-      return { level: q.level, correct, weight: listening ? 2 : 1 };
+      return { level: q.level, correct, weight: listening ? 2 : 1, listening };
     })
     .filter((x): x is NonNullable<typeof x> => x !== null);
+
+  // Level in which the 3rd listening mistake happened (if any).
+  let listeningMistakes = 0;
+  let listeningFailLevel: TLevel | null = null;
+  for (const g of graded) {
+    if (g.listening && !g.correct) {
+      listeningMistakes++;
+      if (listeningMistakes === LISTENING_MISTAKES_LIMIT && !listeningFailLevel) {
+        listeningFailLevel = g.level;
+      }
+    }
+  }
 
   const levelScores: TLevelScore[] = LEVELS.map((level) => {
     const max = bank
@@ -49,7 +64,10 @@ export async function POST(request: Request) {
       points,
       max,
       answered: got.length,
-      passed: got.length === total && lost <= PASS_MAX_LOST,
+      passed:
+        got.length === total &&
+        lost <= PASS_MAX_LOST &&
+        level !== listeningFailLevel,
     };
   });
 
@@ -64,6 +82,8 @@ export async function POST(request: Request) {
     levelScores,
     totalPoints: levelScores.reduce((sum, s) => sum + s.points, 0),
     totalMax: levelScores.reduce((sum, s) => sum + s.max, 0),
+    listeningMistakes,
+    stoppedByListening: listeningFailLevel !== null,
   };
   return NextResponse.json(result);
 }

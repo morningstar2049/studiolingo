@@ -43,6 +43,8 @@ type TTestResult = {
   levelScores: TLevelScore[];
   totalPoints: number;
   totalMax: number;
+  listeningMistakes: number;
+  stoppedByListening: boolean;
 };
 
 type TUserInfo = {

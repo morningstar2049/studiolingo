@@ -35,6 +35,8 @@ export type LevelTestResultPayload = {
   levelScores?: LevelScore[];
   totalPoints?: number;
   totalMax?: number;
+  listeningMistakes?: number;
+  stoppedByListening?: boolean;
 };
 
 const escapeHtml = (s: string) =>
@@ -65,6 +67,12 @@ export function buildLevelTestEmail(p: LevelTestResultPayload) {
   const scores = Array.isArray(p.levelScores) ? p.levelScores.filter((s) => s.answered > 0) : [];
   if (answers.length) {
     rows.push(["სწორი პასუხები", `${correctCount} / ${answers.length}`]);
+  }
+  if (typeof p.listeningMistakes === "number") {
+    rows.push([
+      "მოსმენის შეცდომები",
+      `${p.listeningMistakes}${p.stoppedByListening ? " — ტესტი შეწყდა მე-3 შეცდომაზე" : ""}`,
+    ]);
   }
   if (scores.length) {
     rows.push(["ქულა ჯამში", `${p.totalPoints ?? 0} / ${p.totalMax ?? 0}`]);
