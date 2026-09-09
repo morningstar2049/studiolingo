@@ -42,7 +42,7 @@
     },
     {
       "id": 6,
-      "question": "What time is it if the clock shows 12:00?",
+      "question": "What time is it if the clock shows 12 PM?",
       "choices": ["Midnight", "Noon", "Morning", "Evening"],
       "answer": 1,
       "level": "A1",
@@ -156,7 +156,7 @@
     },
     {
       "id": 19,
-      "question": "What is the synonym of 'easygoing'?",
+      "question": "The word ‘easygoing’ means",
       "choices": ["Sociable", "Carefree", "Fun", "Anxious"],
       "answer": 1,
       "level": "B1",
@@ -164,14 +164,14 @@
     },
     {
       "id": 20,
-      "question": "Which sentence has the same meaning as the following one: 'The cat chased the mouse'?",
+      "question": "The first Harry Potter book ____ by J.K. Rowling in 1997.",
       "choices": [
-        "The mouse has been chased by the cat.",
-        "The mouse was chased by the cat.",
-        "The mouse is chased by the cat.",
-        "The mouse had been chased by the cat."
+        "was written",
+        "wrote",
+        "has written",
+        "was writing"
       ],
-      "answer": 1,
+      "answer": 0,
       "level": "B1",
       "audioFile": null
     },

@@ -84,7 +84,8 @@ export function buildLevelTestEmail(p: LevelTestResultPayload) {
     ]);
   }
 
-  const subject = `დონის ტესტის შედეგი — ${fullName} (${p.result})`;
+  // Subject flags whether the taker asked to be contacted (კი/არა).
+  const subject = `დონის ტესტის შედეგი — ${fullName} (${p.contactMe ? "კი" : "არა"})`;
 
   const textAnswers = answers.length
     ? [
