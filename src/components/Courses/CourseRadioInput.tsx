@@ -25,6 +25,9 @@ export default function CourseRadioInput({
   // const [choice, setChoice] = useState(
   //   title === "გაკვეთილის სიხშირე" ? "კვირაში 2-ჯერ" : ""
   // );
+  // Three or more options don't fit in one row on phones: stack them
+  // vertically there, keep the single row from the sm breakpoint up.
+  const stackOnMobile = title !== "კურსის ტიპი" && choices.length >= 3;
   const courseTypeWidthClass =
     title === "კურსის ტიპი" && choices.length === 4
       ? "flex flex-wrap h-[85px] w-[80%] sm:h-fit"
@@ -56,6 +59,17 @@ export default function CourseRadioInput({
           setSelectedItems((prev) => ({ ...prev, [title]: val }));
         }}
         sx={{
+          ...(stackOnMobile && {
+            flexDirection: { xs: "column", sm: "row" },
+            // stacked: every option spans the group so labels line up left;
+            // the horizontal gap becomes a vertical one
+            alignItems: { xs: "stretch", sm: "center" },
+            "& .MuiRadio-root": { width: { xs: "100%", sm: "auto" } },
+            "& .MuiRadio-root + .MuiRadio-root": {
+              marginInlineStart: { xs: 0, sm: "var(--RadioGroup-gap)" },
+              marginBlockStart: { xs: "var(--RadioGroup-gap)", sm: 0 },
+            },
+          }),
           minHeight: 48,
           padding: "4px",
           borderRadius: "12px",
@@ -76,6 +90,7 @@ export default function CourseRadioInput({
               px: 2,
               py: 1,
               alignItems: "center",
+              justifyContent: "flex-start",
               color: () =>
                 selectedItems[title as keyof typeof selectedItems] === item
                   ? "white"

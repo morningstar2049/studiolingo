@@ -230,9 +230,13 @@ export default function CourseDetails(props: CourseDetailsProps) {
     "კურსის ფორმატი": "",
   });
 
+  // Online lesson types; the adult course also offers two-student lessons.
   const initialLessonTypeChoices = useMemo(
-    () => ["ინდივიდუალური", "ჯგუფური"],
-    []
+    () =>
+      props.courseTitle === "english"
+        ? ["ინდივიდუალური", "ორმოსწავლიანი", "ჯგუფური"]
+        : ["ინდივიდუალური", "ჯგუფური"],
+    [props.courseTitle],
   );
 
   const [lessonTypeChoices, setLessonTypeChoices] = useState(
@@ -240,6 +244,30 @@ export default function CourseDetails(props: CourseDetailsProps) {
   );
 
   const { price } = useCalculatePrice(props.courseTitle, selectedItems);
+
+  // 3x/week is priced only for the adult course, online, individual.
+  const format = selectedItems["კურსის ფორმატი"];
+  const lessonType = selectedItems["გაკვეთილის ტიპი"];
+  const frequency = selectedItems["გაკვეთილის სიხშირე"];
+  const frequencyChoices = useMemo(
+    () =>
+      props.courseTitle === "english" &&
+      format === "ონლაინ" &&
+      lessonType === "ინდივიდუალური"
+        ? ["კვირაში 2-ჯერ", "კვირაში 3-ჯერ"]
+        : ["კვირაში 2-ჯერ"],
+    [props.courseTitle, format, lessonType],
+  );
+
+  // If the current selection has no 3x price, drop back to 2x.
+  useEffect(() => {
+    if (!frequencyChoices.includes(frequency)) {
+      setSelectedItems((prev) => ({
+        ...prev,
+        "გაკვეთილის სიხშირე": "კვირაში 2-ჯერ",
+      }));
+    }
+  }, [frequencyChoices, frequency]);
 
   useEffect(() => {
     if (selectedItems["კურსის ფორმატი"] === "ოფისში") {
@@ -260,7 +288,8 @@ export default function CourseDetails(props: CourseDetailsProps) {
       )}
       <strong className="text-lingo-black">
         გაკვეთილის ხანგრძლივობა -{" "}
-        {selectedItems["გაკვეთილის ტიპი"] === "ინდივიდუალური"
+        {selectedItems["გაკვეთილის ტიპი"] === "ინდივიდუალური" ||
+        selectedItems["გაკვეთილის ტიპი"] === "ორმოსწავლიანი"
           ? "1 სთ"
           : "1 სთ 30 წთ"}
       </strong>
@@ -286,7 +315,7 @@ export default function CourseDetails(props: CourseDetailsProps) {
       <section>
         <CourseRadioInput
           title="გაკვეთილის სიხშირე"
-          choices={["კვირაში 2-ჯერ"]}
+          choices={frequencyChoices}
           selectedItems={selectedItems}
           setSelectedItems={setSelectedItems}
         />
