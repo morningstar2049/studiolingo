@@ -34,7 +34,7 @@ const commonFields: Field[] = [
   { id: "entry.1611228309", label: "ასაკი", type: "number" },
   { id: "entry.1469338775", label: "საკონტაქტო ნომერი", type: "tel" },
   { id: "entry.129933980", label: "WhatsApp / Viber ნომერი", type: "tel" },
-  { id: "entry.1324604824", label: "პირადობის ID ნომერი", type: "text" },
+  { id: "entry.1324604824", label: "პირადობის ID ნომერი", type: "number" },
   { id: "entry.1297167939", label: "მოქმედი ელფოსტა", type: "email" },
   {
     id: "entry.1796271592",
