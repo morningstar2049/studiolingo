@@ -46,4 +46,18 @@ export const team: TeamMember[] = [
     name: "ნინი",
     role: "ინგლისურის მასწავლებელი",
   },
+  {
+    videoUrl: "",
+    src: "/team/ani.webp",
+    alt: "ანი",
+    name: "ანი",
+    role: "ინგლისურის მასწავლებელი",
+  },
+  {
+    videoUrl: "",
+    src: "/team/nini-chumburidze.webp",
+    alt: "ნინი",
+    name: "ნინი",
+    role: "ინგლისურის მასწავლებელი",
+  },
 ];
