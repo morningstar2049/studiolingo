@@ -57,7 +57,7 @@ export default function RegisterChooserPage() {
             <Link
               key={o.href}
               href={o.href}
-              className="group flex flex-col items-start gap-4 p-7 sm:p-8 bg-[#fff] border border-[#eceef2] rounded-[24px] shadow-[0_24px_54px_-26px_rgba(41,49,66,0.3)] transition-all hover:-translate-y-1 hover:border-lingo-green hover:shadow-[0_28px_60px_-24px_rgba(47,158,77,0.35)]"
+              className="group flex flex-col items-start gap-4 p-7 sm:p-8 bg-[#fff] border border-[#eceef2] rounded-[24px] shadow-[0_24px_54px_-24px_rgba(47,158,77,0.45)] transition-all hover:-translate-y-1 hover:border-lingo-green hover:shadow-[0_28px_60px_-24px_rgba(47,158,77,0.35)]"
             >
               <div className="flex items-center justify-between w-full">
                 <span className="flex items-center justify-center w-14 h-14 text-2xl rounded-2xl bg-lingo-green/10 text-lingo-green">

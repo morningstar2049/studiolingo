@@ -53,7 +53,7 @@ export default function LevelTestWrapper({ levelTest }: TLevelTest) {
       initial="hidden"
       animate="show"
       style={{ fontFeatureSettings: "'case' on" }}
-      className="w-full max-w-[560px] my-auto rounded-[24px] bg-[#fff] border border-[#eceef2] shadow-[0_24px_54px_-22px_rgba(41,49,66,0.3)] p-7 sm:p-9 text-center"
+      className="w-full max-w-[560px] my-auto rounded-[24px] bg-[#fff] border border-[#eceef2] shadow-[0_24px_54px_-24px_rgba(47,158,77,0.45)] p-7 sm:p-9 text-center"
     >
       <motion.span
         variants={fadeUp}

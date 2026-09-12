@@ -32,7 +32,10 @@ export default function SiteChrome() {
         <Navbar />
       </div>
       <MobileNavMenu />
-      {!pathname?.startsWith("/register") && <RegisterButton />}
+      {/* Not on registration pages (redundant) or career pages (for teacher
+          candidates, not students). */}
+      {!pathname?.startsWith("/register") &&
+        !pathname?.startsWith("/career") && <RegisterButton />}
       <MessengerButton />
     </>
   );

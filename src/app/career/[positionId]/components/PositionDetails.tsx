@@ -86,6 +86,7 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
       href={position.googleFormLink}
       target="_blank"
       rel="noopener noreferrer"
+      style={{ fontFeatureSettings: "'case' on" }}
       className={`inline-flex items-center justify-center gap-2.5 px-8 py-4 text-[15px] font-bold transition-transform rounded-xl text-[#fff] bg-lingo-green shadow-[0_18px_40px_-14px_rgba(47,158,77,0.75)] hover:scale-[1.03] ${
         block ? "w-full sm:w-auto" : ""
       }`}

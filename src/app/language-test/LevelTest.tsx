@@ -242,7 +242,7 @@ function LevelTest({
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           style={{ fontFeatureSettings: "'case' on" }}
-          className="w-full max-w-[470px] mx-auto rounded-[22px] bg-[#fff] border border-[#eceef2] shadow-[0_20px_46px_-22px_rgba(41,49,66,0.3)] p-6 sm:p-8 text-center"
+          className="w-full max-w-[470px] mx-auto rounded-[22px] bg-[#fff] border border-[#eceef2] shadow-[0_24px_54px_-24px_rgba(47,158,77,0.45)] p-6 sm:p-8 text-center"
         >
           <div className="flex items-center justify-center mx-auto text-3xl rounded-full w-14 h-14 bg-lingo-green/10 text-lingo-green">
             <FaCheckCircle />
@@ -328,7 +328,7 @@ function LevelTest({
               exit={{ y: -12, opacity: 0 }}
               transition={{ duration: 0.25 }}
               style={{ fontFeatureSettings: "'case' on" }}
-              className="rounded-[24px] bg-[#fff] border border-[#eceef2] shadow-[0_24px_54px_-22px_rgba(41,49,66,0.3)] p-6 sm:p-8"
+              className="rounded-[24px] bg-[#fff] border border-[#eceef2] shadow-[0_24px_54px_-24px_rgba(47,158,77,0.45)] p-6 sm:p-8"
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold tracking-[0.08em] uppercase text-[#8a929d]">

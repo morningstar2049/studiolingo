@@ -205,7 +205,7 @@ export default function RegistrationForm({
         className={`w-full max-w-lg bg-[#fff] rounded-[24px] ${
           isModal
             ? "my-6 shadow-[0_40px_80px_-24px_rgba(10,14,24,0.6)]"
-            : "mx-auto border border-[#eceef2] shadow-[0_24px_54px_-26px_rgba(41,49,66,0.3)]"
+            : "mx-auto border border-[#eceef2] shadow-[0_24px_54px_-24px_rgba(47,158,77,0.45)]"
         }`}
       >
         {/* header */}
