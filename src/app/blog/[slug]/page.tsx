@@ -277,7 +277,7 @@ export default async function BlogPostPage({ params }: Props) {
               className="flex items-center justify-center gap-2 px-6 py-4 mb-8 font-bold text-center text-[#fff] transition-opacity bg-lingo-green rounded-xl shadow-lg shadow-lingo-green/25 hover:opacity-90"
             >
               <span style={{ fontFeatureSettings: "'case' on" }}>
-                გაეცანი სტუდიო ლინგოს კურსებს
+                სტუდიო ლინგოს ინგლისურის კურსები
               </span>
               <AiOutlineArrowRight className="shrink-0" />
             </Link>

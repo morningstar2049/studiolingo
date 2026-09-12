@@ -59,7 +59,7 @@ export default function BlogCoursesCard() {
             href="/courses"
             className="inline-flex items-center justify-center w-full gap-2 px-6 py-3.5 mt-6 text-[15px] font-bold transition-transform rounded-xl text-[#fff] bg-lingo-green shadow-[0_16px_36px_-14px_rgba(47,158,77,0.7)] hover:scale-[1.02]"
           >
-            გაეცანი კურსებს
+            ინგლისურის კურსები
             <AiOutlineArrowRight className="shrink-0" />
           </Link>
         </div>

@@ -132,6 +132,12 @@ function Footer() {
                 წესები და პირობები
               </button>
               <Link
+                href="/courses"
+                className="text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
+              >
+                ინგლისურის კურსები
+              </Link>
+              <Link
                 href="/faq"
                 className="text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
               >

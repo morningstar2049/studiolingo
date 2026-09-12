@@ -89,7 +89,7 @@ export default function CoursesCarousel() {
           href="/courses"
           className="inline-flex items-center gap-2 px-6 py-3 font-bold transition-opacity rounded-xl text-lingo-green ring-1 ring-lingo-green hover:opacity-80"
         >
-          ყველა კურსი
+          ყველა ინგლისურის კურსი
           <AiOutlineArrowRight className="shrink-0" />
         </Link>
 

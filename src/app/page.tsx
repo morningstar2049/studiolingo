@@ -3,9 +3,9 @@ import ScrollToTopButton from "@/components/ScrollToTopButton";
 import { coursesSchema } from "@/lib/schema";
 import type { Metadata } from "next";
 
-const title = "ინგლისური ენის კურსები თბილისში და ონლაინ | Studio Lingo";
+const title = "ინგლისურის სკოლა თბილისში და ონლაინ | Studio Lingo";
 const description =
-  "ინგლისურის კურსები ზრდასრულთათვის და მოზარდებისთვის — საბურთალოზე და ონლაინ. A1-C1 დონეები, მცირე ჯგუფები, პრაქტიკული მეთოდები. გაიარეთ ონლაინ ენის ტესტი.";
+  "სტუდიო ლინგო — #1 ინგლისურის სკოლა თბილისში (საბურთალო) და ონლაინ. ინგლისურის კურსები ზრდასრულებსა და მოზარდებისთვის, A1-C1 დონეები, მცირე ჯგუფები, პრაქტიკა ბრიტანელ მასწავლებელთან.";
 const image = "/og-logo.png";
 
 export const metadata: Metadata = {

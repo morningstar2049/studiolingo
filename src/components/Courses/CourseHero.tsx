@@ -60,7 +60,7 @@ export default function CourseHero({ title, subtitle, art, from, to }: Props) {
           className="inline-flex items-center gap-2 mb-4 text-sm font-bold transition-colors text-[#ffffffd9] hover:text-[#fff]"
         >
           <AiOutlineArrowLeft />
-          ყველა კურსი
+          ყველა ინგლისურის კურსი
         </Link>
         <div className="max-w-xl">
           <h1
