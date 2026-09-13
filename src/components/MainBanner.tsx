@@ -2,11 +2,12 @@ import Image from "next/image";
 import AchievementsBar from "./AchievementsBar";
 import BannerHeadline from "./BannerHeadline";
 import HeroSlideshow from "./HeroSlideshow";
+import { HeroProvider } from "./HeroContext";
 import Overlay from "./Overlay";
 
 function MainBanner() {
   return (
-    <>
+    <HeroProvider>
       <Image
         src="/mobile-banner.png"
         alt="Studio Lingo — ინგლისურის გაკვეთილი"
@@ -22,7 +23,7 @@ function MainBanner() {
 
         <AchievementsBar />
       </div>
-    </>
+    </HeroProvider>
   );
 }
 

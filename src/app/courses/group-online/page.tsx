@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import CourseHero from "@/components/Courses/CourseHero";
 import CourseDetails from "@/components/Courses/CourseDetails";
 import CourseVideo from "@/components/Courses/CourseVideo";
+import CoursePhoto from "@/components/Courses/CoursePhoto";
 import CourseReviews from "@/components/Courses/CourseReviews";
 import CourseSubhead from "@/components/Courses/CourseSubhead";
 import CourseToolsSection from "@/components/Courses/CourseToolsSection";
@@ -56,7 +57,10 @@ const groupOnlineDescription = (
       ვარჯიშობენ. ჯგუფური დინამიკა ზრდის მოტივაციას და ეხმარება მოსწავლეს, დაძლიოს
       უცხო ენაზე საუბრის ბარიერი და ალაპარაკდეს თავისუფლად.
     </p>
-    <br />
+    <CoursePhoto
+      src="/course-photo-group-online.jpg"
+      alt="ჯგუფური ინგლისურის ონლაინ გაკვეთილი სტუდიო ლინგოში — მასწავლებელი და მოსწავლეები ლეპტოპთან"
+    />
     <p>
       ონლაინ ინგლისურის კურსი მოიცავს ენის{" "}
       <span className="font-bold text-lingo-green">ყველა კომპონენტს</span>:

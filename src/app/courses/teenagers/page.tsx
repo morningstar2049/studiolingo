@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import CourseHero from "@/components/Courses/CourseHero";
 import CourseDetails from "@/components/Courses/CourseDetails";
 import CourseVideo from "@/components/Courses/CourseVideo";
+import CoursePhoto from "@/components/Courses/CoursePhoto";
 import CourseReviews from "@/components/Courses/CourseReviews";
 import CourseSubhead from "@/components/Courses/CourseSubhead";
 import CourseToolsSection from "@/components/Courses/CourseToolsSection";
@@ -57,7 +58,7 @@ const teenagersDescription = (
       მიდგომებით — როლური თამაშები, დისკუსიები და ჯგუფური პროექტები ზრდის
       მოზარდის მოტივაციას და უზრუნველყოფს ნასწავლის პრაქტიკაში გამოყენებას.
     </p>
-    <br />
+    <CoursePhoto />
     <p>
       კურსი მოიცავს ინგლისური ენის{" "}
       <span className="font-bold text-lingo-green">ყველა კომპონენტს</span>:

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import CourseHero from "@/components/Courses/CourseHero";
 import CourseDetails from "@/components/Courses/CourseDetails";
 import CourseVideo from "@/components/Courses/CourseVideo";
+import CoursePhoto from "@/components/Courses/CoursePhoto";
 import CourseReviews from "@/components/Courses/CourseReviews";
 import CourseSubhead from "@/components/Courses/CourseSubhead";
 import CourseToolsSection from "@/components/Courses/CourseToolsSection";
@@ -56,7 +57,10 @@ const individualOnlineDescription = (
       ირჩევ გაკვეთილების მოსახერხებელ დღეებსა და საათებს, ხოლო სწავლის ტემპსაც
       თავად განსაზღვრავ. ეს კი უზრუნველყოფს ეფექტურ და დაუბრკოლებელ პროგრესს.
     </p>
-    <br />
+    <CoursePhoto
+      src="/course-photo-individual.jpg"
+      alt="ინდივიდუალური ინგლისურის გაკვეთილი სტუდიო ლინგოში — მასწავლებელი და მოსწავლეები ლეპტოპთან"
+    />
     <p>
       ონლაინ ინგლისურის კურსი მოიცავს ენის{" "}
       <span className="font-bold text-lingo-green">ყველა კომპონენტს</span>:

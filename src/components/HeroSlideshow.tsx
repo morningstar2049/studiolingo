@@ -1,38 +1,23 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { HERO_SLIDES, useHeroSlide } from "./HeroContext";
 
 // Desktop hero background: each photo zooms in slowly (Ken Burns) for ~6.5s,
-// then crossfades to the next, looping 1 → 3 → 4.
-// `pos` is the object-position focal point: photo 1's faces sit low in the
-// frame, so it favours the top to keep them clear of the stats bar.
-const SLIDES = [
-  { src: "/banner-web-3.jpg", pos: "object-[50%_35%]" },
-  { src: "/banner-web-4.jpg", pos: "object-[50%_35%]" },
-];
-const INTERVAL_MS = 6500;
-
+// then crossfades to the next. The active index comes from HeroProvider so the
+// headline switches in step with the photo.
 export default function HeroSlideshow() {
-  const [active, setActive] = useState(0);
-
-  useEffect(() => {
-    const id = setInterval(
-      () => setActive((i) => (i + 1) % SLIDES.length),
-      INTERVAL_MS,
-    );
-    return () => clearInterval(id);
-  }, []);
+  const active = useHeroSlide();
 
   return (
     <div className="absolute inset-0 hidden overflow-hidden sm:block animate-appear">
-      {SLIDES.map(({ src, pos }, i) => {
+      {HERO_SLIDES.map(({ src, pos, alt }, i) => {
         const isActive = i === active;
         return (
           <Image
             key={src}
             src={src}
-            alt="Studio Lingo — ინგლისურის გაკვეთილი თბილისში"
+            alt={alt}
             fill
             priority={i === 0}
             sizes="100vw"

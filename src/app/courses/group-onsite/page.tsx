@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import CourseHero from "@/components/Courses/CourseHero";
 import CourseDetails from "@/components/Courses/CourseDetails";
 import CourseVideo from "@/components/Courses/CourseVideo";
+import CoursePhoto from "@/components/Courses/CoursePhoto";
 import CourseReviews from "@/components/Courses/CourseReviews";
 import CourseSubhead from "@/components/Courses/CourseSubhead";
 import CourseToolsSection from "@/components/Courses/CourseToolsSection";
@@ -58,7 +59,10 @@ const groupOnsiteDescription = (
       ვარჯიშობენ ერთმანეთთან. პირისპირ კომუნიკაცია აჩქარებს ენის ათვისებას და
       ეხმარება მოსწავლეს, დაძლიოს საუბრის ბარიერი.
     </p>
-    <br />
+    <CoursePhoto
+      src="/course-photo-2.jpg"
+      alt="ინგლისურის გაკვეთილი ადგილზე სტუდიო ლინგოში — მასწავლებელი დაფასთან, სახალისო აქტივობა"
+    />
     <p>
       კურსი მოიცავს ინგლისური ენის{" "}
       <span className="font-bold text-lingo-green">ყველა კომპონენტს</span>:
@@ -97,7 +101,7 @@ const groupOnsiteDescription = (
       აუდიოებით. საკლასო აქტივობები, სამაგიდო თამაშები და ჯგუფური პროექტები
       სწავლას სახალისოსა და ეფექტურს ხდის.
     </p>
-    <CourseVideo />
+    <CoursePhoto />
     <CourseToolsSection />
     <CourseHomeworkSection />
     <br />

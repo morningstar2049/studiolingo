@@ -13,32 +13,6 @@ export type Course = {
 
 export const courses: Course[] = [
   {
-    slug: "/courses/individual-online",
-    title: "ინდივიდუალური ინგლისური ონლაინ",
-    chips: ["ონლაინ", "ინდივიდუალური"],
-    desc: "პერსონალური გაკვეთილები, შენს ტემპსა და მიზნებზე მორგებული — მასწავლებლის მთელი ყურადღება მხოლოდ შენზეა. მოქნილი გრაფიკი და ყველაზე სწრაფი პროგრესი.",
-    accent: "#2f9e4d",
-    accentLight: "#41bd66",
-    accentText: "#2f9e4d",
-    blockFrom: "#2a375c",
-    blockTo: "#181f33",
-    art: `<svg viewBox="0 0 320 184" width="100%" height="100%" role="img" aria-label="ინდივიდუალური ონლაინ გაკვეთილი">
-      <circle cx="160" cy="90" r="78" fill="#fff" opacity=".08"/>
-      <ellipse cx="160" cy="152" rx="66" ry="8" fill="#1e7d3a" opacity=".22"/>
-      <path d="M98 138h124l12 12H86z" fill="#fff"/>
-      <rect x="100" y="50" width="120" height="90" rx="11" fill="#fff"/>
-      <rect x="108" y="58" width="104" height="74" rx="7" fill="#eaf6ee"/>
-      <circle cx="150" cy="90" r="15" fill="#2f9e4d"/>
-      <path d="M131 121a19 19 0 0 1 38 0z" fill="#2f9e4d"/>
-      <circle cx="150" cy="86" r="6.5" fill="#eaf6ee"/>
-      <rect x="181" y="100" width="26" height="26" rx="6" fill="#fff" stroke="#cfebd7" stroke-width="1.6"/>
-      <circle cx="194" cy="110" r="5" fill="#3bb85e"/><path d="M186 122a8 8 0 0 1 16 0z" fill="#3bb85e"/>
-      <circle cx="118" cy="68" r="3.6" fill="#e2574f"/>
-      <g><rect x="214" y="38" width="48" height="30" rx="9" fill="#fff"/><path d="M224 66l-3 11 13-8z" fill="#fff"/><circle cx="228" cy="53" r="3.2" fill="#2f9e4d"/><circle cx="238" cy="53" r="3.2" fill="#8fd3a5"/><circle cx="248" cy="53" r="3.2" fill="#cfebd7"/></g>
-      <g><circle cx="72" cy="110" r="15" fill="#fff"/><path d="M65 110l5 5 9-10" fill="none" stroke="#2f9e4d" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></g>
-    </svg>`,
-  },
-  {
     slug: "/courses/group-online",
     title: "ჯგუფური ინგლისური ონლაინ",
     chips: ["ონლაინ", "ჯგუფური"],
@@ -65,6 +39,32 @@ export const courses: Course[] = [
       <g><circle cx="238" cy="44" r="14" fill="#fff"/><path d="M238 51c-4.5-4-8-6-8-10a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 4-3.5 6-8 10z" fill="#e2574f"/></g>
       <g><circle cx="78" cy="150" r="13" fill="#fff"/><text x="78" y="155" font-size="14" font-weight="800" fill="#2f9e4d" text-anchor="middle" font-family="sans-serif">4</text></g>
       <circle cx="256" cy="120" r="6" fill="#fff" opacity=".5"/>
+    </svg>`,
+  },
+  {
+    slug: "/courses/individual-online",
+    title: "ინდივიდუალური ინგლისური ონლაინ",
+    chips: ["ონლაინ", "ინდივიდუალური"],
+    desc: "პერსონალური გაკვეთილები, შენს ტემპსა და მიზნებზე მორგებული — მასწავლებლის მთელი ყურადღება მხოლოდ შენზეა. მოქნილი გრაფიკი და ყველაზე სწრაფი პროგრესი.",
+    accent: "#2f9e4d",
+    accentLight: "#41bd66",
+    accentText: "#2f9e4d",
+    blockFrom: "#2a375c",
+    blockTo: "#181f33",
+    art: `<svg viewBox="0 0 320 184" width="100%" height="100%" role="img" aria-label="ინდივიდუალური ონლაინ გაკვეთილი">
+      <circle cx="160" cy="90" r="78" fill="#fff" opacity=".08"/>
+      <ellipse cx="160" cy="152" rx="66" ry="8" fill="#1e7d3a" opacity=".22"/>
+      <path d="M98 138h124l12 12H86z" fill="#fff"/>
+      <rect x="100" y="50" width="120" height="90" rx="11" fill="#fff"/>
+      <rect x="108" y="58" width="104" height="74" rx="7" fill="#eaf6ee"/>
+      <circle cx="150" cy="90" r="15" fill="#2f9e4d"/>
+      <path d="M131 121a19 19 0 0 1 38 0z" fill="#2f9e4d"/>
+      <circle cx="150" cy="86" r="6.5" fill="#eaf6ee"/>
+      <rect x="181" y="100" width="26" height="26" rx="6" fill="#fff" stroke="#cfebd7" stroke-width="1.6"/>
+      <circle cx="194" cy="110" r="5" fill="#3bb85e"/><path d="M186 122a8 8 0 0 1 16 0z" fill="#3bb85e"/>
+      <circle cx="118" cy="68" r="3.6" fill="#e2574f"/>
+      <g><rect x="214" y="38" width="48" height="30" rx="9" fill="#fff"/><path d="M224 66l-3 11 13-8z" fill="#fff"/><circle cx="228" cy="53" r="3.2" fill="#2f9e4d"/><circle cx="238" cy="53" r="3.2" fill="#8fd3a5"/><circle cx="248" cy="53" r="3.2" fill="#cfebd7"/></g>
+      <g><circle cx="72" cy="110" r="15" fill="#fff"/><path d="M65 110l5 5 9-10" fill="none" stroke="#2f9e4d" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></g>
     </svg>`,
   },
   {
