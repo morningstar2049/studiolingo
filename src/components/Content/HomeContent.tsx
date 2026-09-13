@@ -62,12 +62,17 @@ export default function HomeContent() {
               სახალისოდ და უფასოდ.
             </p>
 
+            {/* Transparent outlined pill (hairline rim, green arrow in a
+                matching ring) so a solid green block doesn't dominate the
+                navy card. */}
             <Link
               href="/content"
-              className="inline-flex items-center gap-2 px-7 py-3.5 mt-8 text-[15px] font-bold transition-transform rounded-xl text-[#fff] bg-lingo-green shadow-[0_16px_36px_-14px_rgba(47,158,77,0.7)] hover:scale-[1.03]"
+              className="inline-flex items-center gap-3 pl-6 pr-2 py-2 mt-8 text-[15px] font-bold transition-transform rounded-full text-[#fff] border border-[rgba(255,255,255,0.22)] bg-transparent hover:scale-[1.03] hover:border-[rgba(255,255,255,0.4)] sm:text-base sm:pl-7 sm:pr-2.5 sm:py-2.5"
             >
               ნახე ჩვენი კონტენტი
-              <AiOutlineArrowRight className="shrink-0" />
+              <span className="flex items-center justify-center w-8 h-8 rounded-full shrink-0 border border-[rgba(255,255,255,0.22)] text-lingo-green sm:w-9 sm:h-9">
+                <AiOutlineArrowRight />
+              </span>
             </Link>
           </div>
 

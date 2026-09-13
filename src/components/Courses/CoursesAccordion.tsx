@@ -15,7 +15,7 @@ const accordionSx = {
   background: "transparent",
   boxShadow: "none",
   marginBottom: "16px",
-  scrollMarginTop: { xs: "90px", sm: "160px" },
+  scrollMarginTop: { xs: "70px", sm: "134px" },
   "&:before": { display: "none" },
   "&.Mui-expanded": { margin: "0 0 16px 0" },
 };

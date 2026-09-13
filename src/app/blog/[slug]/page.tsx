@@ -295,7 +295,7 @@ export default async function BlogPostPage({ params }: Props) {
 
         {/* right column — courses card + share, pinned, desktop only */}
         <aside className="hidden lg:block">
-          <div className="sticky top-[168px]">
+          <div className="sticky top-[142px]">
             <BlogCoursesCard />
             <div className="p-5 mt-5 bg-[#fff] border border-[#e7ecea] rounded-[20px] shadow-[0_14px_30px_-22px_rgba(41,49,66,0.3)]">
               <ArticleShare

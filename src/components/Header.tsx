@@ -37,25 +37,25 @@ function Header({ scrolled = false }: { scrolled?: boolean }) {
     <>
       <header
         style={scrolledStyle}
-        className={`hidden animate-appear h-[110px] sm:flex items-center shadow-md transition-colors duration-300 ${
+        className={`hidden animate-appear h-[84px] sm:flex items-center shadow-md transition-colors duration-300 ${
           scrolled ? "" : "bg-[#fff]"
         }`}
       >
         <div className="ml-[16%]">
-          <HeaderLogo height={72} width={72} />
+          <HeaderLogo height={56} width={56} />
         </div>
         <div className="flex justify-end flex-1 pr-[13%]">
-          <SocialLinks circleClass="h-12 w-12 text-xl" />
+          <SocialLinks circleClass="h-10 w-10 text-lg" />
         </div>
       </header>
       <header
         style={scrolledStyleMobile}
-        className={`flex items-center justify-between px-10 shadow-md h-11 sm:hidden py-11 transition-colors duration-300 ${
+        className={`flex items-center justify-between px-10 shadow-md h-[68px] sm:hidden transition-colors duration-300 ${
           scrolled && !isOpen ? "" : "bg-[#fffffe]"
         }`}
       >
         <div className="flex items-center justify-between w-full pl-8 animate-appear sm:hidden">
-          <HeaderLogo height={48} width={48} />
+          <HeaderLogo height={40} width={40} />
           {!isOpen ? (
             <GiHamburgerMenu
               color="#2f9e4d"
