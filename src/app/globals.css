@@ -725,3 +725,19 @@ body {
       inset 0 -3px 6px -3px rgba(41, 49, 66, 0.16);
   }
 }
+
+/* InfoModal entrance (წესები და პირობები / კონფიდენციალურობის პოლიტიკა):
+   backdrop fades in, card rises and settles. */
+@keyframes modal-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes modal-pop {
+  from { opacity: 0; transform: translateY(24px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-fade { animation: modal-fade 0.25s ease-out both; }
+.modal-pop { animation: modal-pop 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .modal-fade, .modal-pop { animation: none; }
+}

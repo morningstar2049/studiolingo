@@ -42,6 +42,29 @@ export const courses: Course[] = [
     </svg>`,
   },
   {
+    slug: "/courses/group-onsite",
+    title: "ჯგუფური ინგლისური ადგილზე",
+    chips: ["ადგილზე", "ჯგუფური"],
+    desc: "ცოცხალი გაკვეთილები ჩვენს სივრცეში — ენერგიული გარემო, მოტივირებული ჯგუფი და თვეში ერთხელ პრაქტიკა ბრიტანელ მასწავლებელთან (native speaker).",
+    accent: "#eaa41e",
+    accentLight: "#f7b73c",
+    accentText: "#b9790a",
+    art: `<svg viewBox="0 0 320 184" width="100%" height="100%" role="img" aria-label="ჯგუფური გაკვეთილი ადგილზე">
+      <circle cx="160" cy="86" r="80" fill="#fff" opacity=".1"/>
+      <ellipse cx="160" cy="158" rx="74" ry="8" fill="#b9790a" opacity=".2"/>
+      <rect x="86" y="34" width="148" height="86" rx="10" fill="#fff"/>
+      <rect x="102" y="86" width="12" height="22" rx="3" fill="#f4b23f"/>
+      <rect x="120" y="74" width="12" height="34" rx="3" fill="#eaa41e"/>
+      <rect x="138" y="62" width="12" height="46" rx="3" fill="#f4b23f"/>
+      <path d="M100 66l18-10 16 8 22-20" fill="none" stroke="#eaa41e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M186 52l3 6 6.6.9-4.8 4.6 1.1 6.6-5.9-3.1-5.9 3.1 1.1-6.6-4.8-4.6 6.6-.9z" fill="#eaa41e"/>
+      <rect x="156" y="120" width="8" height="14" fill="#fff"/>
+      <g fill="#fff"><circle cx="108" cy="150" r="11"/><circle cx="160" cy="152" r="11"/><circle cx="212" cy="150" r="11"/></g>
+      <g fill="#f7c877"><path d="M96 170a12 12 0 0 1 24 0z"/><path d="M148 172a12 12 0 0 1 24 0z"/><path d="M200 170a12 12 0 0 1 24 0z"/></g>
+      <g><path d="M250 42l17 7-17 7-17-7z" fill="#fff"/><path d="M240 51v8c0 4 20 4 20 0v-8" fill="none" stroke="#fff" stroke-width="2.6"/><rect x="266" y="49" width="2.6" height="11" fill="#fff"/></g>
+    </svg>`,
+  },
+  {
     slug: "/courses/individual-online",
     title: "ინდივიდუალური ინგლისური ონლაინ",
     chips: ["ონლაინ", "ინდივიდუალური"],
@@ -65,29 +88,6 @@ export const courses: Course[] = [
       <circle cx="118" cy="68" r="3.6" fill="#e2574f"/>
       <g><rect x="214" y="38" width="48" height="30" rx="9" fill="#fff"/><path d="M224 66l-3 11 13-8z" fill="#fff"/><circle cx="228" cy="53" r="3.2" fill="#2f9e4d"/><circle cx="238" cy="53" r="3.2" fill="#8fd3a5"/><circle cx="248" cy="53" r="3.2" fill="#cfebd7"/></g>
       <g><circle cx="72" cy="110" r="15" fill="#fff"/><path d="M65 110l5 5 9-10" fill="none" stroke="#2f9e4d" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></g>
-    </svg>`,
-  },
-  {
-    slug: "/courses/group-onsite",
-    title: "ჯგუფური ინგლისური ადგილზე",
-    chips: ["ადგილზე", "ჯგუფური"],
-    desc: "ცოცხალი გაკვეთილები ჩვენს სივრცეში — ენერგიული გარემო, მოტივირებული ჯგუფი და თვეში ერთხელ პრაქტიკა ბრიტანელ მასწავლებელთან (native speaker).",
-    accent: "#eaa41e",
-    accentLight: "#f7b73c",
-    accentText: "#b9790a",
-    art: `<svg viewBox="0 0 320 184" width="100%" height="100%" role="img" aria-label="ჯგუფური გაკვეთილი ადგილზე">
-      <circle cx="160" cy="86" r="80" fill="#fff" opacity=".1"/>
-      <ellipse cx="160" cy="158" rx="74" ry="8" fill="#b9790a" opacity=".2"/>
-      <rect x="86" y="34" width="148" height="86" rx="10" fill="#fff"/>
-      <rect x="102" y="86" width="12" height="22" rx="3" fill="#f4b23f"/>
-      <rect x="120" y="74" width="12" height="34" rx="3" fill="#eaa41e"/>
-      <rect x="138" y="62" width="12" height="46" rx="3" fill="#f4b23f"/>
-      <path d="M100 66l18-10 16 8 22-20" fill="none" stroke="#eaa41e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M186 52l3 6 6.6.9-4.8 4.6 1.1 6.6-5.9-3.1-5.9 3.1 1.1-6.6-4.8-4.6 6.6-.9z" fill="#eaa41e"/>
-      <rect x="156" y="120" width="8" height="14" fill="#fff"/>
-      <g fill="#fff"><circle cx="108" cy="150" r="11"/><circle cx="160" cy="152" r="11"/><circle cx="212" cy="150" r="11"/></g>
-      <g fill="#f7c877"><path d="M96 170a12 12 0 0 1 24 0z"/><path d="M148 172a12 12 0 0 1 24 0z"/><path d="M200 170a12 12 0 0 1 24 0z"/></g>
-      <g><path d="M250 42l17 7-17 7-17-7z" fill="#fff"/><path d="M240 51v8c0 4 20 4 20 0v-8" fill="none" stroke="#fff" stroke-width="2.6"/><rect x="266" y="49" width="2.6" height="11" fill="#fff"/></g>
     </svg>`,
   },
   {

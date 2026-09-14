@@ -243,6 +243,7 @@ export default function RegistrationForm({
               <button
                 type="button"
                 onClick={onClose}
+                style={{ fontFeatureSettings: "'case' on" }}
                 className="px-7 py-3 mt-2 text-[15px] font-bold rounded-xl text-[#fff] bg-lingo-green hover:bg-[#2b904a]"
               >
                 დახურვა

@@ -31,13 +31,13 @@ export default function InfoModal({
 
   return (
     <div
-      className="fixed inset-0 z-[120] flex items-start justify-center p-4 overflow-y-auto bg-[#0d1322cc] backdrop-blur-sm sm:items-center"
+      className="modal-fade fixed inset-0 z-[120] flex items-start justify-center p-4 overflow-y-auto bg-[#0d1322cc] backdrop-blur-sm sm:items-center"
       onClick={onClose}
     >
       <div
         style={{ fontFeatureSettings: "normal" }}
         onClick={(e) => e.stopPropagation()}
-        className="flex flex-col w-full max-w-2xl overflow-hidden bg-[#fff] rounded-[24px] max-h-[calc(100dvh-2rem)] shadow-[0_40px_80px_-24px_rgba(10,14,24,0.6)]"
+        className="modal-pop flex flex-col w-full max-w-2xl overflow-hidden bg-[#fff] rounded-[24px] max-h-[calc(100dvh-2rem)] shadow-[0_40px_80px_-24px_rgba(10,14,24,0.6)]"
       >
         <div className="flex items-center justify-between px-6 py-5 bg-[#fff] border-b border-[#eceef2] shrink-0">
           <h2
@@ -64,6 +64,7 @@ export default function InfoModal({
           <button
             type="button"
             onClick={onClose}
+            style={{ fontFeatureSettings: "'case' on" }}
             className="w-full py-3 text-[15px] font-bold rounded-xl text-[#fff] bg-lingo-green hover:bg-[#2b904a]"
           >
             დახურვა
