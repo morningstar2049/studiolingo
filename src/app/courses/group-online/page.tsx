@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 
 const groupOnlineDescription = (
   <div style={{ fontFeatureSettings: "normal" }}>
-    <CourseVideo videoId="ul1FcubGI9c" />
+    <CourseVideo videoId="mzBYooZVE88" />
     <p>
       <span className="font-bold text-lingo-green">
         ჯგუფური ინგლისურის ონლაინ კურსი

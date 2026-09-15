@@ -42,7 +42,7 @@ export const metadata: Metadata = {
 
 const groupOnsiteDescription = (
   <div style={{ fontFeatureSettings: "normal" }}>
-    <CourseVideo videoId="ul1FcubGI9c" />
+    <CourseVideo videoId="Oz94FdYMCP0" />
     <p>
       <span className="font-bold text-lingo-green">
         ჯგუფური ინგლისურის კურსი ადგილზე
