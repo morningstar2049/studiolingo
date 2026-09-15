@@ -47,14 +47,14 @@ export const team: TeamMember[] = [
     role: "ინგლისურის მასწავლებელი",
   },
   {
-    videoUrl: "",
+    videoUrl: "https://youtu.be/FfTCemp8tOY",
     src: "/team/ani.webp",
     alt: "ანი",
     name: "ანი",
     role: "ინგლისურის მასწავლებელი",
   },
   {
-    videoUrl: "",
+    videoUrl: "https://youtu.be/FS55QbwlpSw",
     src: "/team/nini-chumburidze.webp",
     alt: "ნინი",
     name: "ნინი",

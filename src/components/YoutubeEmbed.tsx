@@ -19,6 +19,8 @@ type Props = {
    * play, and leave fullscreen when the video ends. Defaults to on.
    */
   fullscreenOnPlay?: boolean;
+  /** Called with the YouTube player state (1 playing, 2 paused, 0 ended…). */
+  onStateChange?: (state: number) => void;
 };
 
 type FsElement = HTMLElement & {
@@ -38,9 +40,15 @@ export default function YoutubeEmbed({
   noCookie = false,
   className = "relative w-full overflow-hidden aspect-video",
   fullscreenOnPlay = true,
+  onStateChange,
 }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const onStateRef = useRef(onStateChange);
+  useEffect(() => {
+    onStateRef.current = onStateChange;
+  });
+  const wantsState = Boolean(onStateChange);
 
   const host = noCookie
     ? "https://www.youtube-nocookie.com"
@@ -52,14 +60,14 @@ export default function YoutubeEmbed({
   const src = `${host}/embed/${videoId}?${query}`;
 
   useEffect(() => {
-    if (!fullscreenOnPlay) return;
     const iframe = iframeRef.current;
     const wrap = wrapRef.current;
     if (!iframe || !wrap) return;
 
-    // Phones only. Desktop keeps the normal inline player.
+    // Auto-fullscreen is phones only; desktop keeps the normal inline player.
     const isPhone = window.matchMedia("(max-width: 639px)").matches;
-    if (!isPhone) return;
+    const autoFullscreen = fullscreenOnPlay && isPhone;
+    if (!autoFullscreen && !wantsState) return;
 
     // Ask the player to start streaming its state to us.
     const subscribe = () => {
@@ -112,6 +120,9 @@ export default function YoutubeEmbed({
       ) {
         state = (data.info as { playerState: number }).playerState;
       }
+      if (state === undefined) return;
+      onStateRef.current?.(state);
+      if (!autoFullscreen) return;
       if (state === 1) enterFullscreen();
       if (state === 0) exitFullscreen();
     };
@@ -124,7 +135,7 @@ export default function YoutubeEmbed({
       window.removeEventListener("message", onMessage);
       iframe.removeEventListener("load", subscribe);
     };
-  }, [fullscreenOnPlay, host, videoId]);
+  }, [fullscreenOnPlay, wantsState, host, videoId]);
 
   return (
     <div ref={wrapRef} className={className}>

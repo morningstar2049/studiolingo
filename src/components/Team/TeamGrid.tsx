@@ -1,9 +1,24 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { createPortal, flushSync } from "react-dom";
 import Image from "next/image";
 import { FaPlay } from "react-icons/fa";
-import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import YoutubeEmbed from "@/components/YoutubeEmbed";
 import { team, type TeamMember } from "./teamData";
+
+// YouTube video id from youtu.be / watch?v= / embed / shorts links; undefined
+// for other hosts (e.g. Google Drive), which keep opening in a new tab.
+const youtubeId = (url: string) =>
+  url.match(/(?:youtu\.be\/|[?&]v=|\/embed\/|\/shorts\/)([\w-]{11})/)?.[1];
+
+type FsElement = HTMLElement & {
+  webkitRequestFullscreen?: () => Promise<void> | void;
+};
+type FsDocument = Document & {
+  webkitFullscreenElement?: Element | null;
+  webkitExitFullscreen?: () => Promise<void> | void;
+};
 
 // White circular arrow matching the course carousel.
 const arrowCls =
@@ -16,7 +31,111 @@ function TeamCard({ member }: { member: TeamMember }) {
   // Touch: first tap on the card reveals it, second tap on the picture opens the
   // video. Desktop: hover reveals, click opens.
   const [revealed, setRevealed] = useState(false);
+  const [videoOpen, setVideoOpen] = useState(false);
+  const [isPhone, setIsPhone] = useState(false);
   const picRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const wentFullscreen = useRef(false);
+  // Phones often block autoplay with sound; YouTube then sits on a black
+  // screen with no play button. When that happens, reload the player without
+  // autoplay so its cover image and red play button show.
+  const [autoplayBlocked, setAutoplayBlocked] = useState(false);
+  const lastState = useRef<number | null>(null);
+  const hasPlayed = useRef(false);
+  const ytId = youtubeId(member.videoUrl);
+  // Phones: tapping the photo shows გაიცანი; tapping that opens a black
+  // full-screen player and starts the video (Android plays at once; iPhone
+  // needs a tap on play, since Apple only allows sound after a tap inside the
+  // player). Desktop: hover shows გაიცანი, click opens the pop-up player.
+  const phonePlayer = isPhone && Boolean(ytId);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    const update = () => setIsPhone(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  // Player open: Esc closes, page scroll locked, and leaving system fullscreen
+  // (back gesture, Esc) closes the player too. Closing exits fullscreen.
+  useEffect(() => {
+    if (!videoOpen) return;
+    const doc = document as FsDocument;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setVideoOpen(false);
+    const onFsChange = () => {
+      if (
+        wentFullscreen.current &&
+        !doc.fullscreenElement &&
+        !doc.webkitFullscreenElement
+      ) {
+        setVideoOpen(false);
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("fullscreenchange", onFsChange);
+    document.addEventListener("webkitfullscreenchange", onFsChange);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("fullscreenchange", onFsChange);
+      document.removeEventListener("webkitfullscreenchange", onFsChange);
+      document.body.style.overflow = "";
+      if (doc.fullscreenElement || doc.webkitFullscreenElement) {
+        const exit = doc.exitFullscreen
+          ? doc.exitFullscreen.bind(doc)
+          : doc.webkitExitFullscreen?.bind(doc);
+        Promise.resolve(exit?.()).catch(() => {});
+      }
+      wentFullscreen.current = false;
+    };
+  }, [videoOpen]);
+
+  // Autoplay watchdog (phones): reset on every open; if nothing is playing or
+  // buffering after a few seconds, fall back to the tap-to-play player.
+  useEffect(() => {
+    if (!videoOpen || !phonePlayer) return;
+    hasPlayed.current = false;
+    lastState.current = null;
+    setAutoplayBlocked(false);
+    const t = setTimeout(() => {
+      if (!hasPlayed.current && lastState.current !== 3) {
+        setAutoplayBlocked(true);
+      }
+    }, 3500);
+    return () => clearTimeout(t);
+  }, [videoOpen, phonePlayer]);
+
+  const onPhoneState = (state: number) => {
+    const prev = lastState.current;
+    lastState.current = state;
+    if (state === 1) hasPlayed.current = true;
+    // Buffering that falls back to "unstarted" means autoplay was refused.
+    if (state === -1 && prev === 3 && !hasPlayed.current) {
+      setAutoplayBlocked(true);
+    }
+    if (state === 0) setVideoOpen(false);
+  };
+
+  // Render the player synchronously so fullscreen is requested inside the tap
+  // (browsers only grant it during a user gesture). iPhone has no element
+  // fullscreen; the fixed black overlay already fills the screen there.
+  const openPhonePlayer = () => {
+    flushSync(() => setVideoOpen(true));
+    const el = overlayRef.current as FsElement | null;
+    if (!el) return;
+    const req = el.requestFullscreen
+      ? el.requestFullscreen.bind(el)
+      : el.webkitRequestFullscreen?.bind(el);
+    Promise.resolve(req?.())
+      .then(() => {
+        const doc = document as FsDocument;
+        wentFullscreen.current = Boolean(
+          doc.fullscreenElement || doc.webkitFullscreenElement,
+        );
+      })
+      .catch(() => {});
+  };
 
   const revealOnTouch = () => {
     if (!member.videoUrl) return;
@@ -83,7 +202,16 @@ function TeamCard({ member }: { member: TeamMember }) {
                 href={member.videoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // YouTube videos play in the on-page pop-up; the href stays
+                  // as a real link for crawlers and middle-click.
+                  if (ytId) {
+                    e.preventDefault();
+                    if (phonePlayer) openPhonePlayer();
+                    else setVideoOpen(true);
+                  }
+                }}
                 className={`absolute inset-0 flex items-center justify-center bg-[#0d13228c] transition-opacity duration-300 sm:group-hover:opacity-100 sm:group-hover:pointer-events-auto ${
                   revealed
                     ? "opacity-100 pointer-events-auto"
@@ -123,6 +251,49 @@ function TeamCard({ member }: { member: TeamMember }) {
           </span>
         </div>
       </div>
+
+      {videoOpen &&
+        ytId &&
+        createPortal(
+          <div
+            ref={overlayRef}
+            className={`modal-fade fixed inset-0 z-[130] flex items-center justify-center ${
+              phonePlayer
+                ? "bg-[#000]"
+                : "p-4 sm:p-10 bg-[#0a0e17ee] backdrop-blur-sm"
+            }`}
+            onClick={() => setVideoOpen(false)}
+          >
+            <button
+              type="button"
+              onClick={() => setVideoOpen(false)}
+              aria-label="დახურვა"
+              className="absolute z-10 flex items-center justify-center rounded-full top-[max(1.25rem,env(safe-area-inset-top))] right-5 w-11 h-11 text-[#fff] bg-[#ffffff1f] hover:bg-[#ffffff33]"
+            >
+              <AiOutlineClose className="text-xl" />
+            </button>
+            <div
+              className={
+                phonePlayer
+                  ? "w-[min(100vw,calc(100dvh*16/9))]"
+                  : "w-full max-w-5xl"
+              }
+              onClick={(e) => e.stopPropagation()}
+            >
+              <YoutubeEmbed
+                key={phonePlayer && autoplayBlocked ? "tap-to-play" : "autoplay"}
+                videoId={ytId}
+                params={phonePlayer && autoplayBlocked ? "" : "autoplay=1"}
+                title={`${member.name} — ${member.role}, სტუდიო ლინგო`}
+                onStateChange={phonePlayer ? onPhoneState : undefined}
+                className={`relative w-full overflow-hidden aspect-video ${
+                  phonePlayer ? "" : "shadow-2xl rounded-xl"
+                }`}
+              />
+            </div>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }
@@ -175,7 +346,7 @@ function TeamGrid() {
         className="flex w-full max-w-6xl gap-5 px-5 py-2 mx-auto overflow-x-auto snap-x snap-mandatory scroll-px-5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:justify-center sm:overflow-visible sm:snap-none sm:gap-8"
       >
         {team.map((member) => (
-          <TeamCard key={member.alt} member={member} />
+          <TeamCard key={member.src} member={member} />
         ))}
       </div>
     </div>
