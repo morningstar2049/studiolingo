@@ -106,8 +106,12 @@ const getComponents = (
     green: ({ children }) => (
       <span style={{ color: "#2f9e4d" }}>{children}</span>
     ),
+    // Retired from the Studio menu, kept so older articles keep their colour.
     navy: ({ children }) => (
       <span style={{ color: "#293142" }}>{children}</span>
+    ),
+    blue: ({ children }) => (
+      <span style={{ color: "#2a375c" }}>{children}</span>
     ),
     red: ({ children }) => <span style={{ color: "#e24b4a" }}>{children}</span>,
     link: ({ children, value }) => (
@@ -232,7 +236,7 @@ export default async function BlogPostPage({ params }: Props) {
           </Link>
           <h1
             style={{ fontFeatureSettings: "'case' on" }}
-            className="mt-3 text-xl font-bold leading-snug text-[#fff] sm:text-2xl lg:text-[26px] max-w-3xl blog-rise"
+            className="mt-3 text-xl font-bold leading-snug text-[#fff] sm:text-2xl lg:text-[26px] max-w-3xl lg:max-w-none blog-rise"
           >
             {post.title}
           </h1>

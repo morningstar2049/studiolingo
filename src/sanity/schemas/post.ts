@@ -83,9 +83,10 @@ export const post = defineType({
               { title: "Underline", value: "underline" },
               { title: "მწვანე", value: "green", icon: swatchIcon("#2f9e4d") },
               {
-                title: "მუქი ლურჯი",
-                value: "navy",
-                icon: swatchIcon("#293142"),
+                // Same navy as the article headline band.
+                title: "ლურჯი",
+                value: "blue",
+                icon: swatchIcon("#2a375c"),
               },
               { title: "წითელი", value: "red", icon: swatchIcon("#e24b4a") },
             ],
