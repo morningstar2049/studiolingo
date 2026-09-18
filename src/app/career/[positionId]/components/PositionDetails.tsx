@@ -6,30 +6,19 @@ import {
   FaCheck,
   FaPaperPlane,
   FaGift,
-  FaClock,
   FaListCheck,
   FaCircleCheck,
 } from "react-icons/fa6";
-import { positionData } from "../positionData";
 import CourseVideo from "@/components/Courses/CourseVideo";
+import type { SectionIcon, VacancyView } from "../vacancyView";
 import ApplyWithConsent from "./ApplyWithConsent";
-
-export type TPositionKey =
-  | "englishTeacher"
-  | "contentCreator"
-  | "administrator"
-  | "academyInternship";
-
-type TPositionDetailsProps = {
-  positionKey: TPositionKey;
-};
 
 const caseOn = { fontFeatureSettings: "'case' on" } as const;
 
-// YouTube video ids shown above the description on specific position pages.
-const positionVideos: Partial<Record<TPositionKey, string>> = {
-  academyInternship: "6p0IdTn5QFQ",
-  englishTeacher: "qWe4SpOVzuQ",
+const sectionIcons: Record<SectionIcon, ReactNode> = {
+  list: <FaListCheck />,
+  check: <FaCircleCheck />,
+  gift: <FaGift />,
 };
 
 // A titled block: icon chip + heading, then check-marked items.
@@ -79,8 +68,8 @@ function Section({
   );
 }
 
-function PositionDetails({ positionKey }: TPositionDetailsProps) {
-  const position = positionData[positionKey];
+function PositionDetails({ view }: { view: VacancyView }) {
+  const position = view;
 
   const ApplyButton = ({ block = false }: { block?: boolean }) => (
     <ApplyWithConsent
@@ -125,9 +114,7 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
               <span className="absolute inline-flex w-full h-full rounded-full opacity-75 animate-ping bg-lingo-green" />
               <span className="relative inline-flex w-2 h-2 rounded-full bg-lingo-green" />
             </span>
-            {positionKey === "academyInternship"
-              ? "მიღება დაწყებულია"
-              : "ვაკანსია ღიაა"}
+            {view.statusBadge}
           </span>
 
           <h1
@@ -159,11 +146,8 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
 
       {/* Body */}
       <div className="max-w-3xl px-5 mx-auto py-12 sm:py-16 flex flex-col gap-10">
-        {positionVideos[positionKey] && (
-          <CourseVideo
-            videoId={positionVideos[positionKey]!}
-            rounded="rounded-[22px]"
-          />
+        {view.videoId && (
+          <CourseVideo videoId={view.videoId} rounded="rounded-[22px]" />
         )}
 
         {position.intro && (
@@ -172,99 +156,31 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
           </p>
         )}
 
-        {position.sections ? (
-          position.sections.map((section) => (
-            <Section
-              key={section.heading}
-              icon={<FaListCheck />}
-              heading={section.heading}
-              items={section.items}
-            />
-          ))
-        ) : (
-          <>
-            {position.obligations && (
-              <Section
-                icon={<FaListCheck />}
-                heading="ძირითადი მოვალეობებია"
-                items={position.obligations}
-              />
-            )}
+        {view.sections.map((section) => (
+          <Section
+            key={section.key}
+            icon={sectionIcons[section.icon]}
+            heading={section.heading}
+            items={section.items}
+            tone={section.highlight ? "green" : "plain"}
+          />
+        ))}
 
-            {position.extraText && (
-              <p className="text-[15px] leading-relaxed text-[#5f6b74] -mt-4">
-                {position.extraText}
-              </p>
-            )}
-
-            {position.workHours && (
-              <div className="flex items-start gap-3 p-5 rounded-2xl bg-[#f4f6f9] border border-[#e7ebf0]">
-                <span className="flex items-center justify-center w-10 h-10 text-[#fff] rounded-xl shrink-0 bg-gradient-to-br from-[#3bb85e] to-[#2f9e4d]">
-                  <FaClock />
-                </span>
-                <div>
-                  <h2 style={caseOn} className="font-bold text-lingo-black">
-                    სამუშაო გრაფიკი
-                  </h2>
-                  <p className="mt-1 text-[15px] leading-relaxed text-[#3f4a52]">
-                    {position.workHours}
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {position.requirements && (
-              <Section
-                icon={<FaCircleCheck />}
-                heading="თქვენგან ვითხოვთ, რომ"
-                items={position.requirements}
-              />
-            )}
-
-            {position.offer && (
-              <Section
-                icon={<FaGift />}
-                heading="ჩვენი გუნდი გთავაზობთ"
-                items={position.offer}
-                tone="green"
-              />
-            )}
-
-            {position.salary && (
-              <div className="flex items-start gap-3 p-5 rounded-2xl bg-[#eaf6ee] border border-[#cfead8]">
-                <span className="flex items-center justify-center w-10 h-10 text-[#fff] rounded-xl shrink-0 bg-gradient-to-br from-[#3bb85e] to-[#2f9e4d]">
-                  <FaCoins />
-                </span>
-                <div className="text-[15px] leading-relaxed text-lingo-black">
-                  {position.salary}
-                </div>
-              </div>
-            )}
-
-            {positionKey === "contentCreator" && (
-              <Section
-                icon={<FaCircleCheck />}
-                heading="შერჩევა არის სამეტაპიანი"
-                items={[
-                  "შევსებული ფორმების გადარჩევა",
-                  "პრაქტიკული დავალების შესრულება",
-                  "ონლაინ გასაუბრება",
-                ]}
-              />
-            )}
-          </>
+        {view.infoBox && (
+          <div className="flex items-start gap-3 p-5 rounded-2xl bg-[#eaf6ee] border border-[#cfead8]">
+            <span className="flex items-center justify-center w-10 h-10 text-[#fff] rounded-xl shrink-0 bg-gradient-to-br from-[#3bb85e] to-[#2f9e4d]">
+              <FaCoins />
+            </span>
+            <div className="text-[15px] leading-relaxed text-lingo-black">
+              {view.infoBox}
+            </div>
+          </div>
         )}
 
-        {position.closingText ? (
-          <p className="text-[16px] leading-relaxed text-lingo-black">
-            {position.closingText}
-          </p>
-        ) : (
-          <p className="text-[16px] leading-relaxed text-lingo-black">
-            {positionKey === "contentCreator" || positionKey === "administrator"
-              ? "თუ ხარ მოტივირებული და ამ ვაკანსიით დაინტერესებული, შემოგვიერთდი ჩვენს გუნდში და გახდი ჩვენი გუნდის წარმატების ისტორიის განუყოფელი ნაწილი!"
-              : "თუ ხარ მოტივირებული მასწავლებელი და ამ ვაკანსიით დაინტერესებული, შემოგვიერთდი და გახდი ჩვენი გუნდისა და შენი მომავალი მოსწავლეების წარმატების ისტორიის განუყოფელი ნაწილი!"}
-          </p>
+        {view.closing && (
+          <div className="text-[16px] leading-relaxed text-lingo-black">
+            {view.closing}
+          </div>
         )}
 
         {/* Closing CTA card */}

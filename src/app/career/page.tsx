@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import VacanciesList from "./components/VacanciesList";
 
+// The list comes from Sanity; refresh at most once a minute.
+export const revalidate = 60;
+
 const title = "ვაკანსიები — შემოგვიერთდი გუნდში | Studio Lingo";
 const description =
   "Studio Lingo ეძებს ინგლისურის მასწავლებლებსა და გუნდის ახალ წევრებს. იხილე მიმდინარე ვაკანსიები და შემოგვიერთდი.";

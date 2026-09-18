@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/schema";
 import { getPosts } from "@/sanity/queries";
-import { vacancies } from "@/app/career/components/VacanciesList";
+import { getOpenVacancyList } from "@/app/career/components/VacanciesList";
 
 export const revalidate = 60;
 
@@ -15,6 +15,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   } catch {
     posts = [];
   }
+
+  const vacancies = await getOpenVacancyList();
 
   return [
     { url: `${SITE_URL}/`, changeFrequency: "weekly", priority: 1 },

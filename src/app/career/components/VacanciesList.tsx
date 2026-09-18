@@ -1,6 +1,9 @@
 import VacanciesListItem, { VacanciesListItemProps } from "./VacanciesListItem";
+import { getVacancyCards } from "@/sanity/queries";
 
-export const vacancies: VacanciesListItemProps[] = [
+// Fallback list, used only while Sanity has no vacancies (or can't be reached).
+// Vacancies are normally managed in the Studio (type "ვაკანსია").
+export const legacyVacancies: VacanciesListItemProps[] = [
   {
     position: "ინგლისურის მასწავლებელი",
     location: "თბილისი",
@@ -48,7 +51,25 @@ export const vacancies: VacanciesListItemProps[] = [
   // },
 ];
 
-function VacanciesList() {
+// Open vacancies for the list and the sitemap: from Sanity once it manages
+// any vacancy (even if none are open), otherwise the hard-coded fallback.
+export async function getOpenVacancyList(): Promise<VacanciesListItemProps[]> {
+  const sanity = await getVacancyCards();
+  if (!sanity || sanity.total === 0) return legacyVacancies;
+  return sanity.cards.map((c) => ({
+    position: c.title,
+    route: c.slug,
+    location: c.location,
+    time: c.time,
+    salary: c.listSalary ?? "",
+    timeLabel: c.timeLabel ?? undefined,
+    salaryLabel: c.salaryLabel ?? undefined,
+    badge: c.listBadge ?? undefined,
+  }));
+}
+
+async function VacanciesList() {
+  const vacancies = await getOpenVacancyList();
   return (
     <div className="flex flex-col items-center justify-around gap-10">
       {!!vacancies.length ? (
