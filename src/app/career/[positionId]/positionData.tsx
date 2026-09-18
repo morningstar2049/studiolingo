@@ -109,7 +109,7 @@ export const positionData: TPositionData = {
     time: "(არა)სრული",
     salaryType: "კონკურენტული",
     googleFormLink: "https://forms.gle/KnmQ195et7hcYwYa8",
-    metaImageUrl: "https://i.ibb.co/DPsqp1VW/English-teacher.png",
+    metaImageUrl: "https://www.studiolingo.ge/og/english-teacher.png",
   },
   contentCreator: {
     title: "კონტენტ კრეატორი",
