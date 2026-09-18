@@ -172,3 +172,153 @@ export async function getVacancySlugs(): Promise<string[]> {
     return [];
   }
 }
+
+// ── Team (/team) ───────────────────────────────────────────────────────────
+
+export type SanityTeamMember = {
+  _id: string;
+  name: string;
+  role: string;
+  videoUrl?: string;
+  photo: { _type: "image"; asset: { _ref: string } };
+};
+
+/**
+ * Visible team members plus how many exist in Sanity at all (see
+ * getVacancyCards for why). Returns null if the dataset can't be reached.
+ */
+export async function getTeamMembers(): Promise<{
+  members: SanityTeamMember[];
+  total: number;
+} | null> {
+  try {
+    return await client.fetch(
+      `{
+        "members": *[_type == "teamMember" && visible != false && defined(photo.asset)]
+          | order(order asc, _createdAt asc) { _id, name, role, videoUrl, photo },
+        "total": count(*[_type == "teamMember"])
+      }`,
+      {},
+      { next: { revalidate: 60 } },
+    );
+  } catch {
+    return null;
+  }
+}
+
+// ── Courses (/courses, homepage carousel, /courses/<slug>) ─────────────────
+
+export type CourseCardFields = {
+  slug: string;
+  title: string;
+  chips?: string[];
+  cardText?: string;
+  order?: number;
+};
+
+/** One item of a course page's text: a paragraph/subhead block or an embed. */
+export type CourseBodyItem = {
+  _type: "block" | "youtube" | "coursePhoto" | "toolsSection" | "homeworkSection";
+  _key: string;
+  style?: string;
+  url?: string;
+  alt?: string;
+  asset?: { _ref: string };
+  [key: string]: unknown;
+};
+
+export type CourseDoc = CourseCardFields & {
+  heroSubtitle?: string;
+  body?: CourseBodyItem[];
+};
+
+export async function getCourseCards(): Promise<{
+  cards: CourseCardFields[];
+  total: number;
+} | null> {
+  try {
+    return await client.fetch(
+      `{
+        "cards": *[_type == "course" && defined(slug)]
+          | order(order asc) { slug, title, chips, cardText, order },
+        "total": count(*[_type == "course"])
+      }`,
+      {},
+      { next: { revalidate: 60 } },
+    );
+  } catch {
+    return null;
+  }
+}
+
+export async function getCourse(slug: string): Promise<CourseDoc | null> {
+  try {
+    return await client.fetch(
+      `*[_type == "course" && slug == $slug][0] {
+        slug, title, chips, cardText, order, heroSubtitle, body
+      }`,
+      { slug },
+      { next: { revalidate: 60 } },
+    );
+  } catch {
+    return null;
+  }
+}
+
+export type CourseFaq = {
+  _id: string;
+  question: string;
+  answer: PortableTextBlock[];
+};
+
+export async function getCourseFaqs(): Promise<{
+  faqs: CourseFaq[];
+  total: number;
+} | null> {
+  try {
+    return await client.fetch(
+      `{
+        "faqs": *[_type == "courseFaq" && defined(question)]
+          | order(order asc, _createdAt asc) { _id, question, answer },
+        "total": count(*[_type == "courseFaq"])
+      }`,
+      {},
+      { next: { revalidate: 60 } },
+    );
+  } catch {
+    return null;
+  }
+}
+
+// ── Materials (/materials) ─────────────────────────────────────────────────
+
+export type MaterialItem = {
+  _id: string;
+  label: string;
+  sub?: string;
+  category: "vocabulary" | "grammar";
+  accent?: string;
+  href?: string;
+};
+
+export async function getMaterials(): Promise<{
+  items: MaterialItem[];
+  total: number;
+} | null> {
+  try {
+    return await client.fetch(
+      `{
+        "items": *[_type == "material" && defined(label)]
+          | order(order asc, _createdAt asc) {
+            _id, label, sub, category, accent,
+            "href": coalesce(file.asset->url, link)
+          },
+        "total": count(*[_type == "material"])
+      }`,
+      {},
+      { next: { revalidate: 60 } },
+    );
+  } catch {
+    return null;
+  }
+}

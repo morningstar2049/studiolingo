@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 
 import Team from "@/components/Team/Team";
 
+// Team members are edited in Sanity; refresh at most once a minute.
+export const revalidate = 60;
+
 const title = "ჩვენი გუნდი — ინგლისურის მასწავლებლები | Studio Lingo";
 const description =
   "„სტუდიო ლინგო“ — ყველაზე პოპულარული ინგლისური ენის სკოლა თბილისსა და ონლაინ. გაიცანი ჩვენი გუნდი, მეთოდოლოგია და ღირებულებები, სადაც შეცდომა სწავლის ბუნებრივი ნაწილია.";

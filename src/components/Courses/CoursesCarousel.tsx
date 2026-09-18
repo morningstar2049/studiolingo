@@ -9,13 +9,13 @@ import {
   AiOutlineLeft,
   AiOutlineRight,
 } from "react-icons/ai";
-import { courses } from "./coursesData";
+import type { Course } from "./coursesData";
 import CourseCard from "./CourseCard";
 
 const arrowCls =
   "shrink-0 flex items-center justify-center rounded-full bg-[#fff] text-lingo-green text-lg shadow-[0_12px_26px_-10px_rgba(41,49,66,0.4)] border border-[#e7ecea] transition-colors hover:bg-lingo-green hover:text-[#fff]";
 
-export default function CoursesCarousel() {
+export default function CoursesCarousel({ courses }: { courses: Course[] }) {
   const sliderRef = useRef<Slider>(null);
   const prev = () => sliderRef.current?.slickPrev();
   const next = () => sliderRef.current?.slickNext();

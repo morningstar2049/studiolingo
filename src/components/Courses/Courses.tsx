@@ -1,8 +1,10 @@
 import CoursesCarousel from "./CoursesCarousel";
+import { getCourseCardList } from "./courseCards";
 import CoursesIntro from "./CoursesIntro";
 import RevealOnScroll from "@/components/RevealOnScroll";
 
-function Courses() {
+async function Courses() {
+  const courses = await getCourseCardList();
   return (
     <div className="flex flex-col gap-48">
       <div
@@ -18,7 +20,7 @@ function Courses() {
             </h2>
           </RevealOnScroll>
 
-          <CoursesCarousel />
+          <CoursesCarousel courses={courses} />
         </div>
       </div>
     </div>

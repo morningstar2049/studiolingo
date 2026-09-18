@@ -2,9 +2,9 @@
 import { useState } from "react";
 import PdfWrapper from "./PdfWrapper";
 
-type TCategory = "vocabulary" | "grammar";
+export type TCategory = "vocabulary" | "grammar";
 
-type TPdf = {
+export type TPdf = {
   label: string;
   sub?: string;
   accent: string;
@@ -12,7 +12,8 @@ type TPdf = {
   category: TCategory;
 };
 
-const pdfs: TPdf[] = [
+// Fallback list — materials are edited in Sanity ("მასალა").
+export const fallbackPdfs: TPdf[] = [
   {
     label: "Elementary −",
     sub: "სიტყვები",
@@ -102,7 +103,7 @@ const tabs: { id: TCategory; label: string }[] = [
   { id: "grammar", label: "გრამატიკა" },
 ];
 
-function MaterialsBrowser() {
+function MaterialsBrowser({ pdfs }: { pdfs: TPdf[] }) {
   const [active, setActive] = useState<TCategory>("vocabulary");
   const items = pdfs.filter((p) => p.category === active);
 

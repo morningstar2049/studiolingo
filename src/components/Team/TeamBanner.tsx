@@ -1,7 +1,25 @@
 import RevealOnScroll from "../RevealOnScroll";
 import TeamGrid from "./TeamGrid";
+import { team as fallbackTeam, type TeamMember } from "./teamData";
+import { getTeamMembers } from "@/sanity/queries";
+import { urlForImage } from "@/sanity/client";
 
-function TeamBanner() {
+// Team members come from Sanity ("გუნდის წევრი"); the hard-coded list is used
+// only while Sanity has none or can't be reached.
+async function loadTeam(): Promise<TeamMember[]> {
+  const res = await getTeamMembers();
+  if (!res || res.total === 0) return fallbackTeam;
+  return res.members.map((m) => ({
+    name: m.name,
+    alt: m.name,
+    role: m.role,
+    videoUrl: m.videoUrl ?? "",
+    src: urlForImage(m.photo).width(640).url(),
+  }));
+}
+
+async function TeamBanner() {
+  const members = await loadTeam();
   return (
     <div className="flex flex-col mt-3 sm:mt-12">
       <div className="max-w-6xl px-5 mx-auto mb-12 text-center">
@@ -22,7 +40,7 @@ function TeamBanner() {
           </p>
         </RevealOnScroll>
       </div>
-      <TeamGrid />
+      <TeamGrid members={members} />
     </div>
   );
 }

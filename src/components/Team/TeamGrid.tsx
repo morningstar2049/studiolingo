@@ -5,7 +5,7 @@ import Image from "next/image";
 import { FaPlay } from "react-icons/fa";
 import { AiOutlineClose, AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import YoutubeEmbed from "@/components/YoutubeEmbed";
-import { team, type TeamMember } from "./teamData";
+import type { TeamMember } from "./teamData";
 
 // YouTube video id from youtu.be / watch?v= / embed / shorts links; undefined
 // for other hosts (e.g. Google Drive), which keep opening in a new tab.
@@ -301,7 +301,7 @@ function TeamCard({ member }: { member: TeamMember }) {
 // Premium team lineup: each member is a background-free cutout placed on a deep
 // brand-blue stage. Faces are pre-normalised and head-centred (see
 // public/team/*.webp) so the row reads as a consistent set.
-function TeamGrid() {
+function TeamGrid({ members }: { members: TeamMember[] }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const scrollByCard = (dir: 1 | -1) => {
     const el = scrollRef.current;
@@ -345,7 +345,7 @@ function TeamGrid() {
         ref={scrollRef}
         className="flex w-full max-w-6xl gap-5 px-5 py-2 mx-auto overflow-x-auto snap-x snap-mandatory scroll-px-5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:justify-center sm:overflow-visible sm:snap-none sm:gap-8"
       >
-        {team.map((member) => (
+        {members.map((member) => (
           <TeamCard key={member.src} member={member} />
         ))}
       </div>

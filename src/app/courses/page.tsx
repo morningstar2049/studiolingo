@@ -3,6 +3,9 @@ import CoursesHeader from "@/components/Courses/CoursesHeader";
 import CourseTypeCards from "@/components/Courses/CourseTypeCards";
 import CoursesAbout from "@/components/Courses/CoursesAbout";
 
+// Course cards and questions are edited in Sanity; refresh at most once a minute.
+export const revalidate = 60;
+
 const title = "ინგლისურის კურსები — ინდივიდუალური და ჯგუფური | Studio Lingo";
 const description =
   "ინგლისურის კურსები თბილისში და ონლაინ — ინდივიდუალური და ჯგუფური, სასაუბრო და ზოგადი, ზრდასრულებსა და მოზარდებისთვის. A1-C1 დონეები, მცირე ჯგუფები, პრაქტიკა ბრიტანელ მასწავლებელთან.";

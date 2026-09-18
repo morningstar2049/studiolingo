@@ -7,7 +7,9 @@ import CourseReviews from "@/components/Courses/CourseReviews";
 import CourseSubhead from "@/components/Courses/CourseSubhead";
 import CourseToolsSection from "@/components/Courses/CourseToolsSection";
 import CourseHomeworkSection from "@/components/Courses/CourseHomeworkSection";
+import CourseBody from "@/components/Courses/CourseBody";
 import { courses } from "@/components/Courses/coursesData";
+import { getCourse } from "@/sanity/queries";
 import { courseSchema, breadcrumbSchema } from "@/lib/schema";
 
 const course = courses.find((c) => c.slug === "/courses/teenagers")!;
@@ -102,7 +104,22 @@ const teenagersDescription = (
   </div>
 );
 
-export default function TeenagersPage() {
+// Page text is edited in Sanity ("კურსი"); refresh at most once a minute.
+export const revalidate = 60;
+
+const fallbackSubtitle =
+  "სპეციალურად მოზარდებზე მორგებული კურსი — არაფორმალურ, მეგობრულ და ფერად გარემოში, ასაკის შესაბამისი მეთოდებით.";
+
+export default async function TeenagersPage() {
+  const doc = await getCourse("teenagers");
+  const courseTitle = doc?.title || course.title;
+  const subtitle = doc?.heroSubtitle || fallbackSubtitle;
+  const courseDescription = doc?.body?.length ? (
+    <CourseBody body={doc.body} />
+  ) : (
+    teenagersDescription
+  );
+
   return (
     <>
       <script
@@ -110,7 +127,7 @@ export default function TeenagersPage() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify([
             courseSchema({
-              name: course.title,
+              name: courseTitle,
               description,
               path: "/courses/teenagers",
               mode: "online",
@@ -118,14 +135,14 @@ export default function TeenagersPage() {
             breadcrumbSchema([
               { name: "მთავარი", path: "/" },
               { name: "კურსები", path: "/courses" },
-              { name: course.title, path: "/courses/teenagers" },
+              { name: courseTitle, path: "/courses/teenagers" },
             ]),
           ]),
         }}
       />
       <CourseHero
-        title={course.title}
-        subtitle="სპეციალურად მოზარდებზე მორგებული კურსი — არაფორმალურ, მეგობრულ და ფერად გარემოში, ასაკის შესაბამისი მეთოდებით."
+        title={courseTitle}
+        subtitle={subtitle}
         art={course.art}
         from="#2a375c"
         to="#181f33"
@@ -136,7 +153,7 @@ export default function TeenagersPage() {
           <CourseDetails
             courseTitle="englishForTeens"
             gatedCalculator
-            description={teenagersDescription}
+            description={courseDescription}
           />
         </div>
         <CourseReviews

@@ -7,7 +7,9 @@ import CourseReviews from "@/components/Courses/CourseReviews";
 import CourseSubhead from "@/components/Courses/CourseSubhead";
 import CourseToolsSection from "@/components/Courses/CourseToolsSection";
 import CourseHomeworkSection from "@/components/Courses/CourseHomeworkSection";
+import CourseBody from "@/components/Courses/CourseBody";
 import { courses } from "@/components/Courses/coursesData";
+import { getCourse } from "@/sanity/queries";
 import { courseSchema, breadcrumbSchema } from "@/lib/schema";
 
 const course = courses.find(
@@ -94,7 +96,22 @@ const individualOnlineDescription = (
   </div>
 );
 
-export default function IndividualOnlinePage() {
+// Page text is edited in Sanity ("კურსი"); refresh at most once a minute.
+export const revalidate = 60;
+
+const fallbackSubtitle =
+  "პერსონალური გაკვეთილები, შენს ტემპსა და მიზნებზე მორგებული — მთელი ყურადღება მხოლოდ შენზეა.";
+
+export default async function IndividualOnlinePage() {
+  const doc = await getCourse("individual-online");
+  const courseTitle = doc?.title || course.title;
+  const subtitle = doc?.heroSubtitle || fallbackSubtitle;
+  const courseDescription = doc?.body?.length ? (
+    <CourseBody body={doc.body} />
+  ) : (
+    individualOnlineDescription
+  );
+
   return (
     <>
       <script
@@ -102,7 +119,7 @@ export default function IndividualOnlinePage() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify([
             courseSchema({
-              name: course.title,
+              name: courseTitle,
               description,
               path: "/courses/individual-online",
               mode: "online",
@@ -110,14 +127,14 @@ export default function IndividualOnlinePage() {
             breadcrumbSchema([
               { name: "მთავარი", path: "/" },
               { name: "კურსები", path: "/courses" },
-              { name: course.title, path: "/courses/individual-online" },
+              { name: courseTitle, path: "/courses/individual-online" },
             ]),
           ]),
         }}
       />
       <CourseHero
-        title={course.title}
-        subtitle="პერსონალური გაკვეთილები, შენს ტემპსა და მიზნებზე მორგებული — მთელი ყურადღება მხოლოდ შენზეა."
+        title={courseTitle}
+        subtitle={subtitle}
         art={course.art}
         from="#2a375c"
         to="#181f33"
@@ -128,7 +145,7 @@ export default function IndividualOnlinePage() {
           <CourseDetails
             courseTitle="english"
             gatedCalculator
-            description={individualOnlineDescription}
+            description={courseDescription}
           />
         </div>
         <CourseReviews

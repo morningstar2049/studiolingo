@@ -1,11 +1,15 @@
 import Link from "next/link";
+import { PortableText } from "@portabletext/react";
 import FaqAccordion from "@/components/FAQ/FaqAccordion";
+import { courseInline } from "./courseRichText";
+import { getCourseFaqs } from "@/sanity/queries";
 
 const caseOn = { fontFeatureSettings: "'case' on" } as const;
 const bodyStyle = { fontFeatureSettings: "normal" as const };
 const link = "font-bold underline text-lingo-green hover:text-[#1f7d3a]";
 
-// Course questions in the same accordion design as the /faq page.
+// Course questions in the same accordion design as the /faq page. Edited in
+// Sanity ("კურსის კითხვა"); this list is the fallback.
 const courseFaqs = [
   {
     q: "რატომ ავირჩიო სტუდიო ლინგოს ინგლისურის კურსი?",
@@ -134,7 +138,28 @@ const courseFaqs = [
 ];
 
 // Supporting content + FAQ-style questions below the course cards on /courses.
-export default function CoursesAbout() {
+export default async function CoursesAbout() {
+  const res = await getCourseFaqs();
+  const items =
+    res && res.total > 0
+      ? res.faqs.map((f) => ({
+          q: f.question,
+          a: (
+            <>
+              {f.answer.map((block, i) => (
+                <p
+                  key={block._key ?? i}
+                  style={bodyStyle}
+                  className={`leading-relaxed ${i > 0 ? "mt-3" : ""}`}
+                >
+                  <PortableText value={block} components={courseInline} />
+                </p>
+              ))}
+            </>
+          ),
+        }))
+      : courseFaqs;
+
   return (
     <section className="max-w-3xl mx-auto mt-16 sm:mt-20">
       <h2
@@ -144,7 +169,7 @@ export default function CoursesAbout() {
         თუ გიჭირს <span className="text-lingo-green">კურსის არჩევა</span>
       </h2>
 
-      <FaqAccordion items={courseFaqs} />
+      <FaqAccordion items={items} />
     </section>
   );
 }
