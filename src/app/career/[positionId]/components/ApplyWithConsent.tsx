@@ -6,16 +6,18 @@ import { AiOutlineClose } from "react-icons/ai";
 import { FaPaperPlane } from "react-icons/fa6";
 
 const caseOn = { fontFeatureSettings: "'case' on" } as const;
-const CONSENT_TEXT = "ყურადღებით გავეცანი ვაკანსიის აღწერილობას და ვეთანხმები";
+const DEFAULT_CONSENT = "ყურადღებით გავეცანი ვაკანსიის აღწერილობას და ვეთანხმები";
 
 // "განაცხადის გაგზავნა": opens a small confirmation window first. The Google
 // Form only opens once the candidate ticks that they read the vacancy.
 export default function ApplyWithConsent({
   href,
   block = false,
+  consentText = DEFAULT_CONSENT,
 }: {
   href: string;
   block?: boolean;
+  consentText?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [agreed, setAgreed] = useState(false);
@@ -101,7 +103,7 @@ export default function ApplyWithConsent({
                   className="w-5 h-5 mt-0.5 shrink-0 cursor-pointer accent-[#2f9e4d]"
                 />
                 <span className="text-[15px] leading-relaxed text-[#3f4a52]">
-                  {CONSENT_TEXT}
+                  {consentText}
                 </span>
               </label>
 

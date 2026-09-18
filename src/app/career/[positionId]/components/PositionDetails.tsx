@@ -83,7 +83,11 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
   const position = positionData[positionKey];
 
   const ApplyButton = ({ block = false }: { block?: boolean }) => (
-    <ApplyWithConsent href={position.googleFormLink} block={block} />
+    <ApplyWithConsent
+      href={position.googleFormLink}
+      block={block}
+      consentText={position.consentText}
+    />
   );
 
   const metaItems = [

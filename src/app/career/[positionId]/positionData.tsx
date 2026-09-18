@@ -2,6 +2,8 @@ type TPosition = {
   title: string;
   /** Hide the apply button in the headline band (bottom button stays). */
   hideHeroApply?: boolean;
+  /** Tick-box text in the apply confirmation window (default: vacancy). */
+  consentText?: string;
   intro?: string;
   obligations?: (string | JSX.Element)[];
   extraText?: string;
@@ -210,6 +212,7 @@ export const positionData: TPositionData = {
   academyInternship: {
     title: "მასწავლებელთა აკადემია",
     hideHeroApply: true,
+    consentText: "ყურადღებით გავეცანი პროგრამის აღწერილობას და ვეთანხმები",
     location: "თბილისი",
     time: "3 თვე",
     salaryType: "უფასო კურსი",
