@@ -155,9 +155,11 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
             ))}
           </div>
 
-          <div className="mt-6">
-            <ApplyButton />
-          </div>
+          {!position.hideHeroApply && (
+            <div className="mt-6">
+              <ApplyButton />
+            </div>
+          )}
         </div>
       </div>
 
