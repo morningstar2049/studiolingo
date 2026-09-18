@@ -235,9 +235,9 @@ function PositionDetails({ positionKey }: TPositionDetailsProps) {
                 <span className="flex items-center justify-center w-10 h-10 text-[#fff] rounded-xl shrink-0 bg-gradient-to-br from-[#3bb85e] to-[#2f9e4d]">
                   <FaCoins />
                 </span>
-                <p className="text-[15px] leading-relaxed text-lingo-black">
+                <div className="text-[15px] leading-relaxed text-lingo-black">
                   {position.salary}
-                </p>
+                </div>
               </div>
             )}
 
