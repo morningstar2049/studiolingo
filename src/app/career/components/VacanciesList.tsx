@@ -4,7 +4,7 @@ export const vacancies: VacanciesListItemProps[] = [
   {
     position: "ინგლისურის მასწავლებელი",
     location: "თბილისი",
-    time: "სრული",
+    time: "(არა)სრული",
     salary: "მაღალი",
     route: "englishTeacher",
   },
