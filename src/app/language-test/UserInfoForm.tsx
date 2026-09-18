@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { FaLanguage } from "react-icons/fa";
+import type { LevelTestTexts } from "./levelTestTexts";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 22 },
@@ -15,10 +16,13 @@ const fadeUp = {
 const isValidEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 
 export default function UserInfoForm({
+  texts,
   onSubmit,
 }: {
+  texts: LevelTestTexts;
   onSubmit: (info: TUserInfo) => void;
 }) {
+  const t = texts.form;
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -67,7 +71,7 @@ export default function UserInfoForm({
         className="inline-flex items-center gap-2 rounded-full bg-lingo-green/10 px-4 py-1.5 text-xs font-bold text-lingo-green sm:text-sm"
       >
         <FaLanguage className="text-base" />
-        ინგლისურის დონის ტესტი
+        {texts.badge}
       </motion.span>
 
       <motion.h1
@@ -75,7 +79,7 @@ export default function UserInfoForm({
         custom={1}
         className="mt-5 text-2xl font-bold sm:text-3xl text-lingo-black"
       >
-        ინგლისურის დონის ტესტი
+        {t.headline}
       </motion.h1>
 
       <motion.p
@@ -83,7 +87,7 @@ export default function UserInfoForm({
         custom={2}
         className="mt-3 text-sm sm:text-base text-[#6b7280]"
       >
-        შეავსე მონაცემები, რომ დავიწყოთ და შედეგი მიიღო
+        {t.subtitle}
       </motion.p>
 
       <motion.div variants={fadeUp} custom={3} className="mt-7 space-y-3.5">
@@ -91,8 +95,8 @@ export default function UserInfoForm({
           <input
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            placeholder="სახელი"
-            aria-label="სახელი"
+            placeholder={t.firstName}
+            aria-label={t.firstName}
             className={inputClass("firstName")}
           />
           {errors.firstName && (
@@ -103,8 +107,8 @@ export default function UserInfoForm({
           <input
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
-            placeholder="გვარი"
-            aria-label="გვარი"
+            placeholder={t.lastName}
+            aria-label={t.lastName}
             className={inputClass("lastName")}
           />
           {errors.lastName && (
@@ -116,8 +120,8 @@ export default function UserInfoForm({
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="ელ. ფოსტა"
-            aria-label="ელ. ფოსტა"
+            placeholder={t.email}
+            aria-label={t.email}
             className={inputClass("email")}
           />
           {errors.email && (
@@ -130,8 +134,8 @@ export default function UserInfoForm({
             inputMode="numeric"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            placeholder="ტელეფონის ნომერი"
-            aria-label="ტელეფონის ნომერი"
+            placeholder={t.phone}
+            aria-label={t.phone}
             className={inputClass("phone")}
           />
           {errors.phone && (
@@ -143,8 +147,8 @@ export default function UserInfoForm({
             inputMode="numeric"
             value={age}
             onChange={(e) => setAge(e.target.value)}
-            placeholder="ასაკი"
-            aria-label="ასაკი"
+            placeholder={t.age}
+            aria-label={t.age}
             className={inputClass("age")}
           />
           {errors.age && (
@@ -159,7 +163,7 @@ export default function UserInfoForm({
             className="mt-0.5 w-5 h-5 accent-lingo-green shrink-0"
           />
           <span className="text-[13px] leading-relaxed text-[#4b5563]">
-            დამიკავშირდით და გამაცანით კურსები
+            {t.contactMe}
           </span>
         </label>
       </motion.div>
@@ -170,7 +174,7 @@ export default function UserInfoForm({
         type="submit"
         className="w-full py-3.5 mt-7 font-bold text-[#fff] transition-all rounded-xl bg-lingo-green shadow-lg shadow-lingo-green/25 hover:bg-[#2f904d] hover:scale-[1.02]"
       >
-        გაგრძელება →
+        {t.submitButton}
       </motion.button>
 
       <motion.p
@@ -178,8 +182,7 @@ export default function UserInfoForm({
         custom={5}
         className="mt-4 text-[11px] leading-relaxed text-[#9aa2ad]"
       >
-        მონაცემები გამოიყენება მხოლოდ ტესტის შედეგის გამოსაგზავნად და თქვენთან
-        დასაკავშირებლად.
+        {t.privacyNote}
       </motion.p>
     </motion.form>
   );

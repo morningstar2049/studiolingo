@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import questions from "./questions.json";
+import { loadLevelTest } from "@/lib/levelTest";
 
-export function GET() {
-  return NextResponse.json(questions);
+export async function GET() {
+  const { questions } = await loadLevelTest();
+  return NextResponse.json({ levelTest: questions });
 }
 
 // Scoring rule: each level has 7 multiple-choice questions (1 point each) and
@@ -18,12 +19,12 @@ const LISTENING_MISTAKES_LIMIT = 3;
 const normalize = (s: string) =>
   s.trim().toLowerCase().replace(/[’‘`]/g, "'").replace(/\s+/g, " ");
 
-type SubmittedAnswer = { id: number; given: string };
+type SubmittedAnswer = { id: number | string; given: string };
 
 export async function POST(request: Request) {
   const body = (await request.json()) as { answers?: SubmittedAnswer[] };
   const submitted = Array.isArray(body?.answers) ? body.answers : [];
-  const bank = questions.levelTest as TQuestion[];
+  const bank = (await loadLevelTest()).questions;
 
   // Re-grade every answer against the question bank (the client's verdict is
   // only used for the live stop rule).

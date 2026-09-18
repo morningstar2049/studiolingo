@@ -6,7 +6,12 @@ import { apiVersion, dataset, projectId } from "./src/sanity/env";
 import { schemaTypes } from "./src/sanity/schemas";
 
 // Documents that exist exactly once (their id equals their type).
-const SINGLETONS = ["homeHero", "achievementsBar"];
+const SINGLETONS = ["homeHero", "achievementsBar", "levelTestTexts"];
+const SINGLETON_TITLES: Record<string, string> = {
+  homeHero: "მთავარი ბანერი",
+  achievementsBar: "მიღწევების ზოლი",
+  levelTestTexts: "დონის ტესტი — ტექსტები",
+};
 
 export default defineConfig({
   name: "studiolingo",
@@ -37,9 +42,7 @@ export default defineConfig({
           .items([
             ...SINGLETONS.map((type) =>
               S.listItem()
-                .title(
-                  type === "homeHero" ? "მთავარი ბანერი" : "მიღწევების ზოლი",
-                )
+                .title(SINGLETON_TITLES[type])
                 .id(type)
                 .child(S.document().schemaType(type).documentId(type)),
             ),

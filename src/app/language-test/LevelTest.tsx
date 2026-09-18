@@ -5,6 +5,7 @@ import { CircularProgress } from "@mui/material";
 import { FaCheckCircle, FaRegClock, FaVolumeUp } from "react-icons/fa";
 import AudioPlayer from "./AudioPlayer";
 import { scrollToTop } from "./scrollToTop";
+import type { LevelTestTexts } from "./levelTestTexts";
 
 const questionTimer = 40;
 const audioQuestionTimer = 60;
@@ -60,26 +61,13 @@ const nextLevelLabel: Record<TLevel, string> = {
   C1: "Advanced (C1)",
 };
 
-// Per-level detail text shown under "დეტალურად ამ დონის შესახებ" on the result
-// screen. B1+ (Intermediate +) and B2 (Upp. Intermediate) share the same copy.
-const intermediatePlus =
-  "ეს არის საშუალოზე მაღალი დონე. მშვენიერი შედეგია! შენ ალბათ თავისუფლად და სპონტანურადაც კი ესაუბრები უცხოელებს და მარტივად იგებ რთულ ტექსტებს. ჩანს, გრამატიკაშიც სერიოზულად ფლობ ბევრ საკითხს და შეიძლება საუბარშიც კი იცოდე გრამატიკის სწორად გამოყენება. შემოგვიერთდი „სტუდიო ლინგოში“ და გახადე შენი ინგლისური კიდევ უფრო სრულყოფილი და პროფესიული.";
-
-const levelDescriptions: Partial<Record<TLevel, string>> = {
-  "სრულიად დამწყები":
-    "ეს არის სრულიად დამწყები დონე. ინგლისურთან შეხება ალბათ ჯერ თითქმის არ გქონია და მხოლოდ რამდენიმე სიტყვა იცი. ყველაფერი წინ არის! სრულიად ნულიდანაც გასწავლით ყველაფერს, თუ საჭირო იქნება. შემოგვიერთდი „სტუდიო ლინგოში“ და ერთად დავიწყოთ ეს საინტერესო თავგადასავალი.",
-  A1: "ეს არის საბაზისო დონე. როგორც ჩანს, შენ უკვე შეგიძლია მარტივი, ყოველდღიური ფრაზების რაღაც დონეზე გაგება. გრამატიკის საწყისებიც იცი და შეიძლება საკუთარი თავის საბაზისო დონეზე წარდგენასაც ახერხებ. ახლა კი შეგიძლია ეს ბაზაც განიმტკიცო. დაიწყე სწავლა „სტუდიო ლინგოში“ და თამამად გადადგი ნაბიჯი შემდეგი დონისკენ.",
-  A2: "ეს არის საბაზისოზე მაღალი დონე. ჩანს, შენ კარგად გესმის ყოველდღიური ფრაზები და იცი სიტყვები ნაცნობ თემებზე. გრამატიკაშიც გქონია გარკვეული ტიპის ცოდნა. კომუნიკაციაც შეიძლება არ გიჭირდეს თუ ამ ცოდნის სწორად გამოყენება იცი. „სტუდიო ლინგოში“ სიამოვნებით დაგეხმარებით, რომ შენი ინგლისური კიდევ უფრო გამართული და დამაჯერებელი გახდეს.",
-  B1: "ეს არის საშუალო საკომუნიკაციო დონე. ყოჩაღ! შენ უკვე კარგად იცი ყოველდღიური ფრაზები და მოგზაურობის დროსაც ალბათ იყენებ კიდეც. გრამატიკაშიც გაქვს გარკვეული ცოდნა. თუ გინდა ენა უფრო პროფესიულ დონეზე აიყვანო და საუბარშიც უფრო თავდაჯერებული იყო, „სტუდიო ლინგო“ დაგეხმარება, დაძლიო ბარიერები და ისაუბრო სრულიად თავისუფლად!",
-  "B1+": intermediatePlus,
-  B2: intermediatePlus,
-  C1: "შენ აჩვენე მაღალი დონე. ფაქტობრივად, ინგლისურად ფიქრობ! მარტივად იჭერ ქვეტექსტებს და აზრს წამიერად, ბუნებრივად გამოხატავ. შენ უკვე ინგლისურის მაღალ დონეზე მცოდნე ხარ! თუ ენობრივი პრაქტიკის შენარჩუნება ან უნარების კიდევ უფრო დახვეწა გსურს, „სტუდიო ლინგოს“ კარი შენთვის ყოველთვის ღიაა.",
-};
-
 function LevelTest({
   levelTest,
+  texts,
   userInfo,
-}: TLevelTest & { userInfo: TUserInfo }) {
+}: TLevelTest & { texts: LevelTestTexts; userInfo: TUserInfo }) {
+  const tq = texts.question;
+  const tr = texts.result;
   const [value, setValue] = useState("");
   const [questionNumber, setQuestionNumber] = useState(0);
   const currentQuestion = levelTest[questionNumber] || {};
@@ -248,7 +236,7 @@ function LevelTest({
             <FaCheckCircle />
           </div>
           <p className="mt-4 text-sm text-[#6b7280]">
-            თქვენი ინგლისურის მიახლოებითი დონეა
+            {tr.intro}
           </p>
           <div className="mt-1.5 text-[30px] sm:text-[38px] font-bold leading-tight text-lingo-black">
             {levelsMap[testResult as TLevel]}
@@ -292,30 +280,30 @@ function LevelTest({
             onClick={() => setShowDetails((v) => !v)}
             className="w-full py-3 mt-7 font-bold transition-all rounded-xl text-lingo-green ring-1 ring-lingo-green hover:bg-lingo-green/5"
           >
-            {showDetails ? "დამალვა" : "დეტალურად ამ დონის შესახებ"}
+            {showDetails ? tr.hideButton : tr.detailsButton}
           </button>
           {showDetails && (
             <div
               style={{ fontFeatureSettings: "normal" }}
               className="p-4 mt-3 text-sm leading-relaxed text-left rounded-xl text-[#4b5563] bg-[#f6f8f7] whitespace-pre-line"
             >
-              {levelDescriptions[testResult as TLevel] ||
+              {tr.descriptions[testResult as TLevel] ||
                 "ამ დონის დეტალური აღწერა მალე დაემატება."}
             </div>
           )}
 
           <a
-            href="/courses"
+            href={tr.courseLink}
             className="block py-3.5 mt-4 font-bold text-[#fff] transition-all rounded-xl bg-lingo-green shadow-lg shadow-lingo-green/25 hover:bg-[#2f904d] hover:scale-[1.02]"
           >
-            დაიწყე შესაბამისი კურსი →
+            {tr.courseButton}
           </a>
           <button
             type="button"
             onClick={() => window.location.reload()}
             className="mt-4 text-[13px] text-[#8a929d] transition-colors hover:text-lingo-green"
           >
-            ↻ ტესტის თავიდან გავლა
+            {tr.retakeButton}
           </button>
         </motion.div>
       ) : (
@@ -332,7 +320,7 @@ function LevelTest({
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold tracking-[0.08em] uppercase text-[#8a929d]">
-                  კითხვა {questionNumber + 1}
+                  {tq.label} {questionNumber + 1}
                 </span>
                 <span
                   className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-bold ${
@@ -389,13 +377,13 @@ function LevelTest({
               ) : (
                 <div className="mt-6">
                   <p className="flex items-center justify-center gap-2 mb-4 text-sm font-bold text-lingo-green">
-                    <FaVolumeUp /> მოისმინე და ჩაწერე პასუხი
+                    <FaVolumeUp /> {tq.listeningHint}
                   </p>
-                  <AudioPlayer src={`/audios/${currentQuestion.audioFile}`} />
+                  <AudioPlayer src={currentQuestion.audioFile} />
                   <input
                     value={value}
                     onChange={handleChange}
-                    placeholder="შენი პასუხი…"
+                    placeholder={tq.answerPlaceholder}
                     className="w-full px-4 py-3 mt-4 text-base border border-[#eceef2] rounded-xl outline-none transition-colors appearance-none focus:border-lingo-green"
                   />
                 </div>
@@ -407,8 +395,8 @@ function LevelTest({
                 className="w-full py-3.5 mt-6 font-bold text-[#fff] transition-all rounded-xl appearance-none bg-lingo-green shadow-lg shadow-lingo-green/25 hover:bg-[#2f904d] hover:scale-[1.01] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 {questionNumber === levelTest.length - 1
-                  ? "დასრულება"
-                  : "შემდეგი →"}
+                  ? tq.finishButton
+                  : tq.nextButton}
               </button>
             </motion.div>
           </AnimatePresence>

@@ -399,3 +399,49 @@ export async function getHomeBanner(): Promise<{
     return null;
   }
 }
+
+// ── Level test (/language-test) ───────────────────────────────────────────
+
+export type LevelTestQuestionDoc = {
+  _id: string;
+  level: TLevel;
+  kind: "choice" | "listening";
+  question: string;
+  choices?: string[];
+  correctOption?: number;
+  audioUrl?: string;
+  listeningAnswer?: string;
+};
+
+// Single document "levelTestTexts": all fields optional strings, plus the
+// intro tiles and the email rows.
+export type LevelTestTextsDoc = Partial<Record<string, string>> & {
+  introStats?: { value?: string; label?: string }[];
+  emailRecipients?: string[];
+  emailRows?: { field?: string; label?: string }[];
+  emailIncludeAnswers?: boolean;
+};
+
+export async function getLevelTest(): Promise<{
+  questions: LevelTestQuestionDoc[];
+  total: number;
+  texts: LevelTestTextsDoc | null;
+} | null> {
+  try {
+    return await client.fetch(
+      `{
+        "questions": *[_type == "levelTestQuestion" && defined(level) && defined(question)]
+          | order(order asc, _createdAt asc) {
+            _id, level, kind, question, choices, correctOption,
+            "audioUrl": audio.asset->url, listeningAnswer
+          },
+        "total": count(*[_type == "levelTestQuestion"]),
+        "texts": *[_id == "levelTestTexts"][0]
+      }`,
+      {},
+      { next: { revalidate: 60 } },
+    );
+  } catch {
+    return null;
+  }
+}

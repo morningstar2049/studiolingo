@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { buildLevelTestEmail, type LevelTestResultPayload } from "./email";
+import { loadLevelTestEmail } from "@/lib/levelTest";
 
 export const runtime = "nodejs";
 
+// Default recipient; Sanity ("დონის ტესტი — ტექსტები" → email) can override it.
 const RECIPIENT = process.env.LEVEL_TEST_RECIPIENT || "info@studiolingo.ge";
 // Resend's shared sender works with no domain verification; override with a
 // verified-domain address via RESEND_FROM once the domain is set up.
@@ -31,11 +33,12 @@ export async function POST(request: Request) {
     }
 
     const resend = new Resend(apiKey);
-    const { subject, text, html } = buildLevelTestEmail(payload);
+    const { config, recipients } = await loadLevelTestEmail();
+    const { subject, text, html } = buildLevelTestEmail(payload, config);
 
     const { error } = await resend.emails.send({
       from: FROM,
-      to: RECIPIENT,
+      to: recipients ?? RECIPIENT,
       replyTo: email,
       subject,
       text,

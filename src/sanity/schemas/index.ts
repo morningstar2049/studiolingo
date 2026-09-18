@@ -10,6 +10,8 @@ import { material } from "./material";
 import { coursePrice } from "./coursePrice";
 import { homeHero } from "./homeHero";
 import { achievementsBar } from "./achievementsBar";
+import { levelTestQuestion } from "./levelTestQuestion";
+import { levelTestTexts } from "./levelTestTexts";
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   post,
@@ -22,4 +24,6 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   coursePrice,
   homeHero,
   achievementsBar,
+  levelTestQuestion,
+  levelTestTexts,
 ];

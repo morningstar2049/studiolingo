@@ -2,7 +2,7 @@ type TLevel = "სრულიად დამწყები" | "A1" | "A2" | "
 
 type TQuestion =
   | {
-      id: number;
+      id: number | string;
       question: string;
       choices: string[];
       answer: number;
@@ -10,13 +10,16 @@ type TQuestion =
       audioFile: null;
     }
   | {
-      id: number;
+      id: number | string;
       question: string;
       choices: null;
       answer: string;
       level: TLevel;
+      // Full URL / path of the audio (Sanity CDN or /audios/…).
       audioFile: string;
     };
+
+type TLevelDescriptions = Record<TLevel, string>;
 
 type TLevelTest = {
   levelTest: TQuestion[];
@@ -59,7 +62,7 @@ type TUserInfo = {
 // One answered question, sent with the result email so the school sees
 // exactly what the visitor answered.
 type TAnsweredQuestion = {
-  id: number;
+  id: number | string;
   level: TLevel;
   question: string;
   given: string;

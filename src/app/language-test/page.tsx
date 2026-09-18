@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import LevelTestWrapper from "./LevelTestWrapper";
+import { loadLevelTest } from "@/lib/levelTest";
+
+export const revalidate = 60;
 
 const title = "ინგლისურის დონის ონლაინ ტესტი (A1–C1) | Studio Lingo";
 const description =
@@ -19,18 +22,14 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  if (!apiUrl) {
-    return null;
-  }
-  const response = await fetch(`${apiUrl}/api/lang-test`, {
-    cache: "no-cache",
-  });
-  const { levelTest }: TLevelTest = await response.json();
+  const { questions, texts } = await loadLevelTest();
 
   return (
     <div className="p-4 flex items-center justify-center h-auto sm:h-[calc(100vh-84px)]">
-      <LevelTestWrapper levelTest={levelTest} />
+      <LevelTestWrapper
+        levelTest={questions}
+        texts={texts}
+      />
     </div>
   );
 }

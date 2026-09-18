@@ -13,6 +13,7 @@ import {
 import LevelTest from "./LevelTest";
 import UserInfoForm from "./UserInfoForm";
 import { scrollToTop } from "./scrollToTop";
+import type { LevelTestTexts } from "./levelTestTexts";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 22 },
@@ -23,14 +24,17 @@ const fadeUp = {
   }),
 };
 
-const stats = [
-  { Icon: FaRegListAlt, value: "48", label: "კითხვა" },
-  { Icon: FaRegClock, value: "40–60 წამი", label: "კითხვაზე" },
-  { Icon: FaBrain, value: "მორგებული", label: "ჩერდება დონეზე" },
-  { Icon: FaChartBar, value: "A1–C1", label: "დონეები" },
-];
+// Tile icons by position; the tile texts come from the texts.
+const statIcons = [FaRegListAlt, FaRegClock, FaBrain, FaChartBar];
 
-export default function LevelTestWrapper({ levelTest }: TLevelTest) {
+export default function LevelTestWrapper({
+  levelTest,
+  texts,
+}: TLevelTest & { texts: LevelTestTexts }) {
+  const stats = texts.intro.stats.slice(0, 4).map((stat, i) => ({
+    ...stat,
+    Icon: statIcons[i],
+  }));
   const [userInfo, setUserInfo] = useState<TUserInfo | null>(null);
   const [startTest, setStartTest] = useState(false);
 
@@ -38,6 +42,7 @@ export default function LevelTestWrapper({ levelTest }: TLevelTest) {
   if (!userInfo)
     return (
       <UserInfoForm
+        texts={texts}
         onSubmit={(info) => {
           scrollToTop();
           setUserInfo(info);
@@ -46,7 +51,14 @@ export default function LevelTestWrapper({ levelTest }: TLevelTest) {
     );
 
   // Step 3: the test itself, once they've read the intro card.
-  if (startTest) return <LevelTest levelTest={levelTest} userInfo={userInfo} />;
+  if (startTest)
+    return (
+      <LevelTest
+        levelTest={levelTest}
+        texts={texts}
+        userInfo={userInfo}
+      />
+    );
 
   return (
     <motion.div
@@ -61,7 +73,7 @@ export default function LevelTestWrapper({ levelTest }: TLevelTest) {
         className="inline-flex items-center gap-2 rounded-full bg-lingo-green/10 px-4 py-1.5 text-xs font-bold text-lingo-green sm:text-sm"
       >
         <FaLanguage className="text-base" />
-        ინგლისურის დონის ტესტი
+        {texts.badge}
       </motion.span>
 
       <motion.h1
@@ -69,7 +81,7 @@ export default function LevelTestWrapper({ levelTest }: TLevelTest) {
         custom={1}
         className="mt-5 text-2xl font-bold sm:text-3xl text-lingo-black"
       >
-        შეამოწმე შენი ინგლისურის დონე
+        {texts.intro.headline}
       </motion.h1>
 
       <motion.p
@@ -77,7 +89,7 @@ export default function LevelTestWrapper({ levelTest }: TLevelTest) {
         custom={2}
         className="mt-3 text-sm sm:text-base text-[#6b7280]"
       >
-        მორგებული ტესტი — A1-დან C1-მდე, რამდენიმე წუთში
+        {texts.intro.subtitle}
       </motion.p>
 
       <motion.div
@@ -85,8 +97,8 @@ export default function LevelTestWrapper({ levelTest }: TLevelTest) {
         custom={3}
         className="grid grid-cols-2 gap-3 mt-7 sm:grid-cols-4"
       >
-        {stats.map(({ Icon, value, label }) => (
-          <div key={label} className="px-2 py-3 bg-[#f6f8f7] rounded-xl sm:px-1.5">
+        {stats.map(({ Icon, value, label }, i) => (
+          <div key={i} className="px-2 py-3 bg-[#f6f8f7] rounded-xl sm:px-1.5">
             <Icon className="mx-auto text-xl text-lingo-green" />
             <div className="mt-1.5 text-[17px] leading-tight font-bold text-lingo-black sm:text-[15px] sm:tracking-tight">
               {value}
@@ -103,11 +115,11 @@ export default function LevelTestWrapper({ levelTest }: TLevelTest) {
       >
         <span className="flex items-center justify-center gap-2 text-center sm:flex-col">
           <FaVolumeUp className="text-base shrink-0 text-lingo-green" />
-          მოსასმენი კითხვები — ჩაწერე პასუხი
+          {texts.intro.listeningNote}
         </span>
         <span className="flex items-center justify-center gap-2 text-center sm:flex-col">
           <FaMicrophone className="text-base shrink-0 text-lingo-green" />
-          ზეპირი შემოწმება მეტი სიზუსტისთვის
+          {texts.intro.speakingNote}
         </span>
       </motion.div>
 
@@ -120,7 +132,7 @@ export default function LevelTestWrapper({ levelTest }: TLevelTest) {
         }}
         className="w-full py-3.5 mt-8 font-bold text-[#fff] transition-all rounded-xl bg-lingo-green shadow-lg shadow-lingo-green/25 hover:bg-[#2f904d] hover:scale-[1.02] sm:w-auto sm:px-12"
       >
-        ტესტის დაწყება
+        {texts.intro.startButton}
       </motion.button>
     </motion.div>
   );
