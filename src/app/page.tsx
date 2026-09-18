@@ -8,6 +8,9 @@ const description =
   "სტუდიო ლინგო — #1 ინგლისურის სკოლა თბილისში (საბურთალო) და ონლაინ. ინგლისურის კურსები ზრდასრულებსა და მოზარდებისთვის, A1-C1 დონეები, მცირე ჯგუფები, პრაქტიკა ბრიტანელ მასწავლებელთან.";
 const image = "/og-logo.png";
 
+// Banner, courses, reviews and blog come from Sanity; refresh once a minute.
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title,
   description,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { HERO_SLIDES, useHeroSlide } from "./HeroContext";
+import { useHero } from "./HeroContext";
 
 const headline = "text-[#fff] font-bold text-lg sm:text-4xl tracking-[2px]";
 // Captions: one line each, so a step smaller until the xl breakpoint.
@@ -16,7 +16,7 @@ export default function BannerHeadline() {
   // After the one-off reveal animation, the H1 fades with the slides instead
   // (an animation's fill would otherwise pin its opacity at 1).
   const [revealed, setRevealed] = useState(false);
-  const active = useHeroSlide();
+  const { active, slides, headline: h1 } = useHero();
 
   useEffect(() => {
     const el = ref.current;
@@ -54,16 +54,16 @@ export default function BannerHeadline() {
                 : "opacity-0"
           }`}
         >
-          ინგლისურის სკოლა თბილისში და ონლაინ — ზრდასრულებისა და მოზარდებისთვის
+          {h1}
         </h1>
       </div>
-      {HERO_SLIDES.map((slide, i) =>
+      {slides.map((slide, i) =>
         slide.caption ? (
           <p
-            key={slide.src}
+            key={`${slide.src}-${i}`}
             aria-hidden={active !== i}
-            // Slides 2 and 3 stay on one line; slide 4 wraps like the H1.
-            className={`${i === 3 ? `${headline} mx-auto max-w-4xl` : `${caption} whitespace-nowrap`} absolute inset-x-0 top-0 hidden sm:block transition-opacity duration-700 ${
+            // Short captions stay on one line; long ones wrap like the H1.
+            className={`${slide.captionWrap ? `${headline} mx-auto max-w-4xl` : `${caption} whitespace-nowrap`} absolute inset-x-0 top-0 hidden sm:block transition-opacity duration-700 ${
               active === i ? "opacity-100" : "opacity-0"
             }`}
           >

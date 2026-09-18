@@ -10,6 +10,8 @@ import CourseHomeworkSection from "@/components/Courses/CourseHomeworkSection";
 import CourseBody from "@/components/Courses/CourseBody";
 import { courses } from "@/components/Courses/coursesData";
 import { getCourse } from "@/sanity/queries";
+import { PricesProvider } from "@/components/Prices/PricesProvider";
+import { loadPriceTable } from "@/lib/loadPrices";
 import { courseSchema, breadcrumbSchema } from "@/lib/schema";
 
 const course = courses.find((c) => c.slug === "/courses/group-onsite")!;
@@ -68,14 +70,14 @@ const groupOnsiteDescription = (
     <p>
       კურსი მოიცავს ინგლისური ენის{" "}
       <span className="font-bold text-lingo-green">ყველა კომპონენტს</span>:
-      Speaking (საუბარი), Listening (მოსმენა), Reading (კითხვა), Writing
-      (წერა), Grammar (გრამატიკა) და Vocabulary (ლექსიკა).{" "}
+      Speaking (საუბარი), Listening (მოსმენა), Reading (კითხვა), Writing (წერა),
+      Grammar (გრამატიკა) და Vocabulary (ლექსიკა).{" "}
       <span className="font-bold text-lingo-green">განსაკუთრებული აქცენტი</span>{" "}
       საუბარზეა — საკლასო კურსზე ყველაზე მეტ დროს სწორედ ცოცხალ საუბარსა და
       კომუნიკაციას ვუთმობთ, რადგან თავისუფალი მეტყველება ენის ცოდნის მთავარი
       მაჩვენებელია. ამიტომ, ზოგად ინგლისურთან ერთად დიდ ყურადღებას ვუთმობთ{" "}
-      <span className="font-bold text-lingo-green">სასაუბრო ინგლისურს</span> — რომ
-      თავისუფლად და თავდაჯერებულად ალაპარაკდე. სწავლება სრულად მორგებულია
+      <span className="font-bold text-lingo-green">სასაუბრო ინგლისურს</span> —
+      რომ თავისუფლად და თავდაჯერებულად ალაპარაკდე. სწავლება სრულად მორგებულია
       ქართველ მოსწავლეზე და ითვალისწინებს დონეებს A1-დან C1-მდე.
     </p>
     <CourseSubhead>პრაქტიკა ბრიტანელ მასწავლებელთან</CourseSubhead>
@@ -86,22 +88,21 @@ const groupOnsiteDescription = (
       </span>
       . ეს არ არის უბრალო „საუბრის საათი“ — გაკვეთილს მკაფიო წესი აქვს:
       ბრიტანელი მასწავლებელი აჯამებს ყველა იმ მასალას, რომელიც ჯგუფმა ქართველ
-      მასწავლებელთან ერთად გაიარა, და საუბარში სწორედ იმ ლექსიკასა და
-      გრამატიკას იყენებს. ქართველი მასწავლებელი კი აკვირდება და ამოწმებს,
-      რამდენად შეუძლიათ მოსწავლეებს ნასწავლის პრაქტიკაში გამოყენება ნამდვილ
-      ინგლისელთან საუბრისას. ასე სტუდიო ლინგოს საკლასო კურსზე ინგლისურის
-      სწავლა თბილისში ბუნებრივ ინგლისურ მეტყველებასთან რეგულარულ შეხებას
-      ნიშნავს — და თავდაჯერებულობას, რომ ნასწავლი რეალურ სიტუაციაშიც
-      გამოგადგება.
+      მასწავლებელთან ერთად გაიარა, და საუბარში სწორედ იმ ლექსიკასა და გრამატიკას
+      იყენებს. ქართველი მასწავლებელი კი აკვირდება და ამოწმებს, რამდენად შეუძლიათ
+      მოსწავლეებს ნასწავლის პრაქტიკაში გამოყენება ნამდვილ ინგლისელთან საუბრისას.
+      ასე სტუდიო ლინგოს საკლასო კურსზე ინგლისურის სწავლა თბილისში ბუნებრივ
+      ინგლისურ მეტყველებასთან რეგულარულ შეხებას ნიშნავს — და თავდაჯერებულობას,
+      რომ ნასწავლი რეალურ სიტუაციაშიც გამოგადგება.
     </p>
     <CourseSubhead>მასალები</CourseSubhead>
     <p>
       კურსის{" "}
       <span className="font-bold text-lingo-green">ძირითადი მასალები</span>{" "}
-      შედგება Cambridge-ის უახლესი სახელმძღვანელოებისგან, ორიგინალური ციფრული სასწავლო
-      პლატფორმისა და დიდი ვიდეოთეკისგან — ამერიკული და ბრიტანული აქცენტის
-      აუდიოებით. საკლასო აქტივობები, სამაგიდო თამაშები და ჯგუფური პროექტები
-      სწავლას სახალისოსა და ეფექტურს ხდის.
+      შედგება Cambridge-ის უახლესი სახელმძღვანელოებისგან, ორიგინალური ციფრული
+      სასწავლო პლატფორმისა და დიდი ვიდეოთეკისგან — ამერიკული და ბრიტანული
+      აქცენტის აუდიოებით. საკლასო აქტივობები, სამაგიდო თამაშები და ჯგუფური
+      პროექტები სწავლას სახალისოსა და ეფექტურს ხდის.
     </p>
     <CoursePhoto />
     <CourseToolsSection />
@@ -121,7 +122,10 @@ const fallbackSubtitle =
   "ცოცხალი გაკვეთილები ჩვენს სივრცეში — ენერგიული გარემო, მოტივირებული ჯგუფი და თვეში ერთხელ პრაქტიკა ბრიტანელ მასწავლებელთან.";
 
 export default async function GroupOnsitePage() {
-  const doc = await getCourse("group-onsite");
+  const [doc, prices] = await Promise.all([
+    getCourse("group-onsite"),
+    loadPriceTable(),
+  ]);
   const courseTitle = doc?.title || course.title;
   const subtitle = doc?.heroSubtitle || fallbackSubtitle;
   const courseDescription = doc?.body?.length ? (
@@ -160,14 +164,20 @@ export default async function GroupOnsitePage() {
 
       <main className="pt-10 pb-20">
         <div className="max-w-3xl px-5 mx-auto">
-          <CourseDetails
-            courseTitle="english"
-            gatedCalculator
-            description={courseDescription}
-          />
+          <PricesProvider prices={prices}>
+            <CourseDetails
+              courseTitle="english"
+              gatedCalculator
+              description={courseDescription}
+            />
+          </PricesProvider>
         </div>
         <CourseReviews
-          authors={["დეა ფირცხალაიშვილი", "ირაკლი ნანობაშვილი", "ნინო ჯახველაძე"]}
+          authors={[
+            "დეა ფირცხალაიშვილი",
+            "ირაკლი ნანობაშვილი",
+            "ნინო ჯახველაძე",
+          ]}
         />
       </main>
     </>

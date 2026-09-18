@@ -10,6 +10,8 @@ import CourseHomeworkSection from "@/components/Courses/CourseHomeworkSection";
 import CourseBody from "@/components/Courses/CourseBody";
 import { courses } from "@/components/Courses/coursesData";
 import { getCourse } from "@/sanity/queries";
+import { PricesProvider } from "@/components/Prices/PricesProvider";
+import { loadPriceTable } from "@/lib/loadPrices";
 import { courseSchema, breadcrumbSchema } from "@/lib/schema";
 
 const course = courses.find((c) => c.slug === "/courses/teenagers")!;
@@ -47,9 +49,8 @@ const teenagersDescription = (
         ინგლისური მოზარდებისთვის
       </span>{" "}
       სპეციალურად შექმნილი ინდივიდუალური ონლაინ კურსია 9-დან 16 წლამდე ასაკის
-      მოსწავლეებისთვის.
-      სწავლა მიმდინარეობს არაფორმალურ, მეგობრულ და ფერად გარემოში, ასაკის
-      შესაბამისი მეთოდებითა და თემებით.
+      მოსწავლეებისთვის. სწავლა მიმდინარეობს არაფორმალურ, მეგობრულ და ფერად
+      გარემოში, ასაკის შესაბამისი მეთოდებითა და თემებით.
     </p>
     <br />
     <p>
@@ -64,14 +65,14 @@ const teenagersDescription = (
     <p>
       კურსი მოიცავს ინგლისური ენის{" "}
       <span className="font-bold text-lingo-green">ყველა კომპონენტს</span>:
-      Speaking (საუბარი), Listening (მოსმენა), Reading (კითხვა), Writing
-      (წერა), Grammar (გრამატიკა) და Vocabulary (ლექსიკა).{" "}
+      Speaking (საუბარი), Listening (მოსმენა), Reading (კითხვა), Writing (წერა),
+      Grammar (გრამატიკა) და Vocabulary (ლექსიკა).{" "}
       <span className="font-bold text-lingo-green">განსაკუთრებული აქცენტი</span>{" "}
       საუბარზეა — მოზარდი გაკვეთილზევე ბევრს საუბრობს, რადგან თავისუფალი
       მეტყველება ენის ცოდნის მთავარი მაჩვენებელია. ზოგად ინგლისურთან ერთად დიდი
       ყურადღება ეთმობა{" "}
-      <span className="font-bold text-lingo-green">სასაუბრო ინგლისურს</span>, რომ
-      მოზარდი თავისუფლად ალაპარაკდეს. მასწავლებელი მუდმივად კონცენტრირდება
+      <span className="font-bold text-lingo-green">სასაუბრო ინგლისურს</span>,
+      რომ მოზარდი თავისუფლად ალაპარაკდეს. მასწავლებელი მუდმივად კონცენტრირდება
       გრამატიკულ წესებზე, მდიდარი ლექსიკის შესწავლასა და მათ სწორ გამოყენებაზე.
     </p>
     <CourseSubhead>მასალები</CourseSubhead>
@@ -98,8 +99,8 @@ const teenagersDescription = (
     <br />
     <p>
       სწავლის პერიოდი ინდივიდუალურია, ვასწავლით დონეებს სრულიად ნულიდან მოწინავე
-      დონემდე (A1-B2). შემოგვიერთდი „სტუდიო ლინგოს“ კურსზე მოზარდებისთვის და მიეცი
-      შენს შვილს ინგლისურის სწავლის საუკეთესო გამოცდილება.
+      დონემდე (A1-B2). შემოგვიერთდი „სტუდიო ლინგოს“ კურსზე მოზარდებისთვის და
+      მიეცი შენს შვილს ინგლისურის სწავლის საუკეთესო გამოცდილება.
     </p>
   </div>
 );
@@ -111,7 +112,10 @@ const fallbackSubtitle =
   "სპეციალურად მოზარდებზე მორგებული კურსი — არაფორმალურ, მეგობრულ და ფერად გარემოში, ასაკის შესაბამისი მეთოდებით.";
 
 export default async function TeenagersPage() {
-  const doc = await getCourse("teenagers");
+  const [doc, prices] = await Promise.all([
+    getCourse("teenagers"),
+    loadPriceTable(),
+  ]);
   const courseTitle = doc?.title || course.title;
   const subtitle = doc?.heroSubtitle || fallbackSubtitle;
   const courseDescription = doc?.body?.length ? (
@@ -150,11 +154,13 @@ export default async function TeenagersPage() {
 
       <main className="pt-10 pb-20">
         <div className="max-w-3xl px-5 mx-auto">
-          <CourseDetails
-            courseTitle="englishForTeens"
-            gatedCalculator
-            description={courseDescription}
-          />
+          <PricesProvider prices={prices}>
+            <CourseDetails
+              courseTitle="englishForTeens"
+              gatedCalculator
+              description={courseDescription}
+            />
+          </PricesProvider>
         </div>
         <CourseReviews
           authors={["ირაკლი ნანობაშვილი", "გუჯა გუჯაბიძე", "ბაჩო შენგელია"]}

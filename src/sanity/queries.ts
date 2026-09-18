@@ -322,3 +322,80 @@ export async function getMaterials(): Promise<{
     return null;
   }
 }
+
+// ── Course prices (calculator + /buy-course) ──────────────────────────────
+
+export type CoursePrice = {
+  course: string;
+  format: string;
+  lessonType: string;
+  frequency: string;
+  price: number;
+};
+
+export async function getCoursePrices(): Promise<{
+  prices: CoursePrice[];
+  total: number;
+} | null> {
+  try {
+    return await client.fetch(
+      `{
+        "prices": *[_type == "coursePrice" && defined(price) && defined(course)
+          && defined(format) && defined(lessonType) && defined(frequency)]
+          { course, format, lessonType, frequency, price },
+        "total": count(*[_type == "coursePrice"])
+      }`,
+      {},
+      { next: { revalidate: 60 } },
+    );
+  } catch {
+    return null;
+  }
+}
+
+// ── Homepage banner + achievements bar (single documents) ─────────────────
+
+type SanityImage = {
+  asset?: { _ref: string };
+  hotspot?: { x: number; y: number };
+};
+
+export type HomeHeroDoc = {
+  headline?: string;
+  slides?: {
+    _key: string;
+    image?: SanityImage;
+    alt?: string;
+    caption?: string;
+    captionWrap?: boolean;
+  }[];
+  mobileImage?: SanityImage;
+  mobileAlt?: string;
+};
+
+export type AchievementStatDoc = {
+  _key: string;
+  value: number;
+  suffix?: string;
+  group?: boolean;
+  label: string;
+  shortLabel?: string;
+};
+
+export async function getHomeBanner(): Promise<{
+  hero: HomeHeroDoc | null;
+  stats: AchievementStatDoc[] | null;
+} | null> {
+  try {
+    return await client.fetch(
+      `{
+        "hero": *[_id == "homeHero"][0] { headline, slides, mobileImage, mobileAlt },
+        "stats": *[_id == "achievementsBar"][0].stats
+      }`,
+      {},
+      { next: { revalidate: 60 } },
+    );
+  } catch {
+    return null;
+  }
+}

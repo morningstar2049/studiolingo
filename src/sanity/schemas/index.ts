@@ -7,6 +7,9 @@ import { teamMember } from "./teamMember";
 import { course } from "./course";
 import { courseFaq } from "./courseFaq";
 import { material } from "./material";
+import { coursePrice } from "./coursePrice";
+import { homeHero } from "./homeHero";
+import { achievementsBar } from "./achievementsBar";
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   post,
@@ -16,4 +19,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   course,
   courseFaq,
   material,
+  coursePrice,
+  homeHero,
+  achievementsBar,
 ];

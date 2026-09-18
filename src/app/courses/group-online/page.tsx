@@ -10,6 +10,8 @@ import CourseHomeworkSection from "@/components/Courses/CourseHomeworkSection";
 import CourseBody from "@/components/Courses/CourseBody";
 import { courses } from "@/components/Courses/coursesData";
 import { getCourse } from "@/sanity/queries";
+import { PricesProvider } from "@/components/Prices/PricesProvider";
+import { loadPriceTable } from "@/lib/loadPrices";
 import { courseSchema, breadcrumbSchema } from "@/lib/schema";
 
 const course = courses.find((c) => c.slug === "/courses/group-online")!;
@@ -48,16 +50,16 @@ const groupOnlineDescription = (
       </span>{" "}
       იდეალური არჩევანია მათთვის, ვისაც სურს ინგლისურის შესწავლა
       თანამოსწავლეებთან ერთად, სახლიდან გაუსვლელად. მცირე ჯგუფებში (მაქსიმუმ 4
-      მოსწავლე) სწავლა
-      აერთიანებს ცოცხალ კომუნიკაციას, ინტერაქციულ გარემოსა და ხელმისაწვდომ ფასს.
+      მოსწავლე) სწავლა აერთიანებს ცოცხალ კომუნიკაციას, ინტერაქციულ გარემოსა და
+      ხელმისაწვდომ ფასს.
     </p>
     <br />
     <p>
       გაკვეთილები მიმდინარეობს პრაქტიკულად და ინტერაქციულად — მოსწავლეები
       აქტიურად საუბრობენ, მართავენ{" "}
-      <span className="font-bold text-lingo-green">დიალოგებს</span> და ერთმანეთთან
-      ვარჯიშობენ. ჯგუფური დინამიკა ზრდის მოტივაციას და ეხმარება მოსწავლეს, დაძლიოს
-      უცხო ენაზე საუბრის ბარიერი და ალაპარაკდეს თავისუფლად.
+      <span className="font-bold text-lingo-green">დიალოგებს</span> და
+      ერთმანეთთან ვარჯიშობენ. ჯგუფური დინამიკა ზრდის მოტივაციას და ეხმარება
+      მოსწავლეს, დაძლიოს უცხო ენაზე საუბრის ბარიერი და ალაპარაკდეს თავისუფლად.
     </p>
     <CoursePhoto
       src="/course-photo-group-online.jpg"
@@ -66,23 +68,24 @@ const groupOnlineDescription = (
     <p>
       ონლაინ ინგლისურის კურსი მოიცავს ენის{" "}
       <span className="font-bold text-lingo-green">ყველა კომპონენტს</span>:
-      Speaking (საუბარი), Listening (მოსმენა), Reading (კითხვა), Writing
-      (წერა), Grammar (გრამატიკა) და Vocabulary (ლექსიკა).{" "}
+      Speaking (საუბარი), Listening (მოსმენა), Reading (კითხვა), Writing (წერა),
+      Grammar (გრამატიკა) და Vocabulary (ლექსიკა).{" "}
       <span className="font-bold text-lingo-green">განსაკუთრებული აქცენტი</span>{" "}
       საუბარზეა — ჯგუფურ კურსზე ყველაზე მეტ დროს სწორედ საუბარსა და ცოცხალ
       კომუნიკაციას ვუთმობთ, რადგან თავისუფალი მეტყველება ენის ცოდნის მთავარი
       მაჩვენებელია. ამიტომ, ზოგად ინგლისურთან ერთად დიდ ყურადღებას ვუთმობთ{" "}
-      <span className="font-bold text-lingo-green">სასაუბრო ინგლისურს</span> — რომ
-      თავისუფლად და თავდაჯერებულად ალაპარაკდე. სწავლება სრულად მორგებულია
+      <span className="font-bold text-lingo-green">სასაუბრო ინგლისურს</span> —
+      რომ თავისუფლად და თავდაჯერებულად ალაპარაკდე. სწავლება სრულად მორგებულია
       ქართველ მოსწავლეზე და ითვალისწინებს დონეებს A1-დან C1-მდე.
     </p>
     <CourseSubhead>მასალები</CourseSubhead>
     <p>
       კურსის{" "}
-      <span className="font-bold text-lingo-green">ძირითადი მასალები</span> შედგება
-      Cambridge-ის უახლესი სახელმძღვანელოებისგან, ორიგინალური ციფრული სასწავლო პლატფორმისა და
-      დიდი ვიდეოთეკისგან — აუდიოებით როგორც ამერიკული, ასევე ბრიტანული აქცენტით.
-      ონლაინ ფორმატი სრულად ინარჩუნებს გაკვეთილის ინტერაქტიულობასა და ჩართულობას.
+      <span className="font-bold text-lingo-green">ძირითადი მასალები</span>{" "}
+      შედგება Cambridge-ის უახლესი სახელმძღვანელოებისგან, ორიგინალური ციფრული
+      სასწავლო პლატფორმისა და დიდი ვიდეოთეკისგან — აუდიოებით როგორც ამერიკული,
+      ასევე ბრიტანული აქცენტით. ონლაინ ფორმატი სრულად ინარჩუნებს გაკვეთილის
+      ინტერაქტიულობასა და ჩართულობას.
     </p>
     <CourseVideo />
     <CourseToolsSection />
@@ -102,7 +105,10 @@ const fallbackSubtitle =
   "ისწავლე პატარა ჯგუფში, სახლიდან — ცოცხალი კომუნიკაცია, თანაგუნდელებთან პრაქტიკა და ხელმისაწვდომი ფასი.";
 
 export default async function GroupOnlinePage() {
-  const doc = await getCourse("group-online");
+  const [doc, prices] = await Promise.all([
+    getCourse("group-online"),
+    loadPriceTable(),
+  ]);
   const courseTitle = doc?.title || course.title;
   const subtitle = doc?.heroSubtitle || fallbackSubtitle;
   const courseDescription = doc?.body?.length ? (
@@ -141,11 +147,13 @@ export default async function GroupOnlinePage() {
 
       <main className="pt-10 pb-20">
         <div className="max-w-3xl px-5 mx-auto">
-          <CourseDetails
-            courseTitle="english"
-            gatedCalculator
-            description={courseDescription}
-          />
+          <PricesProvider prices={prices}>
+            <CourseDetails
+              courseTitle="english"
+              gatedCalculator
+              description={courseDescription}
+            />
+          </PricesProvider>
         </div>
         <CourseReviews
           authors={["გუჯა გუჯაბიძე", "ნინი ნადირაძე", "დეა ფირცხალაიშვილი"]}

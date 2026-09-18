@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-type Stat = {
+export type Stat = {
   value: number;
   decimals: number;
   group: boolean;
@@ -11,7 +11,8 @@ type Stat = {
   shortLabel?: string;
 };
 
-const stats: Stat[] = [
+// Fallback — the bar is edited in Sanity ("მიღწევების ზოლი").
+export const FALLBACK_STATS: Stat[] = [
   { value: 3000, decimals: 0, group: false, suffix: "+", label: "მოსწავლე" },
   { value: 300000, decimals: 0, group: true, suffix: "+", label: "გამომწერი" },
   {
@@ -79,7 +80,11 @@ function Counter({
   );
 }
 
-export default function AchievementsBar() {
+export default function AchievementsBar({
+  stats = FALLBACK_STATS,
+}: {
+  stats?: Stat[];
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
 

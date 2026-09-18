@@ -2,6 +2,8 @@
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { AiOutlineArrowRight, AiOutlineCalculator } from "react-icons/ai";
 import useCalculatePrice from "@/hooks/useCalculatePrice";
+import { usePriceTable } from "@/components/Prices/PricesProvider";
+import { priceKey } from "@/lib/priceTable";
 import CourseRadioInput from "./CourseRadioInput";
 import Button from "../Button";
 import FaqButton from "../FAQ/FaqButton";
@@ -244,19 +246,21 @@ export default function CourseDetails(props: CourseDetailsProps) {
   );
 
   const { price } = useCalculatePrice(props.courseTitle, selectedItems);
+  const priceTable = usePriceTable();
 
-  // 3x/week is priced only for the adult course, online, individual.
+  // 3x/week is offered wherever the price table has a 3x price for the
+  // current course, format and lesson type (today: adult, online, individual).
   const format = selectedItems["კურსის ფორმატი"];
   const lessonType = selectedItems["გაკვეთილის ტიპი"];
   const frequency = selectedItems["გაკვეთილის სიხშირე"];
   const frequencyChoices = useMemo(
     () =>
-      props.courseTitle === "english" &&
-      format === "ონლაინ" &&
-      lessonType === "ინდივიდუალური"
+      priceTable[
+        priceKey(props.courseTitle, format, lessonType, "კვირაში 3-ჯერ")
+      ]
         ? ["კვირაში 2-ჯერ", "კვირაში 3-ჯერ"]
         : ["კვირაში 2-ჯერ"],
-    [props.courseTitle, format, lessonType],
+    [priceTable, props.courseTitle, format, lessonType],
   );
 
   // If the current selection has no 3x price, drop back to 2x.

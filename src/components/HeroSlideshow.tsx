@@ -1,17 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { HERO_SLIDES, useHeroSlide } from "./HeroContext";
+import { useHero } from "./HeroContext";
 
 // Desktop hero background: each photo zooms in slowly (Ken Burns) for ~6.5s,
 // then crossfades to the next. The active index comes from HeroProvider so the
 // headline switches in step with the photo.
 export default function HeroSlideshow() {
-  const active = useHeroSlide();
+  const { active, slides } = useHero();
 
   return (
     <div className="absolute inset-0 hidden overflow-hidden sm:block animate-appear">
-      {HERO_SLIDES.map(({ src, pos, alt }, i) => {
+      {slides.map(({ src, position, alt }, i) => {
         const isActive = i === active;
         return (
           <Image
@@ -23,7 +23,8 @@ export default function HeroSlideshow() {
             sizes="100vw"
             // `hero-zoom` is (re)applied only while active, so the zoom restarts
             // from scale(1) every time a slide comes back around.
-            className={`object-cover ${pos} scale-[1.1] transition-opacity duration-1000 ease-in-out ${
+            style={{ objectPosition: position }}
+            className={`object-cover scale-[1.1] transition-opacity duration-1000 ease-in-out ${
               isActive ? "opacity-100 hero-zoom" : "opacity-0"
             }`}
           />
