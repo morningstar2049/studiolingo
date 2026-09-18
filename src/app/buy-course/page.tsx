@@ -14,6 +14,7 @@ import {
 import Script from "next/script";
 import React, { useState } from "react";
 import LoginIcon from "@mui/icons-material/Login";
+import { usePriceTable } from "@/components/Prices/PricesProvider";
 
 declare const window: Window &
   typeof globalThis & {
@@ -29,6 +30,10 @@ function Page() {
   const [courseFormatVal, setCourseFormatVal] = useState("");
   const [courseTypeVal, setCourseTypeVal] = useState("");
   const [courseFreqVal, setCourseFreqVal] = useState("");
+  // The kids option shows only while a kids price exists (Sanity → კურსის ფასი).
+  const hasKidsPrice = Object.keys(usePriceTable()).some((key) =>
+    key.startsWith("englishForKids-"),
+  );
 
   const { price } = useCalculatePrice(
     courseAudienceVal === "ბავშვისთვის" ? "englishForKids" : "english",
@@ -187,7 +192,9 @@ function Page() {
               "& .MuiInputLabel-root.Mui-focused": { color: "#1DBF73" },
             }}
           >
-            <MenuItem value="ბავშვისთვის">ბავშვისთვის (7-12 წელი)</MenuItem>
+            {hasKidsPrice && (
+              <MenuItem value="ბავშვისთვის">ბავშვისთვის (7-12 წელი)</MenuItem>
+            )}
             <MenuItem value="მოზარდისთვის">მოზარდისთვის (12-16 წელი)</MenuItem>
             <MenuItem value="ზრდასრულისთვის">
               ზრდასრულისთვის (16+ წელი)
