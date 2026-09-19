@@ -11,6 +11,44 @@ const swatchIcon = (hex: string) =>
     );
   };
 
+// Editor preview of the heading styles, at the same proportions as the
+// published article (h2 1.5×, h3 1.25× the body text).
+const headingPreview = (tag: "h2" | "h3", fontSize: string) =>
+  function HeadingPreview(props: { children?: React.ReactNode }) {
+    return React.createElement(
+      tag,
+      { style: { fontSize, fontWeight: 700, lineHeight: 1.3, margin: 0 } },
+      props.children
+    );
+  };
+
+// "დიდი ასოები": capitals in the editor too — Georgian via FiraGO's `case`
+// feature (the site font is loaded in the Studio), Latin via uppercase.
+const capsStyle = {
+  fontFamily: "var(--font-firago), sans-serif",
+  fontFeatureSettings: "'case' on",
+  textTransform: "uppercase",
+} as const;
+function CapsPreview(props: { children?: React.ReactNode }) {
+  return React.createElement("span", { style: capsStyle }, props.children);
+}
+function CapsIcon() {
+  return React.createElement(
+    "span",
+    { style: { ...capsStyle, fontWeight: 700, fontSize: "0.9em" } },
+    "აა"
+  );
+}
+
+// Inline photo shapes (cropped around the focal point chosen in the editor).
+export const POST_IMAGE_SHAPES = [
+  { title: "ორიგინალი (მოჭრის გარეშე)", value: "original" },
+  { title: "ჰორიზონტალური 16:9", value: "16:9" },
+  { title: "ჰორიზონტალური 4:3", value: "4:3" },
+  { title: "კვადრატი 1:1", value: "1:1" },
+  { title: "ვერტიკალური 4:5", value: "4:5" },
+];
+
 // Field titles are in Georgian because the Studio is used by the school's
 // own team, not by developers.
 export const post = defineType({
@@ -72,8 +110,16 @@ export const post = defineType({
           type: "block",
           styles: [
             { title: "ჩვეულებრივი", value: "normal" },
-            { title: "სათაური 2", value: "h2" },
-            { title: "სათაური 3", value: "h3" },
+            {
+              title: "სათაური 2",
+              value: "h2",
+              component: headingPreview("h2", "22px"),
+            },
+            {
+              title: "სათაური 3",
+              value: "h3",
+              component: headingPreview("h3", "19px"),
+            },
             { title: "ციტატა", value: "blockquote" },
           ],
           marks: {
@@ -81,6 +127,12 @@ export const post = defineType({
               { title: "Bold", value: "strong" },
               { title: "Italic", value: "em" },
               { title: "Underline", value: "underline" },
+              {
+                title: "დიდი ასოები",
+                value: "caps",
+                icon: CapsIcon,
+                component: CapsPreview,
+              },
               { title: "მწვანე", value: "green", icon: swatchIcon("#2f9e4d") },
               {
                 // Same navy as the article headline band.
@@ -100,7 +152,30 @@ export const post = defineType({
             ],
           },
         },
-        { type: "image", options: { hotspot: true } },
+        {
+          type: "image",
+          options: { hotspot: true },
+          fields: [
+            defineField({
+              name: "alt",
+              title: "ფოტოს აღწერა",
+              type: "string",
+              description: "რა ჩანს ფოტოზე — საჭიროა SEO-სთვის.",
+            }),
+            defineField({
+              name: "shape",
+              title: "ფორმა სტატიაში",
+              type: "string",
+              description:
+                "ფოტო ამ ფორმით მოიჭრება. რომელი ნაწილი დარჩეს, ირჩევთ ფოტოზე ✂️ (Crop) ღილაკით — წრე (მთავარი წერტილი) გადაათრიეთ იმ ადგილზე, რაც აუცილებლად უნდა ჩანდეს. იქ ნაჩვენები პატარა სურათები მხოლოდ მაგალითებია და მათზე დაჭერა არაფერს ცვლის.",
+              initialValue: "original",
+              options: {
+                list: POST_IMAGE_SHAPES,
+                layout: "radio",
+              },
+            }),
+          ],
+        },
         {
           type: "object",
           name: "youtube",

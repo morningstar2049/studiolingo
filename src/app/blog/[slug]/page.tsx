@@ -69,6 +69,14 @@ function getYoutubeId(url?: string): string | null {
 // statically.
 const ANIMATED_HEADING_SLUGS = ["english-with-movies", "5-habits-for-english"];
 
+// Photo shapes chosen in the Studio ("ფორმა სტატიაში"), width : height.
+const IMAGE_RATIOS: Record<string, [number, number]> = {
+  "16:9": [16, 9],
+  "4:3": [4, 3],
+  "1:1": [1, 1],
+  "4:5": [4, 5],
+};
+
 const getComponents = (
   animateHeadings: boolean,
 ): PortableTextComponents => ({
@@ -114,6 +122,16 @@ const getComponents = (
       <span style={{ color: "#2a375c" }}>{children}</span>
     ),
     red: ({ children }) => <span style={{ color: "#e24b4a" }}>{children}</span>,
+    // Georgian capitals via FiraGO's `case` feature (the text itself stays
+    // lowercase for search engines); Latin via uppercase.
+    caps: ({ children }) => (
+      <span
+        className="uppercase"
+        style={{ fontFeatureSettings: "'case' on" }}
+      >
+        {children}
+      </span>
+    ),
     link: ({ children, value }) => (
       <a
         href={value?.href}
@@ -135,17 +153,42 @@ const getComponents = (
     divider: () => (
       <hr className="my-9 h-px border-0 bg-[#111111]" />
     ),
-    image: ({ value }) => (
-      <span className="relative block w-full my-6 h-80">
-        <Image
-          src={urlForImage(value).width(1200).url()}
-          alt={value?.alt || ""}
-          fill
-          sizes="(max-width: 768px) 100vw, 768px"
-          className="object-contain"
-        />
-      </span>
-    ),
+    image: ({ value }) => {
+      const ratio = IMAGE_RATIOS[value?.shape as string];
+      // "Original" (and every older photo): the whole picture, uncropped.
+      if (!ratio) {
+        return (
+          <span className="relative block w-full my-6 h-80">
+            <Image
+              src={urlForImage(value).width(1200).url()}
+              alt={value?.alt || ""}
+              fill
+              sizes="(max-width: 768px) 100vw, 768px"
+              className="object-contain"
+            />
+          </span>
+        );
+      }
+      const [w, h] = ratio;
+      return (
+        <span
+          className="relative block w-full my-6 overflow-hidden rounded-xl"
+          style={{ aspectRatio: `${w} / ${h}` }}
+        >
+          <Image
+            src={urlForImage(value)
+              .width(1200)
+              .height(Math.round((1200 * h) / w))
+              .fit("crop")
+              .url()}
+            alt={value?.alt || ""}
+            fill
+            sizes="(max-width: 768px) 100vw, 768px"
+            className="object-cover"
+          />
+        </span>
+      );
+    },
     youtube: ({ value }) => {
       const id = getYoutubeId(value?.url);
       if (!id) return null;
