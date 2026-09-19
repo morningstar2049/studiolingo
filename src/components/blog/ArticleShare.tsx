@@ -4,7 +4,7 @@ import { useState } from "react";
 import {
   FaFacebookF,
   FaWhatsapp,
-  FaTelegramPlane,
+  FaPinterestP,
   FaLinkedinIn,
 } from "react-icons/fa";
 import { FiLink, FiCheck } from "react-icons/fi";
@@ -12,6 +12,8 @@ import { FiLink, FiCheck } from "react-icons/fi";
 type Props = {
   url: string;
   title: string;
+  // Article photo — Pinterest pins an image, so it shares the cover.
+  image?: string;
   hideLabel?: boolean;
   // Distribute the buttons evenly across the full width (for the sidebar box).
   spread?: boolean;
@@ -34,6 +36,7 @@ const XIcon = () => (
 export default function ArticleShare({
   url,
   title,
+  image,
   hideLabel,
   spread,
 }: Props) {
@@ -60,10 +63,12 @@ export default function ArticleShare({
       bg: "#25D366",
     },
     {
-      name: "Telegram",
-      href: `https://t.me/share/url?url=${e(url)}&text=${e(title)}`,
-      icon: <FaTelegramPlane />,
-      bg: "#229ED9",
+      name: "Pinterest",
+      href: `https://www.pinterest.com/pin/create/button/?url=${e(url)}&description=${e(title)}${
+        image ? `&media=${e(image)}` : ""
+      }`,
+      icon: <FaPinterestP />,
+      bg: "#E60023",
     },
     {
       name: "LinkedIn",

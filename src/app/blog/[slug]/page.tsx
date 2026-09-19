@@ -364,6 +364,7 @@ export default async function BlogPostPage({ params }: Props) {
               <ArticleShare
                 url={`${SITE_URL}/blog/${post.slug}`}
                 title={post.title}
+                image={image}
                 hideLabel
                 spread
               />
@@ -379,6 +380,7 @@ export default async function BlogPostPage({ params }: Props) {
               <ArticleShare
                 url={`${SITE_URL}/blog/${post.slug}`}
                 title={post.title}
+                image={image}
                 hideLabel
                 spread
               />
