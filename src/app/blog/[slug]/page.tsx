@@ -2,6 +2,13 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import {
+  Children,
+  cloneElement,
+  isValidElement,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { AiOutlineArrowRight } from "react-icons/ai";
 
@@ -69,6 +76,33 @@ function getYoutubeId(url?: string): string | null {
 // statically.
 const ANIMATED_HEADING_SLUGS = ["english-with-movies", "5-habits-for-english"];
 
+// "დიდი ასოები" (caps mark). Georgian is capitalized only by FiraGO's `case`
+// feature: CSS uppercase would turn it into Mtavruli characters, which iOS
+// Safari then draws in a fallback font instead of FiraGO. So uppercase is
+// applied to Latin runs only (the text stays lowercase in the HTML).
+function latinUppercase(node: ReactNode): ReactNode {
+  return Children.map(node, (child) => {
+    if (typeof child === "string") {
+      return child.split(/([A-Za-z\u00C0-\u024F]+)/).map((part, i) =>
+        i % 2 ? (
+          <span key={i} className="uppercase">
+            {part}
+          </span>
+        ) : (
+          part
+        ),
+      );
+    }
+    if (isValidElement(child)) {
+      const el = child as ReactElement<{ children?: ReactNode }>;
+      return el.props.children === undefined
+        ? el
+        : cloneElement(el, undefined, latinUppercase(el.props.children));
+    }
+    return child;
+  });
+}
+
 // Photo shapes chosen in the Studio ("ფორმა სტატიაში"), width : height.
 const IMAGE_RATIOS: Record<string, [number, number]> = {
   "16:9": [16, 9],
@@ -125,11 +159,8 @@ const getComponents = (
     // Georgian capitals via FiraGO's `case` feature (the text itself stays
     // lowercase for search engines); Latin via uppercase.
     caps: ({ children }) => (
-      <span
-        className="uppercase"
-        style={{ fontFeatureSettings: "'case' on" }}
-      >
-        {children}
+      <span style={{ fontFeatureSettings: "'case' on" }}>
+        {latinUppercase(children)}
       </span>
     ),
     link: ({ children, value }) => (
