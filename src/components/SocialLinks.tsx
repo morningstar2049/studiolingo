@@ -1,23 +1,7 @@
-import {
-  FaFacebookF,
-  FaInstagram,
-  FaTiktok,
-  FaLinkedinIn,
-  FaYoutube,
-} from "react-icons/fa";
-import type { IconType } from "react-icons";
+import { SOCIALS } from "./socials";
 
-// Uniform round social icons — a white brand glyph on a green circle — so
-// every platform matches (Facebook was already a green circle; the rest now
-// follow the same shape). Shared by the desktop header and the mobile menu.
-const socials: { href: string; label: string; Icon: IconType }[] = [
-  { href: "https://www.facebook.com/studiolingo", label: "Facebook", Icon: FaFacebookF },
-  { href: "https://www.instagram.com/studio_lingo/", label: "Instagram", Icon: FaInstagram },
-  { href: "https://www.tiktok.com/@studio.lingo", label: "TikTok", Icon: FaTiktok },
-  { href: "https://www.linkedin.com/company/studio-lingo/", label: "LinkedIn", Icon: FaLinkedinIn },
-  { href: "https://www.youtube.com/@studio_lingo", label: "YouTube", Icon: FaYoutube },
-];
-
+// Round social icons in each platform's own brand colour, with a white glyph.
+// Shared by the desktop header and the mobile menu.
 type Props = {
   className?: string;
   circleClass?: string;
@@ -29,14 +13,15 @@ export default function SocialLinks({
 }: Props) {
   return (
     <div className={`flex items-center gap-3 ${className}`}>
-      {socials.map(({ href, label, Icon }) => (
+      {SOCIALS.map(({ href, label, Icon, background }) => (
         <a
           key={label}
           href={href}
           target="_blank"
           rel="noopener noreferrer"
           aria-label={label}
-          className={`flex items-center justify-center rounded-full bg-lingo-green text-[#fff] transition-transform hover:scale-110 ${circleClass}`}
+          style={{ background }}
+          className={`flex items-center justify-center rounded-full text-[#fff] transition-transform hover:scale-110 ${circleClass}`}
         >
           <Icon />
         </a>

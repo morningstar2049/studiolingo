@@ -1,44 +1,10 @@
 "use client";
 import { FiPhone, FiMail, FiMapPin } from "react-icons/fi";
-import {
-  FaFacebookF,
-  FaInstagram,
-  FaYoutube,
-  FaTiktok,
-  FaLinkedinIn,
-} from "react-icons/fa";
 import { useState } from "react";
 import Link from "next/link";
 import InfoModal from "../InfoModal";
 import SchoolRules from "../SchoolRules";
-
-const socials = [
-  {
-    name: "Facebook",
-    href: "https://www.facebook.com/studiolingo",
-    icon: <FaFacebookF />,
-  },
-  {
-    name: "Instagram",
-    href: "https://www.instagram.com/studio_lingo/",
-    icon: <FaInstagram />,
-  },
-  {
-    name: "YouTube",
-    href: "https://www.youtube.com/@studio_lingo",
-    icon: <FaYoutube />,
-  },
-  {
-    name: "TikTok",
-    href: "https://www.tiktok.com/@studio.lingo",
-    icon: <FaTiktok />,
-  },
-  {
-    name: "LinkedIn",
-    href: "https://www.linkedin.com/company/studio-lingo/",
-    icon: <FaLinkedinIn />,
-  },
-];
+import { SOCIALS } from "../socials";
 
 function Footer() {
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
@@ -65,16 +31,19 @@ function Footer() {
                 თბილისში და ონლაინ პრაქტიკული სწავლებითა და რეიტინგული კონტენტით
               </p>
               <div className="flex justify-center gap-3 mt-5 md:justify-start">
-                {socials.map((s) => (
+                {SOCIALS.map(({ href, label, Icon, background }) => (
                   <a
-                    key={s.name}
-                    href={s.href}
+                    key={label}
+                    href={href}
                     target="_blank"
                     rel="noreferrer noopener"
-                    aria-label={s.name}
-                    className="flex items-center justify-center w-10 h-10 text-[#fff] transition-colors rounded-full bg-[#3a4356] hover:bg-lingo-green"
+                    aria-label={label}
+                    style={{ background }}
+                    // The hairline keeps the black TikTok circle visible on the
+                    // dark footer.
+                    className="flex items-center justify-center w-10 h-10 text-[#fff] transition-transform rounded-full ring-1 ring-[rgba(255,255,255,0.18)] hover:scale-110"
                   >
-                    {s.icon}
+                    <Icon />
                   </a>
                 ))}
               </div>
