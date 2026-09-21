@@ -10,6 +10,17 @@ export const SITE_NAME = "Studio Lingo";
 const OG_IMAGE = `${SITE_URL}/og-image.png`;
 const MAP_URL = "https://maps.app.goo.gl/jjNmMYDcq6hFzN1VA";
 
+// The school's own social profiles. Listed on both the organization and the
+// local business (the Google Maps listing) so Google ties the accounts to the
+// Business Profile. Same accounts as the header/footer icons.
+const SOCIAL_PROFILES = [
+  "https://www.facebook.com/studiolingo",
+  "https://www.instagram.com/studio_lingo/",
+  "https://www.linkedin.com/company/studio-lingo/",
+  "https://www.youtube.com/@studio_lingo",
+  "https://www.tiktok.com/@studio.lingo",
+];
+
 export const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "EducationalOrganization",
@@ -20,13 +31,7 @@ export const organizationSchema = {
   logo: `${SITE_URL}/lingo-logo-main.png`,
   description:
     "Studio Lingo — ინგლისური ენის სკოლა თბილისში. ინგლისურის კურსები ზრდასრულთათვის და მოზარდებისთვის, ოფისში და ონლაინ. ადგილზე ჯგუფური კურსის მოსწავლეებს თვეში ერთხელ გაკვეთილს უტარებს ბრიტანელი მასწავლებელი (native speaker).",
-  sameAs: [
-    "https://www.facebook.com/studiolingo",
-    "https://www.instagram.com/studio_lingo/",
-    "https://www.linkedin.com/company/studio-lingo/",
-    "https://www.youtube.com/@studio_lingo",
-    "https://www.tiktok.com/@studio.lingo",
-  ],
+  sameAs: SOCIAL_PROFILES,
 };
 
 export const localBusinessSchema = {
@@ -34,7 +39,9 @@ export const localBusinessSchema = {
   "@type": ["LocalBusiness", "EducationalOrganization"],
   "@id": `${SITE_URL}/#localbusiness`,
   name: SITE_NAME,
+  alternateName: "სტუდიო ლინგო",
   image: OG_IMAGE,
+  logo: `${SITE_URL}/lingo-logo-main.png`,
   url: SITE_URL,
   telephone: "+995322114623",
   email: "info@studiolingo.ge",
@@ -70,6 +77,8 @@ export const localBusinessSchema = {
     },
   ],
   areaServed: { "@type": "Country", name: "Georgia" },
+  sameAs: SOCIAL_PROFILES,
+  parentOrganization: { "@id": `${SITE_URL}/#organization` },
 };
 
 export const websiteSchema = {
