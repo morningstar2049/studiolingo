@@ -14,6 +14,10 @@ const fadeUp = {
 };
 
 const isValidEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+// Georgian letters only; a space or hyphen may join two parts of a name.
+const isGeorgian = (v: string) => /^[\u10A0-\u10FF]+(?:[ -][\u10A0-\u10FF]+)*$/.test(v);
+// At least 9 digits, ignoring spaces, dashes and a leading +995.
+const digitCount = (v: string) => (v.match(/\d/g) ?? []).length;
 
 export default function UserInfoForm({
   texts,
@@ -35,10 +39,16 @@ export default function UserInfoForm({
     e.preventDefault();
     const next: Record<string, string> = {};
     if (!firstName.trim()) next.firstName = "შეავსეთ სახელი";
+    else if (!isGeorgian(firstName.trim()))
+      next.firstName = "სახელი ქართული ასოებით ჩაწერეთ";
     if (!lastName.trim()) next.lastName = "შეავსეთ გვარი";
+    else if (!isGeorgian(lastName.trim()))
+      next.lastName = "გვარი ქართული ასოებით ჩაწერეთ";
     if (!email.trim()) next.email = "შეავსეთ ელ. ფოსტა";
     else if (!isValidEmail(email.trim())) next.email = "არასწორი ელ. ფოსტა";
     if (!phone.trim()) next.phone = "შეავსეთ ტელეფონის ნომერი";
+    else if (digitCount(phone) < 9)
+      next.phone = "ნომერი მინიმუმ 9 ციფრისგან უნდა შედგებოდეს";
     if (!age.trim()) next.age = "შეავსეთ ასაკი";
     setErrors(next);
     if (Object.keys(next).length > 0) return;
