@@ -195,7 +195,7 @@ function Page() {
             {hasKidsPrice && (
               <MenuItem value="ბავშვისთვის">ბავშვისთვის (7-12 წელი)</MenuItem>
             )}
-            <MenuItem value="მოზარდისთვის">მოზარდისთვის (12-16 წელი)</MenuItem>
+            <MenuItem value="მოზარდისთვის">მოზარდისთვის (9-15 წელი)</MenuItem>
             <MenuItem value="ზრდასრულისთვის">
               ზრდასრულისთვის (16+ წელი)
             </MenuItem>

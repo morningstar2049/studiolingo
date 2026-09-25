@@ -11,7 +11,8 @@ import CourseBody from "@/components/Courses/CourseBody";
 import { courses } from "@/components/Courses/coursesData";
 import { getCourse } from "@/sanity/queries";
 import { PricesProvider } from "@/components/Prices/PricesProvider";
-import { loadPriceTable } from "@/lib/loadPrices";
+import { loadPrices } from "@/lib/loadPrices";
+import { loadFaqs } from "@/lib/loadFaqs";
 import { courseSchema, breadcrumbSchema } from "@/lib/schema";
 
 const course = courses.find((c) => c.slug === "/courses/individual-online")!;
@@ -103,9 +104,10 @@ const fallbackSubtitle =
   "პერსონალური გაკვეთილები, შენს ტემპსა და მიზნებზე მორგებული — მთელი ყურადღება მხოლოდ შენზეა.";
 
 export default async function IndividualOnlinePage() {
-  const [doc, prices] = await Promise.all([
+  const [doc, prices, faqItems] = await Promise.all([
     getCourse("individual-online"),
-    loadPriceTable(),
+    loadPrices(),
+    loadFaqs(),
   ]);
   const courseTitle = doc?.title || course.title;
   const subtitle = doc?.heroSubtitle || fallbackSubtitle;
@@ -145,8 +147,9 @@ export default async function IndividualOnlinePage() {
 
       <main className="pt-10 pb-20">
         <div className="max-w-3xl px-5 mx-auto">
-          <PricesProvider prices={prices}>
+          <PricesProvider prices={prices?.prices ?? null} months={prices?.months}>
             <CourseDetails
+              faqItems={faqItems}
               courseTitle="english"
               gatedCalculator
               description={courseDescription}

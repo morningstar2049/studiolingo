@@ -48,6 +48,15 @@ export const coursePrice = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "months",
+      title: "ხანგრძლივობა (თვე)",
+      type: "number",
+      description:
+        "სწავლის მინიმალური პერიოდი, რომელსაც ფასი მოიცავს. ჩანს კალკულატორში, ფასების გვერდსა და ხშირ კითხვებში.",
+      initialValue: 4,
+      validation: (rule) => rule.required().min(1).max(24),
+    }),
+    defineField({
       name: "price",
       title: "ფასი (₾)",
       type: "number",

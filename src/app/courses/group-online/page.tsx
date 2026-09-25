@@ -11,7 +11,8 @@ import CourseBody from "@/components/Courses/CourseBody";
 import { courses } from "@/components/Courses/coursesData";
 import { getCourse } from "@/sanity/queries";
 import { PricesProvider } from "@/components/Prices/PricesProvider";
-import { loadPriceTable } from "@/lib/loadPrices";
+import { loadPrices } from "@/lib/loadPrices";
+import { loadFaqs } from "@/lib/loadFaqs";
 import { courseSchema, breadcrumbSchema } from "@/lib/schema";
 
 const course = courses.find((c) => c.slug === "/courses/group-online")!;
@@ -105,9 +106,10 @@ const fallbackSubtitle =
   "ისწავლე პატარა ჯგუფში, სახლიდან — ცოცხალი კომუნიკაცია, თანაგუნდელებთან პრაქტიკა და ხელმისაწვდომი ფასი.";
 
 export default async function GroupOnlinePage() {
-  const [doc, prices] = await Promise.all([
+  const [doc, prices, faqItems] = await Promise.all([
     getCourse("group-online"),
-    loadPriceTable(),
+    loadPrices(),
+    loadFaqs(),
   ]);
   const courseTitle = doc?.title || course.title;
   const subtitle = doc?.heroSubtitle || fallbackSubtitle;
@@ -147,8 +149,9 @@ export default async function GroupOnlinePage() {
 
       <main className="pt-10 pb-20">
         <div className="max-w-3xl px-5 mx-auto">
-          <PricesProvider prices={prices}>
+          <PricesProvider prices={prices?.prices ?? null} months={prices?.months}>
             <CourseDetails
+              faqItems={faqItems}
               courseTitle="english"
               gatedCalculator
               description={courseDescription}

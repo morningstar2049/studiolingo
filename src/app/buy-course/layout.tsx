@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PricesProvider } from "@/components/Prices/PricesProvider";
-import { loadPriceTable } from "@/lib/loadPrices";
+import { loadPrices } from "@/lib/loadPrices";
 
 // Prices are edited in Sanity; refresh at most once a minute.
 export const revalidate = 60;
@@ -17,6 +17,6 @@ export default async function BuyCourseLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const prices = await loadPriceTable();
-  return <PricesProvider prices={prices}>{children}</PricesProvider>;
+  const prices = await loadPrices();
+  return <PricesProvider prices={prices?.prices ?? null} months={prices?.months}>{children}</PricesProvider>;
 }

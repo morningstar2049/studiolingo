@@ -81,7 +81,7 @@ const courseFaqs = [
         <Link href="/courses/group-onsite" className={link}>
           ჯგუფური კურსი ადგილზე
         </Link>
-        . მოზარდებისთვის (9–16 წელი) —{" "}
+        . მოზარდებისთვის (9–15 წელი) —{" "}
         <Link href="/courses/teenagers" className={link}>
           ცალკე ონლაინ კურსი
         </Link>{" "}

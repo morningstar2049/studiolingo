@@ -326,6 +326,7 @@ export async function getMaterials(): Promise<{
 // ── Course prices (calculator + /buy-course) ──────────────────────────────
 
 export type CoursePrice = {
+  months?: number;
   course: string;
   format: string;
   lessonType: string;
@@ -342,7 +343,7 @@ export async function getCoursePrices(): Promise<{
       `{
         "prices": *[_type == "coursePrice" && defined(price) && defined(course)
           && defined(format) && defined(lessonType) && defined(frequency)]
-          { course, format, lessonType, frequency, price },
+          { course, format, lessonType, frequency, price, months },
         "total": count(*[_type == "coursePrice"])
       }`,
       {},
@@ -438,6 +439,33 @@ export async function getLevelTest(): Promise<{
           },
         "total": count(*[_type == "levelTestQuestion"]),
         "texts": *[_id == "levelTestTexts"][0]
+      }`,
+      {},
+      { next: { revalidate: 60 } },
+    );
+  } catch {
+    return null;
+  }
+}
+
+// ── Main FAQ (/faq, course-page dialog) ───────────────────────────────────
+
+export type FaqDoc = {
+  _id: string;
+  question: string;
+  answer: PortableTextBlock[];
+};
+
+export async function getFaqs(): Promise<{
+  faqs: FaqDoc[];
+  total: number;
+} | null> {
+  try {
+    return await client.fetch(
+      `{
+        "faqs": *[_type == "faq" && visible != false]
+          | order(order asc, _createdAt asc) { _id, question, answer },
+        "total": count(*[_type == "faq"])
       }`,
       {},
       { next: { revalidate: 60 } },

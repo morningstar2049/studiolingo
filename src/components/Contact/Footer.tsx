@@ -107,6 +107,12 @@ function Footer() {
                 ინგლისურის კურსები
               </Link>
               <Link
+                href="/prices"
+                className="text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
+              >
+                კურსების ფასები
+              </Link>
+              <Link
                 href="/faq"
                 className="text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
               >

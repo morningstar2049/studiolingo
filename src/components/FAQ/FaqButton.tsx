@@ -7,10 +7,15 @@ import DialogContent from "@mui/material/DialogContent";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { AiOutlineQuestionCircle } from "react-icons/ai";
+import type { ReactNode } from "react";
 import FaqAccordion from "./FaqAccordion";
 
 // Course-page CTA: opens the FAQ in a premium dialog (no separate navigation).
-export default function FaqButton() {
+export default function FaqButton({
+  items,
+}: {
+  items?: { q: string; a: ReactNode }[];
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -62,7 +67,7 @@ export default function FaqButton() {
           sx={{ fontFamily: "var(--font-firago), sans-serif", borderColor: "#dbe6df" }}
         >
           <div className="pt-2">
-            <FaqAccordion />
+            <FaqAccordion items={items} />
           </div>
         </DialogContent>
       </Dialog>

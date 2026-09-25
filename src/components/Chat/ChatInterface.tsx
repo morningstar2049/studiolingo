@@ -309,6 +309,25 @@ export default function ChatInterface() {
   // Mount flag for portal (must be client-side)
   useEffect(() => { setMounted(true); }, []);
 
+  // TEMP diagnostics (remove before merge): report any runtime JS error/rejection
+  // from the device to the server log so it can be read without Safari Web Inspector.
+  useEffect(() => {
+    const send = (m: string) => {
+      try { fetch('/api/dbg', { method: 'POST', body: m, keepalive: true }); } catch { /* ignore */ }
+    };
+    const onErr = (e: ErrorEvent) =>
+      send(`error: ${e.message} @ ${e.filename ?? '?'}:${e.lineno ?? '?'}:${e.colno ?? '?'}`);
+    const onRej = (e: PromiseRejectionEvent) =>
+      send(`unhandledrejection: ${String((e.reason as { message?: string })?.message ?? e.reason)}`);
+    window.addEventListener('error', onErr);
+    window.addEventListener('unhandledrejection', onRej);
+    send('error-reporter armed');
+    return () => {
+      window.removeEventListener('error', onErr);
+      window.removeEventListener('unhandledrejection', onRej);
+    };
+  }, []);
+
   // Lock document scroll while the chat is mounted.
   //
   // Why: on iOS Safari, when the input gains focus and the keyboard slides

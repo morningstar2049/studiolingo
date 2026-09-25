@@ -130,7 +130,7 @@ export const coursesSchema = [
     "@type": "Course",
     name: "ინგლისურის კურსები მოზარდებისთვის",
     description:
-      "ინგლისურის კურსები მოზარდებისთვის (12–16 წელი) — თბილისში (საბურთალო) და ონლაინ.",
+      "ინგლისურის კურსები მოზარდებისთვის (9–15 წელი) — თბილისში (საბურთალო) და ონლაინ.",
     url: `${SITE_URL}/#courses`,
     inLanguage: "ka",
     provider: { "@id": `${SITE_URL}/#organization` },

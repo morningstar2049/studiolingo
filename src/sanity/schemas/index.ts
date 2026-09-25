@@ -6,6 +6,7 @@ import { vacancy } from "./vacancy";
 import { teamMember } from "./teamMember";
 import { course } from "./course";
 import { courseFaq } from "./courseFaq";
+import { faq } from "./faq";
 import { material } from "./material";
 import { coursePrice } from "./coursePrice";
 import { homeHero } from "./homeHero";
@@ -20,6 +21,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   teamMember,
   course,
   courseFaq,
+  faq,
   material,
   coursePrice,
   homeHero,

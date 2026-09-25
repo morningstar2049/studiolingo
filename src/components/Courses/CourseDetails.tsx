@@ -2,7 +2,10 @@
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { AiOutlineArrowRight, AiOutlineCalculator } from "react-icons/ai";
 import useCalculatePrice from "@/hooks/useCalculatePrice";
-import { usePriceTable } from "@/components/Prices/PricesProvider";
+import {
+  usePriceTable,
+  useCourseMonths,
+} from "@/components/Prices/PricesProvider";
 import { priceKey } from "@/lib/priceTable";
 import CourseRadioInput from "./CourseRadioInput";
 import Button from "../Button";
@@ -16,6 +19,9 @@ type CourseDetailsProps = {
   // Optional per-page copy that replaces the built-in course description while
   // keeping the same pricing (driven by courseTitle).
   description?: ReactNode;
+  // The main FAQ, loaded on the server; without it the dialog falls back to
+  // the copy in code.
+  faqItems?: { q: string; a: ReactNode }[];
 };
 
 const courseUrls: { [key in CourseDetailsProps["courseTitle"]]: string } = {
@@ -246,6 +252,16 @@ export default function CourseDetails(props: CourseDetailsProps) {
   );
 
   const { price } = useCalculatePrice(props.courseTitle, selectedItems);
+  // Study period of the selected combination, from Sanity ("ხანგრძლივობა").
+  const monthsFor = useCourseMonths();
+  const months = monthsFor(
+    priceKey(
+      props.courseTitle,
+      selectedItems["კურსის ფორმატი"],
+      selectedItems["გაკვეთილის ტიპი"],
+      selectedItems["გაკვეთილის სიხშირე"],
+    ),
+  );
   const priceTable = usePriceTable();
 
   // 3x/week is offered wherever the price table has a 3x price for the
@@ -286,8 +302,7 @@ export default function CourseDetails(props: CourseDetailsProps) {
     <>
       {props.courseTitle !== "englishForTeens" && (
         <strong className="text-lingo-green">
-          სწავლის მინიმალური პერიოდი -{" "}
-          {selectedItems["კურსის ფორმატი"] === "ოფისში" ? "3 თვე" : "4 თვე"}
+          სწავლის მინიმალური პერიოდი - {months} თვე
         </strong>
       )}
       <strong className="text-lingo-black">
@@ -330,22 +345,14 @@ export default function CourseDetails(props: CourseDetailsProps) {
             ? "ფასი : " +
               price +
               " ₾ " +
-              `${
-                selectedItems["კურსის ფორმატი"] === "ოფისში"
-                  ? "(3 თვის)"
-                  : "(4 თვის)"
-              }`
+              `(${months} თვის)`
             : "ფასის სანახავად მონიშნეთ სასურველი ვარიანტები მოცემული კატეგორიებიდან"}
         </strong>
       </p>
       <section className="flex flex-col gap-2">
         <h3 className="font-bold text-lingo-green">გადახდის მეთოდები :</h3>
         <ul className="px-5 list-decimal">
-          {selectedItems["კურსის ფორმატი"] === "ოფისში" ? (
-            <li>3 თვის წინასწარ ერთიანად</li>
-          ) : (
-            <li>4 თვის წინასწარ ერთიანად</li>
-          )}
+          <li>{months} თვის წინასწარ ერთიანად</li>
           <li>საქ. ბანკის უპროცენტო განვადება</li>
         </ul>
       </section>
@@ -376,7 +383,7 @@ export default function CourseDetails(props: CourseDetailsProps) {
     <div className="flex flex-col gap-5">
       {props.description ?? courseDescriptions[props.courseTitle]}
 
-      <FaqButton />
+      <FaqButton items={props.faqItems} />
 
       <div
         style={{ fontFeatureSettings: "'case' on" }}

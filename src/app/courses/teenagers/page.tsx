@@ -11,14 +11,15 @@ import CourseBody from "@/components/Courses/CourseBody";
 import { courses } from "@/components/Courses/coursesData";
 import { getCourse } from "@/sanity/queries";
 import { PricesProvider } from "@/components/Prices/PricesProvider";
-import { loadPriceTable } from "@/lib/loadPrices";
+import { loadPrices } from "@/lib/loadPrices";
+import { loadFaqs } from "@/lib/loadFaqs";
 import { courseSchema, breadcrumbSchema } from "@/lib/schema";
 
 const course = courses.find((c) => c.slug === "/courses/teenagers")!;
 
 const title = "ინგლისური მოზარდებისთვის — ონლაინ კურსი | Studio Lingo";
 const description =
-  "ინგლისურის ონლაინ კურსი მოზარდებისთვის (9-16 წელი) — ინტერაქტიული, მეგობრული და ფერადი გარემო, ასაკის შესაბამისი მეთოდები. დონეები ნულიდან. Studio Lingo.";
+  "ინგლისურის ონლაინ კურსი მოზარდებისთვის (9-15 წელი) — ინტერაქტიული, მეგობრული და ფერადი გარემო, ასაკის შესაბამისი მეთოდები. დონეები ნულიდან. Studio Lingo.";
 
 export const metadata: Metadata = {
   title,
@@ -112,9 +113,10 @@ const fallbackSubtitle =
   "სპეციალურად მოზარდებზე მორგებული კურსი — არაფორმალურ, მეგობრულ და ფერად გარემოში, ასაკის შესაბამისი მეთოდებით.";
 
 export default async function TeenagersPage() {
-  const [doc, prices] = await Promise.all([
+  const [doc, prices, faqItems] = await Promise.all([
     getCourse("teenagers"),
-    loadPriceTable(),
+    loadPrices(),
+    loadFaqs(),
   ]);
   const courseTitle = doc?.title || course.title;
   const subtitle = doc?.heroSubtitle || fallbackSubtitle;
@@ -154,8 +156,9 @@ export default async function TeenagersPage() {
 
       <main className="pt-10 pb-20">
         <div className="max-w-3xl px-5 mx-auto">
-          <PricesProvider prices={prices}>
+          <PricesProvider prices={prices?.prices ?? null} months={prices?.months}>
             <CourseDetails
+              faqItems={faqItems}
               courseTitle="englishForTeens"
               gatedCalculator
               description={courseDescription}

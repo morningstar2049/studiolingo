@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import FaqHero from "@/components/FAQ/FaqHero";
 import FaqAccordion from "@/components/FAQ/FaqAccordion";
-import { faqs } from "@/components/FAQ/faqData";
+import { loadFaqs } from "@/lib/loadFaqs";
 import { faqSchema, breadcrumbSchema } from "@/lib/schema";
 
 const title = "ხშირად დასმული კითხვები | Studio Lingo";
@@ -28,7 +28,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default function FaqPage() {
+export const revalidate = 60;
+
+export default async function FaqPage() {
+  const faqs = await loadFaqs();
   return (
     <>
       <script
@@ -46,7 +49,7 @@ export default function FaqPage() {
       <FaqHero />
       <main className="pt-10 pb-24 bg-[#eef7f1] -mb-20">
         <div className="max-w-3xl px-5 mx-auto">
-          <FaqAccordion />
+          <FaqAccordion items={faqs} />
         </div>
       </main>
     </>

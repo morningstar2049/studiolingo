@@ -14,7 +14,7 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 
 import { SITE_URL } from "@/lib/schema";
 import { urlForImage } from "@/sanity/client";
-import { getPost, getPostSlugs, getPosts } from "@/sanity/queries";
+import { getPost, getPostSlugs, getPosts, type Post } from "@/sanity/queries";
 import ArticleShare from "@/components/blog/ArticleShare";
 import YoutubeEmbed from "@/components/YoutubeEmbed";
 import BlogCoursesCard from "@/components/blog/BlogCoursesCard";
@@ -241,6 +241,63 @@ function formatDate(value: string) {
   });
 }
 
+// Article FAQ sections → FAQPage data. Every article ends with an "ხშირად
+// დასმული კითხვები" heading followed by h3 questions and their paragraphs;
+// marking them up lets Google and AI assistants quote the answers directly.
+type BodyBlock = {
+  _type?: string;
+  style?: string;
+  children?: { text?: string }[];
+};
+
+const blockText = (b: BodyBlock) =>
+  (b.children ?? [])
+    .map((c) => c.text ?? "")
+    .join("")
+    .trim();
+
+function faqSchema(body: Post["body"] | undefined, url: string) {
+  const blocks = (body ?? []) as BodyBlock[];
+  const start = blocks.findIndex(
+    (b) =>
+      b.style === "h2" && blockText(b).includes("ხშირად დასმული კითხვები"),
+  );
+  if (start === -1) return null;
+
+  const faqs: { question: string; answer: string }[] = [];
+  for (let i = start + 1; i < blocks.length; i++) {
+    const b = blocks[i];
+    if (b.style === "h2") break; // next section ends the FAQ
+    if (b.style !== "h3") continue;
+    const question = blockText(b);
+    const answer: string[] = [];
+    for (let j = i + 1; j < blocks.length; j++) {
+      const next = blocks[j];
+      if (next.style === "h2" || next.style === "h3") break;
+      if (next._type !== "block") continue;
+      const text = blockText(next);
+      // The closing "დასკვნა" paragraph is not part of the last answer.
+      if (text.startsWith("დასკვნა")) break;
+      if (text) answer.push(text);
+    }
+    if (question && answer.length) {
+      faqs.push({ question, answer: answer.join(" ") });
+    }
+  }
+  if (faqs.length < 2) return null;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.question,
+      acceptedAnswer: { "@type": "Answer", text: f.answer },
+    })),
+    url,
+  };
+}
+
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
   const post = await getPost(slug);
@@ -287,12 +344,16 @@ export default async function BlogPostPage({ params }: Props) {
     ],
   };
 
+  const faq = faqSchema(post.body, `${SITE_URL}/blog/${post.slug}`);
+
   return (
     <main className="pb-20">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify([articleSchema, breadcrumbSchema]),
+          __html: JSON.stringify(
+            [articleSchema, breadcrumbSchema, faq].filter(Boolean),
+          ),
         }}
       />
 
