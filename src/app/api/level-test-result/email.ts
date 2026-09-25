@@ -174,7 +174,13 @@ export function buildLevelTestEmail(
           (a, i) =>
             `${i + 1}. [${a.level}] ${a.question}\n   პასუხი: ${
               a.given?.trim() ? a.given : NO_ANSWER
-            }\n   სწორი: ${a.correct}  →  ${a.isCorrect ? "✓ სწორია" : "✗ არასწორია"}`,
+            }\n   სწორი: ${a.correct}  →  ${
+              a.isCorrect
+                ? "✓ სწორია"
+                : (a.points ?? 0) > 0
+                  ? `± ნაწილობრივ (${a.points}/${a.maxPoints})`
+                  : "✗ არასწორია"
+            }`,
         ),
       ].join("\n")
     : "";
@@ -183,8 +189,10 @@ export function buildLevelTestEmail(
   const answerRows = answers
     .map((a, i) => {
       const given = a.given?.trim() ? a.given : NO_ANSWER;
-      const color = a.isCorrect ? "#2f9e4d" : "#e24b4a";
-      const mark = a.isCorrect ? "✓" : "✗";
+      // Near-miss spellings can earn part of the points — shown in orange.
+      const partial = !a.isCorrect && (a.points ?? 0) > 0;
+      const color = a.isCorrect ? "#2f9e4d" : partial ? "#d98416" : "#e24b4a";
+      const mark = a.isCorrect ? "✓" : partial ? "±" : "✗";
       const pts = typeof a.maxPoints === "number" ? `${a.isCorrect ? a.maxPoints : 0}/${a.maxPoints}` : "";
       return `<tr style="border-top:1px solid #e5e8ec">
         <td style="padding:8px 10px 8px 0;color:#8a929d;vertical-align:top">${i + 1}</td>

@@ -33,10 +33,20 @@ export async function POST(request: Request) {
       const q = bank.find((x) => x.id === a.id);
       if (!q) return null;
       const listening = q.audioFile !== null;
-      const correct = listening
-        ? normalize(String(a.given ?? "")) === normalize(q.answer as string)
-        : String(a.given ?? "") === q.choices![q.answer as number];
-      return { level: q.level, correct, weight: listening ? 2 : 1, listening };
+      const weight = listening ? 2 : 1;
+      const given = normalize(String(a.given ?? ""));
+      // Full marks for the exact answer; a listed near-miss earns its own
+      // score ("სხვა მისაღები პასუხები (ქულით)" in the Studio).
+      const points = listening
+        ? given === normalize(q.answer as string)
+          ? weight
+          : (q.alsoAccepted ?? []).find(
+              (alt) => given === normalize(alt.answer),
+            )?.points ?? 0
+        : String(a.given ?? "") === q.choices![q.answer as number]
+          ? weight
+          : 0;
+      return { level: q.level, points, weight, listening };
     })
     .filter((x): x is NonNullable<typeof x> => x !== null);
 
@@ -44,7 +54,7 @@ export async function POST(request: Request) {
   let listeningMistakes = 0;
   let listeningFailLevel: TLevel | null = null;
   for (const g of graded) {
-    if (g.listening && !g.correct) {
+    if (g.listening && g.points === 0) {
       listeningMistakes++;
       if (listeningMistakes === LISTENING_MISTAKES_LIMIT && !listeningFailLevel) {
         listeningFailLevel = g.level;
@@ -58,8 +68,8 @@ export async function POST(request: Request) {
       .reduce((sum, q) => sum + (q.audioFile !== null ? 2 : 1), 0);
     const total = bank.filter((q) => q.level === level).length;
     const got = graded.filter((g) => g.level === level);
-    const points = got.reduce((sum, g) => sum + (g.correct ? g.weight : 0), 0);
-    const lost = got.reduce((sum, g) => sum + (g.correct ? 0 : g.weight), 0);
+    const points = got.reduce((sum, g) => sum + g.points, 0);
+    const lost = got.reduce((sum, g) => sum + (g.weight - g.points), 0);
     return {
       level,
       points,

@@ -14,6 +14,8 @@ type TQuestion =
       question: string;
       choices: null;
       answer: string;
+      // Extra spellings that earn points too, e.g. "fotograph" for 1 of 2.
+      alsoAccepted?: { answer: string; points: number }[];
       level: TLevel;
       // Full URL / path of the audio (Sanity CDN or /audios/…).
       audioFile: string;

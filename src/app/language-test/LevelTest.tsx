@@ -101,10 +101,18 @@ function LevelTest({
       const correctText = listening
         ? currentQuestion.answer
         : currentQuestion.choices[currentQuestion.answer];
-      const isCorrect = listening
-        ? normalize(answer) === normalize(correctText)
-        : answer === correctText;
       const maxPoints = listening ? LISTENING_POINTS : CHOICE_POINTS;
+      // A listening answer can have near-miss spellings that earn fewer points
+      // (Studio field "სხვა მისაღები პასუხები (ქულით)").
+      const earned = listening
+        ? normalize(answer) === normalize(correctText)
+          ? maxPoints
+          : (currentQuestion.alsoAccepted ?? []).find(
+              (a) => normalize(answer) === normalize(a.answer),
+            )?.points ?? 0
+        : answer === correctText
+          ? maxPoints
+          : 0;
 
       answersRef.current.push({
         id: currentQuestion.id,
@@ -112,18 +120,19 @@ function LevelTest({
         question: currentQuestion.question,
         given: answer,
         correct: correctText,
-        isCorrect,
+        isCorrect: earned === maxPoints,
         listening,
-        points: isCorrect ? maxPoints : 0,
+        points: earned,
         maxPoints,
       });
 
       // Points lost so far in the current level; the 3rd lost point ends it.
       const lostInLevel = answersRef.current
-        .filter((a) => a.level === currentQuestion.level && !a.isCorrect)
-        .reduce((sum, a) => sum + a.maxPoints, 0);
+        .filter((a) => a.level === currentQuestion.level)
+        .reduce((sum, a) => sum + (a.maxPoints - a.points), 0);
+      // Only a listening answer worth nothing counts as a mistake.
       const listeningMistakes = answersRef.current.filter(
-        (a) => a.listening && !a.isCorrect,
+        (a) => a.listening && a.points === 0,
       ).length;
       const isLastQuestion = questionNumber === levelTest.length - 1;
 

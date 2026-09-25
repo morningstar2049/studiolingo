@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import { defineArrayMember, defineField, defineType } from "sanity";
 
 // Questions of the English level test (/language-test). The test runs level by
 // level (A1 → C1) and stops at the visitor's level: each level is 7 choice
@@ -126,6 +126,51 @@ export const levelTestQuestion = defineType({
             ? "ჩაწერეთ სწორი პასუხი"
             : true,
         ),
+    }),
+    defineField({
+      name: "alsoAccepted",
+      title: "სხვა მისაღები პასუხები (ქულით)",
+      type: "array",
+      description:
+        "მაგ. photograph-ის ნაცვლად fotograph — 1 ქულა. ზუსტი პასუხი ყოველთვის 2 ქულაა. დიდ-პატარა ასოებსა და ზედმეტ ჰარებს ტესტი არ ითვალისწინებს.",
+      hidden: ({ parent }) => (parent as QuestionDoc)?.kind !== "listening",
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "acceptedAnswer",
+          title: "ვარიანტი",
+          fields: [
+            defineField({
+              name: "answer",
+              title: "პასუხი",
+              type: "string",
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "points",
+              title: "ქულა",
+              type: "number",
+              initialValue: 1,
+              options: {
+                list: [
+                  { title: "1 ქულა", value: 1 },
+                  { title: "2 ქულა (სრული)", value: 2 },
+                ],
+                layout: "radio",
+                direction: "horizontal",
+              },
+              validation: (rule) => rule.required().min(1).max(2),
+            }),
+          ],
+          preview: {
+            select: { title: "answer", points: "points" },
+            prepare: ({ title, points }: { title?: string; points?: number }) => ({
+              title,
+              subtitle: `${points ?? 1} ქულა`,
+            }),
+          },
+        }),
+      ],
     }),
   ],
   orderings: [

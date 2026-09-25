@@ -100,6 +100,12 @@ function buildQuestions(
           question: q.question,
           choices: null,
           answer: q.listeningAnswer,
+          alsoAccepted: (q.alsoAccepted ?? [])
+            .filter((a) => a.answer?.trim())
+            .map((a) => ({
+              answer: a.answer!.trim(),
+              points: Math.min(2, Math.max(1, a.points ?? 1)),
+            })),
           audioFile: q.audioUrl,
         });
       } else {

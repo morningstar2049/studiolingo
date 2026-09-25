@@ -411,6 +411,7 @@ export type LevelTestQuestionDoc = {
   correctOption?: number;
   audioUrl?: string;
   listeningAnswer?: string;
+  alsoAccepted?: { answer?: string; points?: number }[];
 };
 
 // Single document "levelTestTexts": all fields optional strings, plus the
@@ -433,7 +434,7 @@ export async function getLevelTest(): Promise<{
         "questions": *[_type == "levelTestQuestion" && defined(level) && defined(question)]
           | order(order asc, _createdAt asc) {
             _id, level, kind, question, choices, correctOption,
-            "audioUrl": audio.asset->url, listeningAnswer
+            "audioUrl": audio.asset->url, listeningAnswer, alsoAccepted[]{ answer, points }
           },
         "total": count(*[_type == "levelTestQuestion"]),
         "texts": *[_id == "levelTestTexts"][0]
