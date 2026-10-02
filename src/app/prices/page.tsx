@@ -24,7 +24,10 @@ const description =
 export const metadata: Metadata = {
   title,
   description,
-  alternates: { canonical: "/prices" },
+  alternates: {
+    canonical: "/prices",
+    languages: { "ka-GE": "/prices", en: "/en/prices" },
+  },
   openGraph: { title, description, url: `${SITE_URL}/prices` },
 };
 

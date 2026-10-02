@@ -35,6 +35,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
+    // English section (small, for corporate and international visitors).
+    ...["/en", "/en/corporate", "/en/prices", "/en/contact"].map((path) => ({
+      url: `${SITE_URL}${path}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
     {
       url: `${SITE_URL}/prices`,
       changeFrequency: "monthly",

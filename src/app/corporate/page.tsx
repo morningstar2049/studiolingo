@@ -17,7 +17,10 @@ export const metadata: Metadata = {
     "ინგლისურის ტრენინგი ბიზნესისთვის",
     "Studio Lingo",
   ],
-  alternates: { canonical: "/corporate" },
+  alternates: {
+    canonical: "/corporate",
+    languages: { "ka-GE": "/corporate", en: "/en/corporate" },
+  },
   openGraph: { title, description, images: ["/og-logo.png"] },
   twitter: {
     card: "summary_large_image",
