@@ -474,3 +474,33 @@ export async function getFaqs(): Promise<{
     return null;
   }
 }
+
+// ── Footer (single document) ──────────────────────────────────────────────
+
+export type FooterDoc = {
+  tagline?: string;
+  contactHeading?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  mapUrl?: string;
+  linksHeading?: string;
+  links?: { label?: string; kind?: string; href?: string }[];
+  copyright?: string;
+  termsTitle?: string;
+  privacyTitle?: string;
+  terms?: PortableTextBlock[];
+  privacy?: PortableTextBlock[];
+};
+
+export async function getFooter(): Promise<FooterDoc | null> {
+  try {
+    return await client.fetch(
+      `*[_id == "footer"][0]`,
+      {},
+      { next: { revalidate: 60 } },
+    );
+  } catch {
+    return null;
+  }
+}

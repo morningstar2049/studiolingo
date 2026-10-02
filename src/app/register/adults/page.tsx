@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import AdultRegistrationForm from "@/components/Courses/AdultRegistrationForm";
+import { loadFooter } from "@/lib/loadFooter";
 
 const title = "რეგისტრაცია — ინგლისური ზრდასრულთათვის | Studio Lingo";
 const description =
@@ -12,7 +13,9 @@ export const metadata: Metadata = {
   openGraph: { title, description, images: ["/og-logo.png"] },
 };
 
-export default function AdultsRegisterPage() {
+export default async function AdultsRegisterPage() {
+  const footer = await loadFooter();
+
   return (
     <>
       <div
@@ -33,7 +36,11 @@ export default function AdultsRegisterPage() {
       </div>
 
       <main className="px-5 py-10 sm:py-14">
-        <AdultRegistrationForm variant="page" />
+        <AdultRegistrationForm
+          variant="page"
+          terms={footer.terms}
+          termsTitle={footer.termsTitle}
+        />
       </main>
     </>
   );

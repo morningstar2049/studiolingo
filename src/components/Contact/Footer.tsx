@@ -1,15 +1,25 @@
 "use client";
 import { FiPhone, FiMail, FiMapPin } from "react-icons/fi";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import InfoModal from "../InfoModal";
-import SchoolRules from "../SchoolRules";
 import { SOCIALS } from "../socials";
+import type { FooterData } from "@/lib/loadFooter";
 
-function Footer() {
-  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
-  const [isConfidentialityModalOpen, setIsConfidentialityModalOpen] =
-    useState(false);
+// Everything here (text, contacts, links, legal windows) comes from Sanity
+// ("ფუტერი"), loaded on the server and handed down as props.
+const linkClass =
+  "text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green";
+
+function Footer({ data }: { data: FooterData }) {
+  const [openModal, setOpenModal] = useState<"terms" | "privacy" | null>(null);
+
+  const modal: Record<"terms" | "privacy", { title: string; body: ReactNode }> =
+    {
+      terms: { title: data.termsTitle, body: data.terms },
+      privacy: { title: data.privacyTitle, body: data.privacy },
+    };
+
   return (
     <>
       <footer id="contact" className="mt-20 bg-lingo-black text-[#fff]">
@@ -27,8 +37,7 @@ function Footer() {
                 <span className="text-lingo-green">lingo</span>
               </div>
               <p className="mt-4 text-sm leading-relaxed text-[#9aa5b4]">
-                N1 ინგლისურის სკოლა, რომელიც გთავაზობთ ინგლისურის გაკვეთილებს
-                თბილისში და ონლაინ პრაქტიკული სწავლებითა და რეიტინგული კონტენტით
+                {data.tagline}
               </p>
               <div className="flex justify-center gap-3 mt-5 md:justify-start">
                 {SOCIALS.map(({ href, label, Icon, background }) => (
@@ -54,30 +63,30 @@ function Footer() {
                 style={{ fontFeatureSettings: "'case' on" }}
                 className="text-base font-bold tracking-[0.08em]"
               >
-                კონტაქტი
+                {data.contactHeading}
               </h3>
               <a
-                href="tel:+995322114623"
-                className="flex items-center gap-2 text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
+                href={`tel:${data.phone.replace(/[^+\d]/g, "")}`}
+                className={`flex items-center gap-2 ${linkClass}`}
               >
                 <FiPhone className="text-lg text-lingo-green" strokeWidth={2.6} />
-                +995 32 2 114 623
+                {data.phone}
               </a>
               <a
-                href="mailto:info@studiolingo.ge"
-                className="flex items-center gap-2 text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
+                href={`mailto:${data.email}`}
+                className={`flex items-center gap-2 ${linkClass}`}
               >
                 <FiMail className="text-lg text-lingo-green" strokeWidth={2.6} />
-                info@studiolingo.ge
+                {data.email}
               </a>
               <a
-                href="https://www.google.com/maps/dir//studiolingo"
+                href={data.mapUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-2 text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
+                className={`flex items-center gap-2 ${linkClass}`}
               >
                 <FiMapPin className="text-lg text-lingo-green" strokeWidth={2.6} />
-                წერეთლის 116, თბილისი
+                {data.address}
               </a>
             </div>
 
@@ -86,97 +95,43 @@ function Footer() {
                 style={{ fontFeatureSettings: "'case' on" }}
                 className="mb-0.5 text-base font-bold tracking-[0.08em]"
               >
-                ბმულები
+                {data.linksHeading}
               </h3>
-              <button
-                onClick={() => setIsConfidentialityModalOpen(true)}
-                className="text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
-              >
-                კონფიდენციალურობის პოლიტიკა
-              </button>
-              <button
-                onClick={() => setIsTermsModalOpen(true)}
-                className="text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
-              >
-                წესები და პირობები
-              </button>
-              <Link
-                href="/courses"
-                className="text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
-              >
-                ინგლისურის კურსები
-              </Link>
-              <Link
-                href="/prices"
-                className="text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
-              >
-                კურსების ფასები
-              </Link>
-              <Link
-                href="/faq"
-                className="text-sm text-[#c3c9d4] transition-colors hover:text-lingo-green"
-              >
-                ხშირი კითხვები
-              </Link>
+              {data.links.map((link) =>
+                link.kind === "page" ? (
+                  <Link
+                    key={link.label}
+                    href={link.href || "/"}
+                    className={linkClass}
+                  >
+                    {link.label}
+                  </Link>
+                ) : (
+                  <button
+                    key={link.label}
+                    onClick={() =>
+                      setOpenModal(link.kind === "terms" ? "terms" : "privacy")
+                    }
+                    className={linkClass}
+                  >
+                    {link.label}
+                  </button>
+                ),
+              )}
             </div>
           </div>
 
           <div className="pt-6 mt-10 text-sm text-center border-t border-[#ffffff14] text-[#7c8598]">
-            © Studio Lingo — ყველა უფლება დაცულია
+            {data.copyright}
           </div>
         </div>
       </footer>
       <InfoModal
-        open={isTermsModalOpen}
-        onClose={() => setIsTermsModalOpen(false)}
-        title="წესები და პირობები"
+        open={openModal !== null}
+        onClose={() => setOpenModal(null)}
+        title={openModal ? modal[openModal].title : ""}
       >
-        <SchoolRules />
-      </InfoModal>
-      <InfoModal
-        open={isConfidentialityModalOpen}
-        onClose={() => setIsConfidentialityModalOpen(false)}
-        title="კონფიდენციალურობის პოლიტიკა"
-      >
-        მოცემული კონფიდენციალურობის დაცვის პოლიტიკა განმარტავს თუ როგორ და რა
-        მიზნებისათვის ხდება მომხმარებელთა პერსონალური ინფორმაციია შეგროვება,
-        დამუშავება და დაცვა. ჩვენი კომპანიისთვის უმნიშვნელოვანესია თქვენი
-        პერსონალური ინფორმაციის უსაფრთხოება, რომელსაც გვიზიარებთ
-        www.studiolingo.ge ვებგვერდის საშუალებით.
-        <p className="font-bold">ინფორმაციის შეგროვება</p>
-        ჩვენ ვაგროვებთ პერსონალურ ინფორმაციას, როდესაც ჩვენს კურსებზე
-        რეგისტრირდებით. რეგისტაციის პროცესში აუცილებელია მოგვაწოდოთ გარკვეული
-        სახის პირადი ინფორმაცია, მაგ: თქვენი სახელი, გვარი, ელექტრონული ფოსტა,
-        ტელეფონის ნომერი, ენის სწავლის მიზნები.
-        <p className="font-bold">ინფორმაციის დაცვა</p>
-        ჩვენ ვიცავთ პერსონალურ მონაცემებს, რომლებსაც გვანდობთ. ჩვენ ვიღებთ ყველა
-        გონივრულ ზომა, რათა ვებ-გვერდის მეშვეობით მოპოვებული ინფორმაცია
-        დამუშავდეს დაცულად წინამდებარე კონფიდენციალურობის დაცვის პოლიტიკისა და
-        მონაცემთა დაცვის სტანდარტების შესაბამისად. ყველა სახის პირადი
-        ინფორმაციის მოპოვება ხდება მხოლოდ თქვენი თანხმობის საფუძველზე.
-        ვებ-გვერდზე არსებული გადახდის სისტემა სრულიად უსაფრთხოა. როდესაც თქვენ
-        ჩვენს ვებ-გვერდზე ახორციელებთ კურსების შეძენას, ამ დროს თქვენი ბარათის
-        ინფორმაცია ჩვენთვის არ არის ხელმისაწვდომი, შესაბამისად ამ მონაცემების
-        შენახვა ჩვენს მიერ არ ხდება.
-        <p className="font-bold">ინფორმაციის დამუშავება</p>
-        პერსონალური მონაცემების დამუშავების მთავარი მიზანია ჩვენზე დაკისრებული
-        მოვალეობის ეფექტურად და ჯეროვნად შესრულება. გარდა ამისა მონაცემების
-        დამუშავება გვეხმარება სწრაფი და ხარისხიანი მომსახურების გაწევაში, ახალი
-        პროდუქტებისა და სერვისების დანერგვაში, მარკეტინგული აქტივობების
-        განხორციელებაში, თქვენს პრეტენზიებსა და შენიშვნებზე რეაგირებაში, ჩვენი
-        ვებ-გვერდის და ზოგადად სისტემის არასათანადო გამოყენებისა და დანაშაულის
-        პრევენციაში როგორც ჩვენი, ასევე თქვენი კანონიერი ინტერესების დაცვაში.
-        თქვენი პერსონალური მონაცემების გადაცემა შეიძლება დაგვჭირდეს საქართველოს
-        კანონმდებლობით განსაზღვრულ შემთხვევებში, ასეთი შეთხვევა შეიძლება იყოს
-        კანონით განსაზღვრულ შემთხვევებში ინფორმაციაზე სამართალდამცავი
-        ორგანოებისათვის წვდომის დაშვება.
-        <p className="font-bold">
-          ცვლილებები კონფიდენციალურობის დაცვის პოლიტიკაში
-        </p>
-        ჩვენ ვიტოვებთ უფლებას, ნებისმიერ დროს შევცვალოთ წინამდებარე ინფორმაციის
-        დაცვის პოლიტიკა. ინფორმაციის დაცვის პოლიტიკაში განხორციელებული
-        ნებისმიერი ცვლილება დაუყოვნებლივ გამოქვეყნდება ინფორმაციის დაცვის
-        გვერდზე
+        {openModal ? modal[openModal].body : null}
       </InfoModal>
     </>
   );

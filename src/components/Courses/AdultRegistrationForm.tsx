@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState , type ReactNode } from "react";
 import { AiOutlineClose, AiOutlineArrowRight } from "react-icons/ai";
 import { FaCheck } from "react-icons/fa";
 import InfoModal from "../InfoModal";
@@ -128,11 +128,16 @@ export default function AdultRegistrationForm({
   open = true,
   onClose,
   variant = "modal",
+  terms,
+  termsTitle = "წესები და პირობები",
 }: {
   open?: boolean;
   onClose?: () => void;
   // "modal" — overlay opened from a button; "page" — inline on /register/adults
   variant?: "modal" | "page";
+  // Rules text from Sanity ("ფუტერი"); without it the copy in code is used.
+  terms?: ReactNode;
+  termsTitle?: string;
 }) {
   const isModal = variant === "modal";
   const cardRef = useRef<HTMLDivElement>(null);
@@ -427,9 +432,9 @@ export default function AdultRegistrationForm({
       <InfoModal
         open={termsOpen}
         onClose={() => setTermsOpen(false)}
-        title="წესები და პირობები"
+        title={termsTitle}
       >
-        <SchoolRules />
+        {terms ?? <SchoolRules />}
       </InfoModal>
     </>
   );

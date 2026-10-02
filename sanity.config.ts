@@ -6,11 +6,12 @@ import { apiVersion, dataset, projectId } from "./src/sanity/env";
 import { schemaTypes } from "./src/sanity/schemas";
 
 // Documents that exist exactly once (their id equals their type).
-const SINGLETONS = ["homeHero", "achievementsBar", "levelTestTexts"];
+const SINGLETONS = ["homeHero", "achievementsBar", "levelTestTexts", "footer"];
 const SINGLETON_TITLES: Record<string, string> = {
   homeHero: "მთავარი ბანერი",
   achievementsBar: "მიღწევების ზოლი",
   levelTestTexts: "დონის ტესტი — ტექსტები",
+  footer: "ფუტერი (ქვედა ზოლი)",
 };
 
 export default defineConfig({

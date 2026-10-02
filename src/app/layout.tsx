@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import { Noto_Sans_Georgian } from "next/font/google";
 import SiteChrome from "@/components/SiteChrome";
 import SiteFooter from "@/components/SiteFooter";
+import { loadFooter } from "@/lib/loadFooter";
 import { MobileMenuContextProvider } from "@/Context/MobileMenuContext";
 import { Analytics } from "@vercel/analytics/react";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -58,11 +59,13 @@ const notoGeorgian = Noto_Sans_Georgian({
   display: "swap",
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const footer = await loadFooter();
+
   return (
     <ClerkProvider localization={localization}>
       <html
@@ -78,7 +81,7 @@ export default function RootLayout({
           <MobileMenuContextProvider>
             <SiteChrome />
             {children}
-            <SiteFooter />
+            <SiteFooter data={footer} />
           </MobileMenuContextProvider>
         </body>
       </html>
