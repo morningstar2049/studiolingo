@@ -111,6 +111,23 @@ const IMAGE_RATIOS: Record<string, [number, number]> = {
   "4:5": [4, 5],
 };
 
+// A list item that opens with an emoji carries its own marker, so adding a
+// bullet next to it would show two. Only lists where that is true of every
+// item go without markers.
+type ListNode = { children?: { children?: { text?: string }[] }[] };
+
+const listClass = (value: unknown, marker: string) => {
+  const items = (value as ListNode)?.children ?? [];
+  const selfMarked =
+    items.length > 0 &&
+    items.every((item) =>
+      /^\p{Extended_Pictographic}/u.test(
+        (item.children ?? []).map((c) => c.text ?? "").join("").trimStart(),
+      ),
+    );
+  return selfMarked ? "my-4" : `my-4 space-y-2 pl-5 ${marker}`;
+};
+
 const getComponents = (
   animateHeadings: boolean,
 ): PortableTextComponents => ({
@@ -173,12 +190,17 @@ const getComponents = (
       </a>
     ),
   },
-  // Sanity lists carry no marker here (the ❌/✅ emoji is the marker), but they
-  // still need the same vertical rhythm as paragraphs — Tailwind's reset zeroes
-  // <ul>/<ol> margins, which otherwise glues the paragraph after a list to it.
+  // Lists whose every item already starts with its own marker (the ❌/✅ emoji
+  // in the prepositions article) keep a bare list; every other list gets real
+  // bullets or numbers. Tailwind's reset zeroes <ul>/<ol> margins and markers,
+  // so both the rhythm and the marker have to be put back here.
   list: {
-    bullet: ({ children }) => <ul className="my-4">{children}</ul>,
-    number: ({ children }) => <ol className="my-4">{children}</ol>,
+    bullet: ({ children, value }) => (
+      <ul className={listClass(value, "list-disc")}>{children}</ul>
+    ),
+    number: ({ children, value }) => (
+      <ol className={listClass(value, "list-decimal")}>{children}</ol>
+    ),
   },
   types: {
     divider: () => (
