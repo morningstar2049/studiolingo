@@ -6,9 +6,9 @@ import CoursesAbout from "@/components/Courses/CoursesAbout";
 // Course cards and questions are edited in Sanity; refresh at most once a minute.
 export const revalidate = 60;
 
-const title = "ინგლისურის კურსები — ინდივიდუალური და ჯგუფური | Studio Lingo";
+const title = "ინგლისურის კურსები და ენის შესწავლა ნულიდან | Studio Lingo";
 const description =
-  "ინგლისურის კურსები თბილისში და ონლაინ — ინდივიდუალური და ჯგუფური, სასაუბრო და ზოგადი, ზრდასრულებსა და მოზარდებისთვის. A1-C1 დონეები, მცირე ჯგუფები, პრაქტიკა ბრიტანელ მასწავლებელთან.";
+  "ინგლისურის კურსები თბილისში და ონლაინ — ინგლისური ენის შესწავლა ნულიდან, A1-დან C1-მდე. ჯგუფური და ინდივიდუალური, სასაუბრო და ზოგადი.";
 
 export const metadata: Metadata = {
   title,
