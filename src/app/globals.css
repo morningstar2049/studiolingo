@@ -15,6 +15,19 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* The BOG instalment SDK injects its own `body { font-family: 'BOG' }` into the
+   page. A rule on <body> beats the font inherited from <html>, so every page
+   switched to the bank's font once /buy-course had been opened — and stayed
+   that way through client-side navigation. `html body` outranks it. The widget
+   itself is unaffected: its own styles target .bog-* classes, which win here. */
+html body {
+  font-family: var(--font-firago), sans-serif;
+}
+
+html body [class*="bog-"] {
+  font-family: "BOG", sans-serif;
+}
+
 /* iOS Safari/Chrome zooms in — and leaves the page zoomed and horizontally
    scrollable — when you focus a form field whose font-size is under 16px. Keep
    mobile form controls at 16px so focusing a field never triggers that zoom. */
