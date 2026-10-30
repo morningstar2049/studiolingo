@@ -93,6 +93,13 @@ function Page() {
       setCourseTypeVal("ჯგუფური");
       setCourseFreqVal("კვირაში 2-ჯერ");
     }
+
+    // Two-student lessons exist only on the adult course, so leaving it clears
+    // a selection that would otherwise have no price.
+    if (val !== "ზრდასრულისთვის" && courseTypeVal === "ორმოსწავლიანი") {
+      setCourseTypeVal("ჯგუფური");
+      setCourseFreqVal("კვირაში 2-ჯერ");
+    }
   };
 
   const handleFormatChange = (val: string) => {
@@ -112,7 +119,12 @@ function Page() {
   const handleTypeChange = (val: string) => {
     setCourseTypeVal(val);
 
-    if (val === "ჯგუფური" && courseFormatVal === "ონლაინ") {
+    // Online group and two-student lessons are priced twice a week only
+    // (Sanity → კურსის ფასი), so the frequency is fixed for both.
+    if (
+      val === "ორმოსწავლიანი" ||
+      (val === "ჯგუფური" && courseFormatVal === "ონლაინ")
+    ) {
       setCourseFreqVal("კვირაში 2-ჯერ");
     }
   }
@@ -243,10 +255,14 @@ function Page() {
           >
             <MenuItem value="ჯგუფური">ჯგუფური</MenuItem>
             <MenuItem value="ინდივიდუალური">ინდივიდუალური</MenuItem>
+            {courseAudienceVal === "ზრდასრულისთვის" && (
+              <MenuItem value="ორმოსწავლიანი">ორმოსწავლიანი</MenuItem>
+            )}
           </TextField>
           <TextField
             disabled={
               courseFormatVal === "ოფისში" ||
+              courseTypeVal === "ორმოსწავლიანი" ||
               (courseFormatVal === "ონლაინ" && courseTypeVal === "ჯგუფური")
             }
             fullWidth
