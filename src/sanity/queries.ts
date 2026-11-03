@@ -504,3 +504,21 @@ export async function getFooter(): Promise<FooterDoc | null> {
     return null;
   }
 }
+
+export type CoursesPageDoc = {
+  videoVisible?: boolean;
+  desktopVideo?: string;
+  mobileVideo?: string;
+};
+
+export async function getCoursesPage(): Promise<CoursesPageDoc | null> {
+  try {
+    return await client.fetch(
+      `*[_id == "coursesPage"][0]`,
+      {},
+      { next: { revalidate: 60 } },
+    );
+  } catch {
+    return null;
+  }
+}

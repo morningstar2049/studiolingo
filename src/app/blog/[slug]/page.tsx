@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
+import { getYoutubeId } from "@/lib/youtube";
 import { AiOutlineArrowRight } from "react-icons/ai";
 
 import { SITE_URL } from "@/lib/schema";
@@ -59,16 +60,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       ...(image && { images: [image] }),
     },
   };
-}
-
-// Pull the 11-char video id out of any common YouTube URL (watch, youtu.be,
-// shorts, or an already-embed link).
-function getYoutubeId(url?: string): string | null {
-  if (!url) return null;
-  const match = url.match(
-    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/,
-  );
-  return match ? match[1] : null;
 }
 
 // Only these two original articles keep their in-text heading reveal
