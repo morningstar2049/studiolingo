@@ -115,6 +115,7 @@ const finalFields: Field[] = [
       "Tiktok",
       "Youtube",
       "Linkedin",
+      "ხელოვნური ინტელექტისგან",
       "Studio Lingo-დან დამიკავშირდნენ",
       "სხვამ მირჩია",
     ],
