@@ -489,6 +489,8 @@ export type FooterDoc = {
   copyright?: string;
   termsTitle?: string;
   privacyTitle?: string;
+  teensTermsTitle?: string;
+  teensTerms?: PortableTextBlock[];
   terms?: PortableTextBlock[];
   privacy?: PortableTextBlock[];
 };

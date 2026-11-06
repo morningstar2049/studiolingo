@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AiOutlineClose, AiOutlineArrowRight } from "react-icons/ai";
 import { FaCheck } from "react-icons/fa";
 import TermsModal from "./TermsModal";
@@ -97,11 +97,17 @@ export default function RegistrationForm({
   open = true,
   onClose,
   variant = "modal",
+  terms,
+  termsTitle,
 }: {
   open?: boolean;
   onClose?: () => void;
   // "modal" — overlay opened from a button; "page" — inline on /register/teens
   variant?: "modal" | "page";
+  // Course rules for this form, from Sanity. Left out, the modal shows the
+  // copy written in code.
+  terms?: ReactNode;
+  termsTitle?: string;
 }) {
   const isModal = variant === "modal";
   const cardRef = useRef<HTMLDivElement>(null);
@@ -376,7 +382,13 @@ export default function RegistrationForm({
         )}
       </div>
       </div>
-      <TermsModal open={termsOpen} onClose={() => setTermsOpen(false)} />
+      <TermsModal
+        open={termsOpen}
+        onClose={() => setTermsOpen(false)}
+        title={termsTitle}
+      >
+        {terms}
+      </TermsModal>
     </>
   );
 }

@@ -190,6 +190,22 @@ export const footer = defineType({
       of: [legalBlock],
     }),
     defineField({
+      name: "teensTermsTitle",
+      title: "ფანჯრის სათაური: წესები (მოზარდების ფორმა)",
+      type: "string",
+      group: "legal",
+      initialValue: "წესები და პირობები",
+    }),
+    defineField({
+      name: "teensTerms",
+      title: "წესები და პირობები — მოზარდების ფორმა",
+      type: "array",
+      group: "legal",
+      description:
+        "ჩანს მხოლოდ მოზარდების რეგისტრაციის ფორმაში. ზემოთ მოცემული წესები ფუტერსა და ზრდასრულთა ფორმაშია.",
+      of: [legalBlock],
+    }),
+    defineField({
       name: "privacyTitle",
       title: "ფანჯრის სათაური: კონფიდენციალურობა",
       type: "string",

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import RegistrationForm from "@/components/Courses/RegistrationForm";
+import { loadFooter } from "@/lib/loadFooter";
 
 const title = "რეგისტრაცია — ინგლისური მოზარდებისთვის | Studio Lingo";
 const description =
@@ -12,7 +13,10 @@ export const metadata: Metadata = {
   openGraph: { title, description, images: ["/og-logo.png"] },
 };
 
-export default function TeensRegisterPage() {
+export default async function TeensRegisterPage() {
+  // Rules for this form are edited in Sanity ("ფუტერი").
+  const footer = await loadFooter();
+
   return (
     <>
       <div
@@ -33,7 +37,11 @@ export default function TeensRegisterPage() {
       </div>
 
       <main className="px-5 py-10 sm:py-14">
-        <RegistrationForm variant="page" />
+        <RegistrationForm
+          variant="page"
+          terms={footer.teensTerms}
+          termsTitle={footer.teensTermsTitle}
+        />
       </main>
     </>
   );

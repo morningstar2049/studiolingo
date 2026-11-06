@@ -4,6 +4,7 @@ import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { getFooter } from "@/sanity/queries";
 import SchoolRules from "@/components/SchoolRules";
 import PrivacyPolicy from "@/components/PrivacyPolicy";
+import TeensRules from "@/components/TeensRules";
 
 // Footer content from Sanity ("ფუტერი"), with the copy in code as the
 // fallback. The two legal texts are returned as ready-to-render nodes so the
@@ -28,11 +29,16 @@ export type FooterData = {
   copyright: string;
   termsTitle: string;
   privacyTitle: string;
+  teensTermsTitle: string;
   terms: ReactNode;
   privacy: ReactNode;
+  teensTerms: ReactNode;
 };
 
-export const FALLBACK_FOOTER: Omit<FooterData, "terms" | "privacy"> = {
+export const FALLBACK_FOOTER: Omit<
+  FooterData,
+  "terms" | "privacy" | "teensTerms"
+> = {
   tagline:
     "N1 ინგლისურის სკოლა, რომელიც გთავაზობთ ინგლისურის გაკვეთილებს თბილისში და ონლაინ პრაქტიკული სწავლებითა და რეიტინგული კონტენტით",
   contactHeading: "კონტაქტი",
@@ -51,6 +57,7 @@ export const FALLBACK_FOOTER: Omit<FooterData, "terms" | "privacy"> = {
   copyright: "© Studio Lingo — ყველა უფლება დაცულია",
   termsTitle: "წესები და პირობები",
   privacyTitle: "კონფიდენციალურობის პოლიტიკა",
+  teensTermsTitle: "წესები და პირობები",
 };
 
 const legalComponents: PortableTextComponents = {
@@ -106,6 +113,7 @@ export async function loadFooter(): Promise<FooterData> {
     copyright: pick(doc?.copyright, f.copyright),
     termsTitle: pick(doc?.termsTitle, f.termsTitle),
     privacyTitle: pick(doc?.privacyTitle, f.privacyTitle),
+    teensTermsTitle: pick(doc?.teensTermsTitle, f.teensTermsTitle),
     terms: doc?.terms?.length ? (
       <PortableText value={doc.terms} components={legalComponents} />
     ) : (
@@ -115,6 +123,11 @@ export async function loadFooter(): Promise<FooterData> {
       <PortableText value={doc.privacy} components={legalComponents} />
     ) : (
       <PrivacyPolicy />
+    ),
+    teensTerms: doc?.teensTerms?.length ? (
+      <PortableText value={doc.teensTerms} components={legalComponents} />
+    ) : (
+      <TeensRules />
     ),
   };
 }
