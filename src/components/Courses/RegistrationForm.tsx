@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AiOutlineClose, AiOutlineArrowRight } from "react-icons/ai";
 import { FaCheck } from "react-icons/fa";
 import TermsModal from "./TermsModal";
+import { fieldError, type FieldRules } from "@/lib/formValidation";
 
 // Native registration form that submits straight into the school's Google Form
 // (englishForTeens). Responses land in the same Google Form / linked Sheet.
@@ -13,7 +14,7 @@ const AGREE_ID = "entry.456632150";
 const AGREE_VALUE =
   "ყურადღებით გავეცანი ყველა წესს და, როგორც მშობელი, ვეთანხმები";
 
-type Field = {
+type Field = FieldRules & {
   id: string;
   label: string;
   type: "text" | "tel" | "email" | "number" | "select";
@@ -25,8 +26,18 @@ const sections: { title: string; fields: Field[] }[] = [
     title: "მოსწავლის მონაცემები",
     fields: [
       { id: "entry.2113546230", label: "მოსწავლის სახელი, გვარი", type: "text" },
-      { id: "entry.2115745881", label: "მოსწავლის ასაკი", type: "number" },
-      { id: "entry.1957136311", label: "მოსწავლის საკონტაქტო ნომერი", type: "tel" },
+      {
+        id: "entry.2115745881",
+        label: "მოსწავლის ასაკი",
+        type: "number",
+        digitsOnly: true,
+      },
+      {
+        id: "entry.1957136311",
+        label: "მოსწავლის საკონტაქტო ნომერი",
+        type: "tel",
+        minDigits: 9,
+      },
       { id: "entry.835886771", label: "მოსწავლის მოქმედი ელფოსტა", type: "email" },
       {
         id: "entry.501891752",
@@ -46,7 +57,12 @@ const sections: { title: string; fields: Field[] }[] = [
     title: "მშობლის მონაცემები",
     fields: [
       { id: "entry.1757371366", label: "მშობლის სახელი, გვარი", type: "text" },
-      { id: "entry.648000447", label: "მშობლის საკონტაქტო ნომერი", type: "tel" },
+      {
+        id: "entry.648000447",
+        label: "მშობლის საკონტაქტო ნომერი",
+        type: "tel",
+        minDigits: 9,
+      },
       { id: "entry.1383942736", label: "მშობლის მოქმედი ელფოსტა", type: "email" },
     ],
   },
@@ -113,7 +129,7 @@ export default function RegistrationForm({
   const cardRef = useRef<HTMLDivElement>(null);
   const [values, setValues] = useState<Record<string, string>>({});
   const [agreed, setAgreed] = useState(false);
-  const [errors, setErrors] = useState<Record<string, boolean>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [termsOpen, setTermsOpen] = useState(false);
   const [status, setStatus] = useState<"idle" | "submitting" | "success">(
     "idle",
@@ -154,22 +170,22 @@ export default function RegistrationForm({
 
   const set = (id: string, v: string) => {
     setValues((p) => ({ ...p, [id]: v }));
-    if (errors[id]) setErrors((p) => ({ ...p, [id]: false }));
+    if (errors[id])
+      setErrors((p) => {
+        const next = { ...p };
+        delete next[id];
+        return next;
+      });
   };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const errs: Record<string, boolean> = {};
+    const errs: Record<string, string> = {};
     allFields.forEach((f) => {
-      const v = (values[f.id] || "").trim();
-      if (!v) errs[f.id] = true;
-      else if (
-        f.type === "email" &&
-        !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)
-      )
-        errs[f.id] = true;
+      const message = fieldError(values[f.id] ?? "", f);
+      if (message) errs[f.id] = message;
     });
-    if (!agreed) errs[AGREE_ID] = true;
+    if (!agreed) errs[AGREE_ID] = "ეს ველი სავალდებულოა";
     setErrors(errs);
     if (Object.keys(errs).length) return;
 
@@ -319,9 +335,7 @@ export default function RegistrationForm({
                         )}
                         {errors[f.id] && (
                           <p className="mt-1 text-[13px] sm:text-sm text-[#e24b4a]">
-                            {f.type === "email"
-                              ? "შეავსეთ სწორი ელფოსტა"
-                              : "ეს ველი სავალდებულოა"}
+                            {errors[f.id]}
                           </p>
                         )}
                       </div>
@@ -339,7 +353,11 @@ export default function RegistrationForm({
                     onChange={(e) => {
                       setAgreed(e.target.checked);
                       if (errors[AGREE_ID])
-                        setErrors((p) => ({ ...p, [AGREE_ID]: false }));
+                        setErrors((p) => {
+                          const next = { ...p };
+                          delete next[AGREE_ID];
+                          return next;
+                        });
                     }}
                     className="mt-1 w-5 h-5 sm:w-6 sm:h-6 accent-lingo-green shrink-0"
                   />

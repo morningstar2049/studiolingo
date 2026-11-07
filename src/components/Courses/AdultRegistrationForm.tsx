@@ -4,6 +4,7 @@ import { useEffect, useRef, useState , type ReactNode } from "react";
 import { AiOutlineClose, AiOutlineArrowRight } from "react-icons/ai";
 import { FaCheck } from "react-icons/fa";
 import InfoModal from "../InfoModal";
+import { fieldError, type FieldRules } from "@/lib/formValidation";
 import SchoolRules from "../SchoolRules";
 
 // Native registration form for the adult English courses. Submits straight into
@@ -22,7 +23,7 @@ const AGREE_ID_FINAL = "entry.940638417"; // terms, always sent
 const AGREE_ID_ONLINE = "entry.161711356"; // terms, online branch only
 const LESSON_TYPE_ID = "entry.1846302127";
 
-type Field = {
+type Field = FieldRules & {
   id: string;
   label: string;
   type: "text" | "tel" | "email" | "number" | "select";
@@ -31,10 +32,25 @@ type Field = {
 
 const commonFields: Field[] = [
   { id: "entry.2005620554", label: "სახელი, გვარი", type: "text" },
-  { id: "entry.1611228309", label: "ასაკი", type: "number" },
-  { id: "entry.1469338775", label: "საკონტაქტო ნომერი", type: "tel" },
-  { id: "entry.129933980", label: "WhatsApp / Viber ნომერი", type: "tel" },
-  { id: "entry.1324604824", label: "პირადობის ID ნომერი", type: "number" },
+  { id: "entry.1611228309", label: "ასაკი", type: "number", digitsOnly: true },
+  {
+    id: "entry.1469338775",
+    label: "საკონტაქტო ნომერი",
+    type: "tel",
+    minDigits: 9,
+  },
+  {
+    id: "entry.129933980",
+    label: "WhatsApp / Viber ნომერი",
+    type: "tel",
+    minDigits: 9,
+  },
+  {
+    id: "entry.1324604824",
+    label: "პირადობის ID ნომერი",
+    type: "number",
+    minDigits: 11,
+  },
   { id: "entry.1297167939", label: "მოქმედი ელფოსტა", type: "email" },
   {
     id: "entry.1796271592",
@@ -144,7 +160,7 @@ export default function AdultRegistrationForm({
   const cardRef = useRef<HTMLDivElement>(null);
   const [values, setValues] = useState<Record<string, string>>({});
   const [agreed, setAgreed] = useState(false);
-  const [errors, setErrors] = useState<Record<string, boolean>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [termsOpen, setTermsOpen] = useState(false);
   const [status, setStatus] = useState<"idle" | "submitting" | "success">(
     "idle",
@@ -183,20 +199,23 @@ export default function AdultRegistrationForm({
 
   const set = (id: string, v: string) => {
     setValues((p) => ({ ...p, [id]: v }));
-    if (errors[id]) setErrors((p) => ({ ...p, [id]: false }));
+    if (errors[id])
+      setErrors((p) => {
+        const next = { ...p };
+        delete next[id];
+        return next;
+      });
   };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const activeFields = [...commonFields, ...courseFields, ...finalFields];
-    const errs: Record<string, boolean> = {};
+    const errs: Record<string, string> = {};
     activeFields.forEach((f) => {
-      const v = (values[f.id] || "").trim();
-      if (!v) errs[f.id] = true;
-      else if (f.type === "email" && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v))
-        errs[f.id] = true;
+      const message = fieldError(values[f.id] ?? "", f);
+      if (message) errs[f.id] = message;
     });
-    if (!agreed) errs.agree = true;
+    if (!agreed) errs.agree = "ეს ველი სავალდებულოა";
     setErrors(errs);
     if (Object.keys(errs).length) return;
 
@@ -264,7 +283,7 @@ export default function AdultRegistrationForm({
       )}
       {errors[f.id] && (
         <p className="mt-1 text-[13px] sm:text-sm text-[#e24b4a]">
-          {f.type === "email" ? "შეავსეთ სწორი ელფოსტა" : "ეს ველი სავალდებულოა"}
+          {errors[f.id]}
         </p>
       )}
     </div>
@@ -387,7 +406,11 @@ export default function AdultRegistrationForm({
                       onChange={(e) => {
                         setAgreed(e.target.checked);
                         if (errors.agree)
-                          setErrors((p) => ({ ...p, agree: false }));
+                          setErrors((p) => {
+                            const next = { ...p };
+                            delete next.agree;
+                            return next;
+                          });
                       }}
                       className="mt-1 w-5 h-5 sm:w-6 sm:h-6 accent-lingo-green shrink-0"
                     />
