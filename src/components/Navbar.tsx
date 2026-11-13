@@ -1,7 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaBookOpen, FaBuilding, FaStar } from "react-icons/fa6";
+import { FaBookOpen, FaBuilding, FaCirclePlay } from "react-icons/fa6";
 import NavItem from "./NavItem";
 
 // Homepage in-page sections the nav links to (anchor hrefs above).
@@ -63,16 +63,16 @@ function Navbar() {
           icon: <FaBookOpen size={18} />,
         },
         {
+          name: "ილიკოს კურსი",
+          href: "/courses/video-course",
+          description: "ვიდეო კურსი — ისწავლე შენი ტემპით",
+          icon: <FaCirclePlay size={18} />,
+        },
+        {
           name: "კურსები კომპანიებისთვის",
           href: "/corporate",
           description: "ბიზნეს-ინგლისური",
           icon: <FaBuilding size={18} />,
-        },
-        {
-          name: "შეფასებები",
-          href: "#reviews",
-          description: "მოსწავლეების გამოხმაურება",
-          icon: <FaStar size={18} />,
         },
       ],
     },

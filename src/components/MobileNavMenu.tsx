@@ -2,7 +2,7 @@
 import { useContext } from "react";
 import { MobileMenuContext } from "@/Context/MobileMenuContext";
 import Link from "next/link";
-import { FaBookOpen, FaBuilding, FaStar } from "react-icons/fa6";
+import { FaBookOpen, FaBuilding, FaCirclePlay } from "react-icons/fa6";
 import Button from "./Button";
 import MobileNavMenuItemAccordion from "./MobileNavMenuItemAccordion";
 import SocialLinks from "./SocialLinks";
@@ -22,16 +22,16 @@ export default function MobileNavMenu() {
           icon: <FaBookOpen size={20} />,
         },
         {
+          name: "ილიკოს კურსი",
+          href: "/courses/video-course",
+          description: "ვიდეო კურსი — ისწავლე შენი ტემპით",
+          icon: <FaCirclePlay size={20} />,
+        },
+        {
           name: "კურსები კომპანიებისთვის",
           href: "/corporate",
           description: "ბიზნეს-ინგლისური",
           icon: <FaBuilding size={20} />,
-        },
-        {
-          name: "შეფასებები",
-          href: "/#reviews",
-          description: "მოსწავლეების გამოხმაურება",
-          icon: <FaStar size={20} />,
         },
       ],
     },

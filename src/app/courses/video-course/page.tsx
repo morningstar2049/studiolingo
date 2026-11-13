@@ -6,6 +6,7 @@ import VideoCourseAccordion from "@/components/Courses/VideoCourseAccordion";
 import VideoCourseParts from "@/components/Courses/VideoCourseParts";
 import VideoCourseProgram from "@/components/Courses/VideoCourseProgram";
 import VideoCoursePrice from "@/components/Courses/VideoCoursePrice";
+import HeroPriceChip from "@/components/Courses/HeroPriceChip";
 import CourseVideo from "@/components/Courses/CourseVideo";
 import SpeakingBanner from "@/components/Courses/SpeakingBanner";
 
@@ -24,13 +25,17 @@ const LESSONS = 20;
 const ACCESS_MONTHS = 4;
 const SIGNUP_URL = "https://forms.gle/eYCQNNBYKCmJA1RC6";
 
-const title = "ინგლისურის ვიდეო კურსი — ისწავლე შენი ტემპით | Studio Lingo";
-const description = `ინგლისურის ვიდეო კურსი A2–B1 დონეზე: ${LESSONS} გაკვეთილი, თითოეულში ლექსიკა, გრამატიკა და საუბრის პრაქტიკა. ${ACCESS_MONTHS} თვიანი წვდომა, პრესეილის ფასი ${PRESALE_PRICE} ₾.`;
+const CHIP =
+  "px-3.5 py-1.5 text-[13px] font-medium rounded-full text-[#fff] bg-[#ffffff1f]";
+
+const title = "ინგლისურის ვიდეო კურსი ილიკოსთან | Studio Lingo";
+const description = `ინგლისურის ვიდეო კურსი ილიკოსთან A2–B1 დონეზე: ${LESSONS} გაკვეთილი, თითოეულში ლექსიკა, გრამატიკა და საუბრის პრაქტიკა. ${ACCESS_MONTHS} თვიანი წვდომა, პრესეილის ფასი ${PRESALE_PRICE} ₾.`;
 
 export const metadata: Metadata = {
   title,
   description,
   keywords: [
+    "ინგლისურის ვიდეო კურსი ილიკოსთან",
     "ინგლისურის ვიდეო კურსი",
     "ინგლისური ონლაინ ვიდეო გაკვეთილები",
     "ინგლისურის სწავლა ვიდეოთი",
@@ -49,7 +54,7 @@ export const metadata: Metadata = {
 
 const schema = {
   ...courseSchema({
-    name: "ინგლისურის ვიდეო კურსი",
+    name: "ინგლისურის ვიდეო კურსი ილიკოსთან",
     description,
     path: "/courses/video-course",
     mode: "online",
@@ -159,23 +164,26 @@ export default function VideoCoursePage() {
             style={{ fontFeatureSettings: "'case' on" }}
             className="text-[26px] font-bold leading-tight text-[#fff] sm:text-4xl"
           >
-            ინგლისურის ვიდეო კურსი
+            ინგლისურის ვიდეო კურსი ილიკოსთან
           </h1>
           <p className="mt-3 text-[15px] sm:text-base text-[#c3c9d4]">
             ისწავლე შენი ტემპით — {LESSONS} გაკვეთილი, თითოეულში ლექსიკა,
             გრამატიკა და საუბრის პრაქტიკა.
           </p>
           <div className="flex flex-wrap justify-center gap-2 mt-5">
+            {/* Price chip carries the presale drop: the line draws across the
+                old price on load, so the saving is watched rather than read. */}
+            <HeroPriceChip
+              full={PRICE}
+              presale={PRESALE_PRICE}
+              className={CHIP}
+            />
             {[
-              `${PRESALE_PRICE} ₾`,
               `${LESSONS} გაკვეთილი`,
               "A2–B1",
               `${ACCESS_MONTHS} თვიანი წვდომა`,
             ].map((chip) => (
-              <span
-                key={chip}
-                className="px-3.5 py-1.5 text-[13px] font-medium rounded-full text-[#fff] bg-[#ffffff1f]"
-              >
+              <span key={chip} className={CHIP}>
                 {chip}
               </span>
             ))}
@@ -196,7 +204,7 @@ export default function VideoCoursePage() {
         <Section heading="რა არის ეს კურსი">
           <p>
             <span className="font-bold text-lingo-green">
-              ინგლისურის ვიდეო კურსი
+              ინგლისურის ვიდეო კურსი ილიკოსთან
             </span>{" "}
             არის სრული პროგრამა A2–B1 დონისთვის, რომელსაც შენი ტემპით გადიხარ.
             არ არის ფიქსირებული გრაფიკი და ჯგუფი — ვიდეოებს მაშინ უყურებ, როცა

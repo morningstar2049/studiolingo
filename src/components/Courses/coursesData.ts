@@ -116,13 +116,13 @@ export const courses: Course[] = [
   },
   {
     slug: "/courses/video-course",
-    title: "ინგლისურის ვიდეო კურსი",
+    title: "ინგლისურის ვიდეო კურსი ილიკოსთან",
     chips: ["ვიდეო", "შენი ტემპით"],
     desc: "ჩაწერილი კურსი A2–B1 დონეზე — ლექსიკა, გრამატიკა და საუბრის პრაქტიკა თითოეულ გაკვეთილში. უყურე მაშინ, როცა დრო გაქვს.",
     accent: "#7136d7",
     accentLight: "#8d5ae3",
     accentText: "#7136d7",
-    art: `<svg viewBox="0 0 320 184" width="100%" height="100%" role="img" aria-label="ინგლისურის ვიდეო კურსი">
+    art: `<svg viewBox="0 0 320 184" width="100%" height="100%" role="img" aria-label="ინგლისურის ვიდეო კურსი ილიკოსთან">
       <circle cx="160" cy="90" r="78" fill="#fff" opacity=".1"/>
       <ellipse cx="160" cy="158" rx="64" ry="8" fill="#4a1f93" opacity=".25"/>
       <rect x="84" y="44" width="152" height="92" rx="12" fill="#fff"/>
