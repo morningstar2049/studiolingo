@@ -114,4 +114,27 @@ export const courses: Course[] = [
       <path d="M88 56l3.2 7 7 1-5 5 1.2 7-6.4-3.5-6.4 3.5 1.2-7-5-5 7-1z" fill="#fff" opacity=".9"/>
     </svg>`,
   },
+  {
+    slug: "/courses/video-course",
+    title: "ინგლისურის ვიდეო კურსი",
+    chips: ["ვიდეო", "შენი ტემპით"],
+    desc: "ჩაწერილი კურსი A2–B1 დონეზე — ლექსიკა, გრამატიკა და საუბრის პრაქტიკა თითოეულ გაკვეთილში. უყურე მაშინ, როცა დრო გაქვს.",
+    accent: "#7136d7",
+    accentLight: "#8d5ae3",
+    accentText: "#7136d7",
+    art: `<svg viewBox="0 0 320 184" width="100%" height="100%" role="img" aria-label="ინგლისურის ვიდეო კურსი">
+      <circle cx="160" cy="90" r="78" fill="#fff" opacity=".1"/>
+      <ellipse cx="160" cy="158" rx="64" ry="8" fill="#4a1f93" opacity=".25"/>
+      <rect x="84" y="44" width="152" height="92" rx="12" fill="#fff"/>
+      <rect x="84" y="44" width="152" height="18" rx="12" fill="#efe9fb"/>
+      <rect x="84" y="56" width="152" height="6" fill="#efe9fb"/>
+      <circle cx="98" cy="53" r="4" fill="#cbb8ef"/>
+      <circle cx="112" cy="53" r="4" fill="#cbb8ef"/>
+      <circle cx="126" cy="53" r="4" fill="#cbb8ef"/>
+      <circle cx="160" cy="99" r="26" fill="#7136d7"/>
+      <path d="M153 88l20 11-20 11z" fill="#fff"/>
+      <rect x="104" y="146" width="112" height="7" rx="3.5" fill="#fff" opacity=".55"/>
+      <rect x="104" y="146" width="48" height="7" rx="3.5" fill="#fff"/>
+    </svg>`,
+  },
 ];

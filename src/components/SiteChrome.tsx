@@ -32,10 +32,12 @@ export default function SiteChrome() {
         <Navbar />
       </div>
       <MobileNavMenu />
-      {/* Not on registration pages (redundant) or career pages (for teacher
-          candidates, not students). */}
+      {/* Not on registration pages (redundant), career pages (for teacher
+          candidates, not students) or the video course, which is sold on its
+          own and has nothing to do with enrolling in a live course. */}
       {!pathname?.startsWith("/register") &&
-        !pathname?.startsWith("/career") && <RegisterButton />}
+        !pathname?.startsWith("/career") &&
+        pathname !== "/courses/video-course" && <RegisterButton />}
       <MessengerButton />
     </>
   );
