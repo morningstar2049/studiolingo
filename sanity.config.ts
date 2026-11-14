@@ -11,6 +11,7 @@ const SINGLETONS = [
   "achievementsBar",
   "levelTestTexts",
   "coursesPage",
+  "videoCoursePage",
   "footer",
 ];
 const SINGLETON_TITLES: Record<string, string> = {
@@ -18,6 +19,7 @@ const SINGLETON_TITLES: Record<string, string> = {
   achievementsBar: "მიღწევების ზოლი",
   levelTestTexts: "დონის ტესტი — ტექსტები",
   coursesPage: "კურსების გვერდი",
+  videoCoursePage: "ვიდეო კურსის გვერდი",
   footer: "ფუტერი (ქვედა ზოლი)",
 };
 

@@ -11,27 +11,78 @@ import CourseVideo from "@/components/Courses/CourseVideo";
 import SpeakingBanner from "@/components/Courses/SpeakingBanner";
 
 import { SITE_URL, courseSchema, breadcrumbSchema } from "@/lib/schema";
+import { getVideoCoursePage } from "@/sanity/queries";
+import { getYoutubeId } from "@/lib/youtube";
 
 export const revalidate = 60;
 
 // The self-paced video course. It is sold as one product rather than a
 // timetable, so this page does not use the course calculator the live courses
 // share. Sign-up goes to a Google Form for now instead of a form on the site.
+//
+// Everything that changes over time — prices, the promo video, the lessons
+// already filmed, the FAQ — is edited in Sanity ("ვიდეო კურსის გვერდი"). The
+// constants below are the fallback: they are what the page shows when a field
+// is empty or Sanity cannot be reached, so the page is never blank.
 const PRICE = 350;
 const PRESALE_PRICE = 250;
 const PROMO_VIDEO_ID = "fbodAICVKa0";
+const SAMPLE_VIDEO_ID = "lgKbPyt74kI";
 const EXTRA_MONTH = 80;
 const LESSONS = 20;
 const ACCESS_MONTHS = 4;
 const SIGNUP_URL = "https://forms.gle/eYCQNNBYKCmJA1RC6";
 
+// One resolved set of page values, Sanity first and code second. Called by both
+// generateMetadata and the page so the two can never disagree — a price in the
+// meta description that the page contradicts is worse than no price at all.
+type Settings = Awaited<ReturnType<typeof loadSettings>>;
+
+async function loadSettings() {
+  const doc = await getVideoCoursePage();
+  const presaleActive = doc?.presaleActive ?? true;
+
+  return {
+    price: doc?.price ?? PRICE,
+    presaleActive,
+    presalePrice: presaleActive ? (doc?.presalePrice ?? PRESALE_PRICE) : null,
+    extraMonth: doc?.extraMonthPrice ?? EXTRA_MONTH,
+    lessonCount: doc?.lessonCount ?? LESSONS,
+    accessMonths: doc?.accessMonths ?? ACCESS_MONTHS,
+    signupUrl: doc?.signupUrl ?? SIGNUP_URL,
+    videoId: getYoutubeId(doc?.promoVideo) ?? PROMO_VIDEO_ID,
+    sampleVideoId: getYoutubeId(doc?.sampleVideo) ?? SAMPLE_VIDEO_ID,
+    lessons:
+      doc?.lessons?.length
+        ? doc.lessons.map((l) => ({ title: l.title ?? "", note: l.note ?? "" }))
+        : null,
+    faq:
+      doc?.faq?.length
+        ? doc.faq.map((f) => ({ q: f.question ?? "", a: f.answer ?? "" }))
+        : null,
+  };
+}
+
 const CHIP =
   "px-3.5 py-1.5 text-[13px] font-medium rounded-full text-[#fff] bg-[#ffffff1f]";
 
-const title = "ინგლისურის ვიდეო კურსი ილიკოსთან | Studio Lingo";
-const description = `ინგლისურის ვიდეო კურსი ილიკოსთან A2–B1 დონეზე: ${LESSONS} გაკვეთილი, თითოეულში ლექსიკა, გრამატიკა და საუბრის პრაქტიკა. ${ACCESS_MONTHS} თვიანი წვდომა, პრესეილის ფასი ${PRESALE_PRICE} ₾.`;
+const COURSE_NAME = "ინგლისურის ვიდეო კურსი ილიკოსთან";
+const title = `${COURSE_NAME} | Studio Lingo`;
 
-export const metadata: Metadata = {
+// The price sentence changes with the presale, so the description is built
+// from the resolved settings rather than written out once.
+const describe = (s: Settings) =>
+  `${COURSE_NAME} A2–B1 დონეზე: ${s.lessonCount} გაკვეთილი, თითოეულში ლექსიკა, გრამატიკა და საუბრის პრაქტიკა. ${s.accessMonths} თვიანი წვდომა, ${
+    s.presalePrice
+      ? `პრესეილის ფასი ${s.presalePrice} ₾`
+      : `ფასი ${s.price} ₾`
+  }.`;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await loadSettings();
+  const description = describe(settings);
+
+  return {
   title,
   description,
   keywords: [
@@ -50,24 +101,28 @@ export const metadata: Metadata = {
     description,
     images: ["/og-logo.png"],
   },
-};
+  };
+}
 
-const schema = {
+// Structured data quotes the price people actually pay, so it is built from
+// the same settings — a schema price Google can see contradicted on the page
+// is worse than none.
+const buildSchema = (s: Settings) => ({
   ...courseSchema({
-    name: "ინგლისურის ვიდეო კურსი ილიკოსთან",
-    description,
+    name: COURSE_NAME,
+    description: describe(s),
     path: "/courses/video-course",
     mode: "online",
   }),
   offers: {
     "@type": "Offer",
-    price: PRESALE_PRICE,
+    price: s.presalePrice ?? s.price,
     priceCurrency: "GEL",
     category: "ვიდეო კურსი",
     availability: "https://schema.org/InStock",
     url: `${SITE_URL}/courses/video-course`,
   },
-};
+});
 
 
 // Lessons already filmed. Only the theme is listed; the grammar detail is in
@@ -79,10 +134,17 @@ const READY_LESSONS = [
   { title: "გაკვეთილი 4 — ტანსაცმელი და შოპინგი", note: "ტანსაცმელი, სტილი, ფასები" },
 ];
 
-const FAQ = [
+// Fallback FAQ. The answers quote the numbers, so they are built from the
+// resolved settings; once the FAQ is filled in Sanity, that list wins and the
+// numbers in it are typed by hand.
+const defaultFaq = (s: Settings) => [
   {
     q: "რამდენი ხნით მაქვს წვდომა?",
-    a: `${ACCESS_MONTHS} თვის განმავლობაში — დროის ათვლა დაიწყება პრესეილის დასრულების შემდეგ, როცა კურსი სრულად ხელმისაწვდომი გახდება. თუ მეტი დრო დაგჭირდა, წვდომის გაგრძელება შესაძლებელია დამატებით — ერთი თვე ${EXTRA_MONTH} ₾.`,
+    a: `${s.accessMonths} თვის განმავლობაში${
+      s.presalePrice
+        ? " — დროის ათვლა დაიწყება პრესეილის დასრულების შემდეგ, როცა კურსი სრულად ხელმისაწვდომი გახდება"
+        : ""
+    }. თუ მეტი დრო დაგჭირდა, წვდომის გაგრძელება შესაძლებელია დამატებით — ერთი თვე ${s.extraMonth} ₾.`,
   },
   {
     q: "რა დონეზეა კურსი?",
@@ -102,32 +164,44 @@ const FAQ = [
   },
 ];
 
+// A page section. The heading is optional: some blocks (the sample lesson,
+// the price card) speak for themselves and read better without one.
 function Section({
   heading,
   children,
 }: {
-  heading: string;
+  heading?: string;
   children: React.ReactNode;
 }) {
   return (
     <section className="mt-12">
-      <h2
-        style={{ fontFeatureSettings: "'case' on" }}
-        className="text-xl font-bold sm:text-2xl text-lingo-green"
+      {heading && (
+        <h2
+          style={{ fontFeatureSettings: "'case' on" }}
+          className="text-xl font-bold sm:text-2xl text-lingo-green"
+        >
+          {heading}
+        </h2>
+      )}
+      <div
+        className={`${heading ? "mt-4 " : ""}text-[15px] sm:text-base leading-relaxed text-[#4b5563]`}
       >
-        {heading}
-      </h2>
-      <div className="mt-4 text-[15px] sm:text-base leading-relaxed text-[#4b5563]">
         {children}
       </div>
     </section>
   );
 }
 
-function SignUpButton({ className = "" }: { className?: string }) {
+function SignUpButton({
+  href,
+  className = "",
+}: {
+  href: string;
+  className?: string;
+}) {
   return (
     <a
-      href={SIGNUP_URL}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       style={{ fontFeatureSettings: "'case' on" }}
@@ -138,14 +212,18 @@ function SignUpButton({ className = "" }: { className?: string }) {
   );
 }
 
-export default function VideoCoursePage() {
+export default async function VideoCoursePage() {
+  const s = await loadSettings();
+  const lessons = s.lessons ?? READY_LESSONS;
+  const faq = s.faq ?? defaultFaq(s);
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify([
-            schema,
+            buildSchema(s),
             breadcrumbSchema([
               { name: "მთავარი", path: "/" },
               { name: "კურსები", path: "/courses" },
@@ -167,21 +245,27 @@ export default function VideoCoursePage() {
             ინგლისურის ვიდეო კურსი ილიკოსთან
           </h1>
           <p className="mt-3 text-[15px] sm:text-base text-[#c3c9d4]">
-            ისწავლე შენი ტემპით — {LESSONS} გაკვეთილი, თითოეულში ლექსიკა,
-            გრამატიკა და საუბრის პრაქტიკა.
+            ისწავლე შენი ტემპით — {s.lessonCount} გაკვეთილი, თითოეულში
+            ლექსიკა, გრამატიკა და საუბრის პრაქტიკა.
           </p>
           <div className="flex flex-wrap justify-center gap-2 mt-5">
-            {/* Price chip carries the presale drop: the line draws across the
-                old price on load, so the saving is watched rather than read. */}
-            <HeroPriceChip
-              full={PRICE}
-              presale={PRESALE_PRICE}
-              className={CHIP}
-            />
+            {/* While the presale runs the price chip draws a line across the
+                old price on load, so the saving is watched rather than read.
+                Once it ends there is nothing to strike, so it is a plain
+                chip. */}
+            {s.presalePrice ? (
+              <HeroPriceChip
+                full={s.price}
+                presale={s.presalePrice}
+                className={CHIP}
+              />
+            ) : (
+              <span className={CHIP}>{s.price} ₾</span>
+            )}
             {[
-              `${LESSONS} გაკვეთილი`,
+              `${s.lessonCount} გაკვეთილი`,
               "A2–B1",
-              `${ACCESS_MONTHS} თვიანი წვდომა`,
+              `${s.accessMonths} თვიანი წვდომა`,
             ].map((chip) => (
               <span key={chip} className={CHIP}>
                 {chip}
@@ -189,7 +273,7 @@ export default function VideoCoursePage() {
             ))}
           </div>
           <div className="mt-7">
-            <SignUpButton />
+            <SignUpButton href={s.signupUrl} />
           </div>
         </div>
       </div>
@@ -198,7 +282,7 @@ export default function VideoCoursePage() {
         {/* Promo video: same player as the other course pages — desktop
             opens a lightbox, phones play inline. */}
         <div className="mt-6">
-          <CourseVideo videoId={PROMO_VIDEO_ID} />
+          <CourseVideo videoId={s.videoId} />
         </div>
 
         <Section heading="რა არის ეს კურსი">
@@ -237,7 +321,7 @@ export default function VideoCoursePage() {
             დანარჩენი იმავე სტრუქტურით მოდის.
           </p>
           <div className="mt-5">
-            <VideoCourseProgram lessons={READY_LESSONS} />
+            <VideoCourseProgram lessons={lessons} />
           </div>
         </Section>
 
@@ -251,36 +335,52 @@ export default function VideoCoursePage() {
           </p>
         </Section>
 
-        <Section heading="ფასი და წვდომა">
+        {/* A whole lesson, shown just before the price: the last thing to
+            settle before deciding is what one actually looks like. */}
+        <Section>
+          <CourseVideo videoId={s.sampleVideoId} />
+        </Section>
+
+        <Section>
           <div className="p-6 border rounded-2xl border-[#e3e7ec] bg-[#fff]">
-            <VideoCoursePrice full={PRICE} presale={PRESALE_PRICE} />
+            {s.presalePrice ? (
+              <VideoCoursePrice full={s.price} presale={s.presalePrice} />
+            ) : (
+              <p className="text-[40px] leading-none font-bold text-lingo-black">
+                {s.price} ₾
+              </p>
+            )}
             <p className="mt-3 text-[14px] text-[#6b7280]">
-              მთლიანი კურსი — {LESSONS} გაკვეთილი. პრესეილის ფასი მოქმედებს,
-              სანამ კურსი სრულად დასრულდება.
+              მთლიანი კურსი — {s.lessonCount} გაკვეთილი.
+              {s.presalePrice
+                ? " პრესეილის ფასი მოქმედებს, სანამ კურსი სრულად დასრულდება."
+                : ""}
             </p>
             <ul className="mt-5 space-y-2 text-[15px] text-[#4b5563] list-disc pl-5">
               <li>
-                {ACCESS_MONTHS} თვიანი წვდომა ყველა გაკვეთილზე{" "}
-                <span className="text-[#6b7280]">
-                  (დროის ათვლა დაიწყება პრესეილის დასრულების შემდეგ)
-                </span>
+                {s.accessMonths} თვიანი წვდომა ყველა გაკვეთილზე{" "}
+                {s.presalePrice && (
+                  <span className="text-[#6b7280]">
+                    (დროის ათვლა დაიწყება პრესეილის დასრულების შემდეგ)
+                  </span>
+                )}
               </li>
               <li>
                 წვდომის გაგრძელება საჭიროების შემთხვევაში — ერთი თვე{" "}
-                {EXTRA_MONTH} ₾
+                {s.extraMonth} ₾
               </li>
               <li>ლექსიკის აუდიო მასალა თითოეულ გაკვეთილში</li>
               <li>პროგრესის თვალყურის დევნება და შეხსენებები ელფოსტაზე</li>
             </ul>
             <div className="mt-6">
-              <SignUpButton />
+              <SignUpButton href={s.signupUrl} />
             </div>
           </div>
         </Section>
 
         <Section heading="ხშირად დასმული კითხვები">
           <VideoCourseAccordion
-            items={FAQ.map((f) => ({ title: f.q, body: f.a }))}
+            items={faq.map((f) => ({ title: f.q, body: f.a }))}
           />
         </Section>
 

@@ -524,3 +524,32 @@ export async function getCoursesPage(): Promise<CoursesPageDoc | null> {
     return null;
   }
 }
+
+export type VideoCourseLesson = { title?: string; note?: string };
+export type VideoCourseFaqItem = { question?: string; answer?: string };
+
+export type VideoCoursePageDoc = {
+  promoVideo?: string;
+  sampleVideo?: string;
+  signupUrl?: string;
+  lessonCount?: number;
+  accessMonths?: number;
+  price?: number;
+  presaleActive?: boolean;
+  presalePrice?: number;
+  extraMonthPrice?: number;
+  lessons?: VideoCourseLesson[];
+  faq?: VideoCourseFaqItem[];
+};
+
+export async function getVideoCoursePage(): Promise<VideoCoursePageDoc | null> {
+  try {
+    return await client.fetch(
+      `*[_id == "videoCoursePage"][0]`,
+      {},
+      { next: { revalidate: 60 } },
+    );
+  } catch {
+    return null;
+  }
+}
