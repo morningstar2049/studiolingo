@@ -106,8 +106,9 @@ const sections: { title: string; fields: Field[] }[] = [
 ];
 
 const allFields = sections.flatMap((s) => s.fields);
+// text-base (16px): iPhone Safari zooms the page into any field under 16px.
 const inputBase =
-  "w-full px-4 py-2.5 text-[15px] rounded-xl border bg-[#fff] outline-none transition-colors";
+  "w-full px-4 py-2.5 text-base rounded-xl border bg-[#fff] outline-none transition-colors";
 
 export default function RegistrationForm({
   open = true,

@@ -1,10 +1,23 @@
 "use client";
 
 import { useEffect, useRef, useState , type ReactNode } from "react";
-import { AiOutlineClose, AiOutlineArrowRight } from "react-icons/ai";
+import {
+  AiOutlineClose,
+  AiOutlineArrowRight,
+  AiOutlineDown,
+} from "react-icons/ai";
 import { FaCheck } from "react-icons/fa";
 import InfoModal from "../InfoModal";
 import { fieldError, type FieldRules } from "@/lib/formValidation";
+import {
+  COUNTRIES,
+  DEFAULT_COUNTRY,
+  OTHER_COUNTRY,
+  findCountry,
+  flagOf,
+  intlPhone,
+  intlPhoneError,
+} from "@/lib/phoneCountries";
 import SchoolRules from "../SchoolRules";
 
 // Native registration form for the adult English courses. Submits straight into
@@ -26,8 +39,16 @@ const LESSON_TYPE_ID = "entry.1846302127";
 type Field = FieldRules & {
   id: string;
   label: string;
-  type: "text" | "tel" | "email" | "number" | "select";
+  // "intlPhone": a country-code picker beside the number; what Google gets is
+  // the combined international number (see lib/phoneCountries).
+  type: "text" | "tel" | "email" | "number" | "select" | "intlPhone";
   options?: string[];
+  // Instruction under the label — mirrors the field's description in the
+  // Google Form. Kept out of the input because it is too long to fit there on
+  // a phone.
+  hint?: string;
+  // Short format example shown inside the empty input.
+  placeholder?: string;
 };
 
 const commonFields: Field[] = [
@@ -42,8 +63,8 @@ const commonFields: Field[] = [
   {
     id: "entry.129933980",
     label: "WhatsApp / Viber ნომერი",
-    type: "tel",
-    minDigits: 9,
+    type: "intlPhone",
+    hint: "აირჩიეთ ქვეყანა და ჩაწერეთ ნომერი",
   },
   {
     id: "entry.1324604824",
@@ -138,8 +159,9 @@ const finalFields: Field[] = [
   },
 ];
 
+// text-base (16px): iPhone Safari zooms the page into any field under 16px.
 const inputBase =
-  "w-full px-4 py-2.5 text-[15px] rounded-xl border bg-[#fff] outline-none transition-colors";
+  "w-full px-4 py-2.5 text-base rounded-xl border bg-[#fff] outline-none transition-colors";
 
 export default function AdultRegistrationForm({
   open = true,
@@ -197,6 +219,8 @@ export default function AdultRegistrationForm({
     root.style.scrollBehavior = prev;
   };
 
+  const countryOf = (id: string) => values[`${id}:country`] || DEFAULT_COUNTRY;
+
   const set = (id: string, v: string) => {
     setValues((p) => ({ ...p, [id]: v }));
     if (errors[id])
@@ -212,7 +236,10 @@ export default function AdultRegistrationForm({
     const activeFields = [...commonFields, ...courseFields, ...finalFields];
     const errs: Record<string, string> = {};
     activeFields.forEach((f) => {
-      const message = fieldError(values[f.id] ?? "", f);
+      const message =
+        f.type === "intlPhone"
+          ? intlPhoneError(countryOf(f.id), values[f.id] ?? "")
+          : fieldError(values[f.id] ?? "", f);
       if (message) errs[f.id] = message;
     });
     if (!agreed) errs.agree = "ეს ველი სავალდებულოა";
@@ -221,7 +248,14 @@ export default function AdultRegistrationForm({
 
     setStatus("submitting");
     const fd = new FormData();
-    activeFields.forEach((f) => fd.append(f.id, values[f.id]));
+    activeFields.forEach((f) =>
+      fd.append(
+        f.id,
+        f.type === "intlPhone"
+          ? intlPhone(countryOf(f.id), values[f.id])
+          : values[f.id],
+      ),
+    );
     // Terms confirmation and the branch-specific pageHistory. Google multi-page
     // forms only keep fields on pages listed in pageHistory; the adult form
     // branches, so online visits pages 0,1,3,4 and onsite visits 0,2,3,4.
@@ -244,9 +278,16 @@ export default function AdultRegistrationForm({
 
   const renderField = (f: Field) => (
     <div key={f.id}>
-      <label className="block mb-2 text-[14px] font-bold sm:text-base text-lingo-black">
+      <label
+        className={`block text-[14px] font-bold sm:text-base text-lingo-black ${
+          f.hint ? "mb-1" : "mb-2"
+        }`}
+      >
         {f.label}
       </label>
+      {f.hint && (
+        <p className="mb-2 text-[13px] sm:text-sm text-[#6b7280]">{f.hint}</p>
+      )}
       {f.type === "select" ? (
         <select
           value={values[f.id] || ""}
@@ -266,6 +307,60 @@ export default function AdultRegistrationForm({
             </option>
           ))}
         </select>
+      ) : f.type === "intlPhone" ? (
+        (() => {
+          const country = findCountry(countryOf(f.id));
+          const isOther = country.iso === OTHER_COUNTRY;
+          return (
+            <div
+              className={`flex items-stretch overflow-hidden rounded-xl border bg-[#fff] transition-colors ${
+                errors[f.id]
+                  ? "border-[#e24b4a]"
+                  : "border-[#e3e7ec] focus-within:border-lingo-green"
+              }`}
+            >
+              {/* The visible box shows only flag + code; the native select on
+                  top of it opens the phone's own picker with full names. */}
+              <div className="relative flex items-center gap-1.5 pl-3 pr-2.5 border-r shrink-0 border-[#e3e7ec] bg-[#f7f9fb]">
+                <span className="text-[17px] leading-none">
+                  {flagOf(country.iso)}
+                </span>
+                <span className="text-[15px] text-lingo-black">
+                  {country.dial || "+"}
+                </span>
+                <AiOutlineDown className="text-[11px] text-[#6b7280]" />
+                <select
+                  aria-label="ქვეყნის კოდი"
+                  value={country.iso}
+                  onChange={(e) => set(`${f.id}:country`, e.target.value)}
+                  className="absolute inset-0 w-full h-full text-base opacity-0 cursor-pointer"
+                >
+                  {COUNTRIES.map((c) => (
+                    <option key={c.iso} value={c.iso}>
+                      {flagOf(c.iso)} {c.name}
+                      {c.dial ? ` ${c.dial}` : ""}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <input
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel-national"
+                value={values[f.id] || ""}
+                onChange={(e) => set(f.id, e.target.value)}
+                placeholder={
+                  isOther
+                    ? "+ ქვეყნის კოდი და ნომერი"
+                    : country.iso === DEFAULT_COUNTRY
+                      ? "555 123 456"
+                      : "ნომერი"
+                }
+                className="flex-1 min-w-0 px-3 py-2.5 text-base bg-transparent outline-none placeholder:text-[#9aa5b4]"
+              />
+            </div>
+          );
+        })()
       ) : (
         <input
           type={f.type === "number" ? "text" : f.type}
@@ -274,7 +369,8 @@ export default function AdultRegistrationForm({
           }
           value={values[f.id] || ""}
           onChange={(e) => set(f.id, e.target.value)}
-          className={`${inputBase} ${
+          placeholder={f.placeholder}
+          className={`${inputBase} placeholder:text-[#9aa5b4] ${
             errors[f.id]
               ? "border-[#e24b4a]"
               : "border-[#e3e7ec] focus:border-lingo-green"
