@@ -72,6 +72,8 @@ function buildTexts(d: LevelTestTextsDoc): LevelTestTexts {
       hideButton: pick(d.hideButton, f.result.hideButton),
       courseButton: pick(d.courseButton, f.result.courseButton),
       courseLink: pick(d.courseLink, f.result.courseLink),
+      scheduleButton: pick(d.scheduleButton, f.result.scheduleButton),
+      scheduleLink: pick(d.scheduleLink, f.result.scheduleLink),
       retakeButton: pick(d.retakeButton, f.result.retakeButton),
       descriptions: {
         "სრულიად დამწყები": pick(d.beginner, desc["სრულიად დამწყები"]),

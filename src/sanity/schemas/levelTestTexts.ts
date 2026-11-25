@@ -93,6 +93,8 @@ export const levelTestTexts = defineType({
     str("hideButton", "ღილაკი: დამალვა", "result"),
     str("courseButton", "მწვანე ღილაკი", "result"),
     str("courseLink", "მწვანე ღილაკის ბმული", "result", "მაგ. /courses ან /courses/group-online"),
+    str("scheduleButton", "ღილაკი: გრაფიკის შეთანხმება", "result", "მესენჯერის ხატულიანი ღილაკი მწვანე ღილაკის ქვემოთ."),
+    str("scheduleLink", "გრაფიკის ღილაკის ბმული", "result", "მაგ. https://m.me/studiolingo — ახალ ფანჯარაში იხსნება."),
     str("retakeButton", "თავიდან გავლის ღილაკი", "result"),
     txt("beginner", "აღწერა: Beginner — სრულიად დამწყები", "result", 5),
     txt("a1", "აღწერა: Elementary − (A1)", "result", 5),

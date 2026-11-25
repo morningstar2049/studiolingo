@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CircularProgress } from "@mui/material";
 import { FaCheckCircle, FaRegClock, FaVolumeUp } from "react-icons/fa";
+import { BsMessenger } from "react-icons/bs";
 import AudioPlayer from "./AudioPlayer";
 import { scrollToTop } from "./scrollToTop";
 import type { LevelTestTexts } from "./levelTestTexts";
@@ -306,6 +307,17 @@ function LevelTest({
             className="block py-3.5 mt-4 font-bold text-[#fff] transition-all rounded-xl bg-lingo-green shadow-lg shadow-lingo-green/25 hover:bg-[#2f904d] hover:scale-[1.02]"
           >
             {tr.courseButton}
+          </a>
+          {/* Agree a course schedule — opens the school's Messenger chat by
+              default (text and link are edited in Sanity). */}
+          <a
+            href={tr.scheduleLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center w-full gap-2 py-3 mt-3 font-bold transition-all rounded-xl text-lingo-green ring-1 ring-lingo-green hover:bg-lingo-green/5"
+          >
+            <BsMessenger className="text-lg shrink-0" />
+            {tr.scheduleButton}
           </a>
           <button
             type="button"

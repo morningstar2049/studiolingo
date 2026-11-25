@@ -56,6 +56,8 @@ export type LevelTestTexts = {
     hideButton: string;
     courseButton: string;
     courseLink: string;
+    scheduleButton: string;
+    scheduleLink: string;
     retakeButton: string;
     descriptions: TLevelDescriptions;
   };
@@ -102,6 +104,8 @@ export const FALLBACK_TEXTS: LevelTestTexts = {
     hideButton: "დამალვა",
     courseButton: "დაიწყე შესაბამისი კურსი →",
     courseLink: "/courses",
+    scheduleButton: "კურსის გრაფიკის შეთანხმება",
+    scheduleLink: "https://m.me/studiolingo",
     retakeButton: "↻ ტესტის თავიდან გავლა",
     descriptions: fallbackLevelDescriptions,
   },
